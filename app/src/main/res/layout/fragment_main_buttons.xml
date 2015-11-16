@@ -1,0 +1,79 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent" tools:context="gruppe3.convoy.MainButtonsFragment">
+
+    <!-- TODO: Update blank fragment layout -->
+    <TableLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true">
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginTop="30dp">
+
+            <ImageView
+                android:layout_width="0px"
+                android:layout_weight="1"
+                android:layout_height="85dp"
+                android:id="@+id/imageView"
+                android:layout_column="0"
+                android:src="@drawable/food"
+                android:scaleType="fitCenter" />
+
+            <ImageView
+                android:layout_width="0px"
+                android:layout_weight="1"
+                android:layout_height="match_parent"
+                android:id="@+id/imageView2"
+                android:layout_column="1"
+                android:src="@drawable/bed"
+                android:scaleType="fitCenter" />
+
+            <ImageView
+                android:layout_width="0px"
+                android:layout_weight="1"
+                android:layout_height="match_parent"
+                android:id="@+id/imageView3"
+                android:layout_column="2"
+                android:src="@drawable/wc"
+                android:scaleType="fitCenter" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:layout_marginTop="30dp">
+
+            <ImageView
+                android:layout_width="0px"
+                android:layout_weight="1"
+                android:layout_height="85dp"
+                android:id="@+id/imageView4"
+                android:layout_column="0"
+                android:src="@drawable/food"
+                android:scaleType="fitCenter" />
+
+            <ImageView
+                android:layout_width="0px"
+                android:layout_weight="1"
+                android:layout_height="match_parent"
+                android:id="@+id/imageView5"
+                android:layout_column="1"
+                android:src="@drawable/bed"
+                android:scaleType="fitCenter" />
+
+            <ImageView
+                android:layout_width="0px"
+                android:layout_weight="1"
+                android:layout_height="match_parent"
+                android:id="@+id/imageView6"
+                android:layout_column="2"
+                android:src="@drawable/wc"
+                android:scaleType="fitCenter" />
+        </TableRow>
+    </TableLayout>
+
+</FrameLayout>
