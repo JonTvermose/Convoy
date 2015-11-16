@@ -20,7 +20,7 @@
                 android:layout_height="85dp"
                 android:id="@+id/imageView"
                 android:layout_column="0"
-                android:src="@drawable/food"
+                android:src="@drawable/fuel"
                 android:scaleType="fitCenter" />
 
             <ImageView
@@ -29,7 +29,7 @@
                 android:layout_height="match_parent"
                 android:id="@+id/imageView2"
                 android:layout_column="1"
-                android:src="@drawable/bed"
+                android:src="@drawable/bath"
                 android:scaleType="fitCenter" />
 
             <ImageView
@@ -53,7 +53,7 @@
                 android:layout_height="85dp"
                 android:id="@+id/imageView4"
                 android:layout_column="0"
-                android:src="@drawable/food"
+                android:src="@drawable/fuel"
                 android:scaleType="fitCenter" />
 
             <ImageView
@@ -62,7 +62,7 @@
                 android:layout_height="match_parent"
                 android:id="@+id/imageView5"
                 android:layout_column="1"
-                android:src="@drawable/bed"
+                android:src="@drawable/bath"
                 android:scaleType="fitCenter" />
 
             <ImageView
