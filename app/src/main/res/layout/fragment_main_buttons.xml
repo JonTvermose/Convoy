@@ -7,21 +7,26 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_alignParentTop="true"
-        android:layout_alignParentStart="true">
+        android:layout_alignParentStart="true"
+        android:background="#ffcccccc">
 
         <TableRow
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_marginTop="30dp">
+            android:layout_margin="10dp">
 
             <ImageView
                 android:layout_width="0px"
                 android:layout_weight="1"
-                android:layout_height="85dp"
+                android:layout_height="120dp"
                 android:id="@+id/imageView"
                 android:layout_column="0"
-                android:src="@drawable/fuel"
-                android:scaleType="fitCenter" />
+                android:src="@drawable/food_t"
+                android:scaleType="fitCenter"
+                android:padding="1dp"
+                android:background="#ffffff"
+                android:layout_marginRight="5dp"
+                android:layout_marginLeft="5dp" />
 
             <ImageView
                 android:layout_width="0px"
@@ -29,50 +34,77 @@
                 android:layout_height="match_parent"
                 android:id="@+id/imageView2"
                 android:layout_column="1"
-                android:src="@drawable/bath"
-                android:scaleType="fitCenter" />
-
-            <ImageView
-                android:layout_width="0px"
-                android:layout_weight="1"
-                android:layout_height="match_parent"
-                android:id="@+id/imageView3"
-                android:layout_column="2"
-                android:src="@drawable/wc"
-                android:scaleType="fitCenter" />
+                android:src="@drawable/wc_t"
+                android:scaleType="fitCenter"
+                android:padding="1dp"
+                android:background="#ffffff"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp" />
         </TableRow>
 
         <TableRow
             android:layout_width="match_parent"
             android:layout_height="200dp"
-            android:layout_marginTop="30dp">
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp">
 
             <ImageView
                 android:layout_width="0px"
                 android:layout_weight="1"
-                android:layout_height="85dp"
-                android:id="@+id/imageView4"
+                android:layout_height="120dp"
+                android:id="@+id/imageView3"
                 android:layout_column="0"
-                android:src="@drawable/fuel"
-                android:scaleType="fitCenter" />
+                android:src="@drawable/bed_t"
+                android:scaleType="fitCenter"
+                android:padding="1dp"
+                android:background="#ffffff"
+                android:layout_marginRight="5dp"
+                android:layout_marginLeft="5dp" />
 
             <ImageView
                 android:layout_width="0px"
                 android:layout_weight="1"
                 android:layout_height="match_parent"
-                android:id="@+id/imageView5"
+                android:id="@+id/imageView4"
                 android:layout_column="1"
-                android:src="@drawable/bath"
-                android:scaleType="fitCenter" />
+                android:src="@drawable/bath_t"
+                android:scaleType="fitCenter"
+                android:padding="1dp"
+                android:background="#ffffff"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:layout_margin="10dp">
+
+            <ImageView
+                android:layout_width="0px"
+                android:layout_weight="1"
+                android:layout_height="120dp"
+                android:id="@+id/imageView6"
+                android:layout_column="0"
+                android:src="@drawable/fuel_t"
+                android:scaleType="fitCenter"
+                android:padding="1dp"
+                android:background="#ffffff"
+                android:layout_marginRight="5dp"
+                android:layout_marginLeft="5dp" />
 
             <ImageView
                 android:layout_width="0px"
                 android:layout_weight="1"
                 android:layout_height="match_parent"
-                android:id="@+id/imageView6"
-                android:layout_column="2"
-                android:src="@drawable/wc"
-                android:scaleType="fitCenter" />
+                android:id="@+id/imageView7"
+                android:layout_column="1"
+                android:src="@drawable/adblue_t"
+                android:scaleType="fitCenter"
+                android:padding="1dp"
+                android:background="#ffffff"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp" />
         </TableRow>
     </TableLayout>
 
