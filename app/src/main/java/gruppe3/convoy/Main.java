@@ -8,10 +8,13 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.AppCompatActivity;
+import android.view.View;
+import android.widget.Button;
 import android.widget.HorizontalScrollView;
 
 
-public class Main extends FragmentActivity {
+public class Main extends AppCompatActivity {
 
     static Boolean  food=false,
                     wc=false,
@@ -20,11 +23,7 @@ public class Main extends FragmentActivity {
                     fuel=false,
                     adblue=false;
 
-    /**
-     * The number of pages (wizard steps) to show in this demo.
-     */
-    private static final int NUM_PAGES = 5;
-
+    Button search;
     /**
      * The pager widget, which handles animation and allows swiping horizontally to access previous
      * and next wizard steps.
@@ -36,15 +35,15 @@ public class Main extends FragmentActivity {
      */
     private PagerAdapter mPagerAdapter;
 
-    HorizontalScrollView slide;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        search = (Button) findViewById(R.id.searchButton);
+
         // Instantiate a ViewPager and a PagerAdapter.
         mPager = (ViewPager) findViewById(R.id.pager);
-//        mPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
         mPagerAdapter = new MainFragmentPagerAdapter(getSupportFragmentManager(),Main.this);
         mPager.setAdapter(mPagerAdapter);
 
@@ -52,5 +51,11 @@ public class Main extends FragmentActivity {
         TabLayout tabLayout = (TabLayout) findViewById(R.id.sliding_tabs);
         tabLayout.setupWithViewPager(mPager);
 
+        search.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
     }
 }
