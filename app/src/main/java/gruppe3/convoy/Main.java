@@ -12,6 +12,13 @@ import android.widget.HorizontalScrollView;
 
 public class Main extends FragmentActivity {
 
+    static Boolean  food=false,
+                    wc=false,
+                    bed=false,
+                    bath=false,
+                    fuel=false,
+                    adblue=false;
+
     /**
      * The number of pages (wizard steps) to show in this demo.
      */
