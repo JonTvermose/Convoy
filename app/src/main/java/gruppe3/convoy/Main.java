@@ -1,6 +1,7 @@
 package gruppe3.convoy;
 
 import android.os.Bundle;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
@@ -35,7 +36,6 @@ public class Main extends FragmentActivity {
      */
     private PagerAdapter mPagerAdapter;
 
-
     HorizontalScrollView slide;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,51 +44,13 @@ public class Main extends FragmentActivity {
 
         // Instantiate a ViewPager and a PagerAdapter.
         mPager = (ViewPager) findViewById(R.id.pager);
-        mPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
+//        mPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
+        mPagerAdapter = new MainFragmentPagerAdapter(getSupportFragmentManager(),Main.this);
         mPager.setAdapter(mPagerAdapter);
 
+        // Give the TabLayout the ViewPager
+        TabLayout tabLayout = (TabLayout) findViewById(R.id.sliding_tabs);
+        tabLayout.setupWithViewPager(mPager);
+
     }
-
-    /**
-     * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
-     * one of the sections/tabs/pages.
-     */
-    public class SectionsPagerAdapter extends FragmentPagerAdapter {
-
-        public SectionsPagerAdapter(FragmentManager fm) {
-            super(fm);
-        }
-
-        @Override
-        public Fragment getItem(int position) {
-            // getItem is called to instantiate the fragment for the given page.
-            // Return a PlaceholderFragment (defined as a static inner class below).
-            //return PlaceholderFragment.newInstance(position + 1);
-            switch (position) {
-                case 0:
-                    return new MainButtonsFragment();
-                case 1:
-                    return new AdvancedFragment();
-            }
-            return null;
-        }
-
-        @Override
-        public int getCount() {
-            // Show 2 total pages.
-            return 2;
-        }
-
-        @Override
-        public CharSequence getPageTitle(int position) {
-            switch (position) {
-                case 0:
-                    return "Choice";
-                case 1:
-                    return "Advanced";
-            }
-            return null;
-        }
-    }
-
 }
