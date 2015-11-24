@@ -1,5 +1,6 @@
 package gruppe3.convoy;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -57,6 +58,8 @@ public class Main extends AppCompatActivity {
         search.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Intent i = new Intent(Main.this, GMapsAktivitet.class);
+                Main.this.startActivity(i);
 
             }
         });
