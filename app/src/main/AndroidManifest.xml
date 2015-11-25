@@ -21,7 +21,8 @@
             android:name=".KnapSlider"
             android:exported="true"
             android:label="@string/title_activity_knap_slider"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar"
+            android:screenOrientation="portrait"></activity>
 
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"
@@ -29,7 +30,8 @@
 
         <activity
             android:name=".GMapsAktivitet"
-            android:label="@string/title_activity_gmaps_aktivitet"></activity>
+            android:label="@string/title_activity_gmaps_aktivitet"
+            android:screenOrientation="portrait"></activity>
     </application>
 
 </manifest>
