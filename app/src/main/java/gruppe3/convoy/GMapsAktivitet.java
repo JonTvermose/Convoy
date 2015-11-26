@@ -49,8 +49,11 @@ public class GMapsAktivitet extends Activity implements OnMapReadyCallback {
         lastKnownLocation = locationManager.getLastKnownLocation(locationProvider);
 
         // TESTKODE
+        if(lastKnownLocation==null){
+            lastKnownLocation = new Location("");
+        }
         lastKnownLocation.setLatitude(55.4);
-        lastKnownLocation.setLongitude(12.4);
+        lastKnownLocation.setLongitude(0.4);
 
         try {
             if (googleMap == null) {
