@@ -38,37 +38,44 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/title_TextView"
             android:layout_centerHorizontal="true"
-            android:id="@+id/linearLayout1">
+            android:id="@+id/linearLayout1"
+            android:weightSum="6">
 
             <ImageView
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:id="@+id/wc_imageView" />
+                android:layout_width="0px"
+                android:layout_height="match_parent"
+                android:id="@+id/wc_imageView"
+                android:layout_weight="1"/>
 
             <ImageView
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:id="@+id/bed_imageView" />
+                android:layout_width="0px"
+                android:layout_height="match_parent"
+                android:id="@+id/bed_imageView"
+                android:layout_weight="1"/>
 
             <ImageView
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:id="@+id/adblue_imageView" />
+                android:layout_width="0px"
+                android:layout_height="match_parent"
+                android:id="@+id/adblue_imageView"
+                android:layout_weight="1"/>
 
             <ImageView
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:id="@+id/food_imageView" />
+                android:layout_width="0px"
+                android:layout_height="match_parent"
+                android:id="@+id/food_imageView"
+                android:layout_weight="1"/>
 
             <ImageView
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:id="@+id/fuel_imageView" />
+                android:layout_width="0px"
+                android:layout_height="match_parent"
+                android:id="@+id/fuel_imageView"
+                android:layout_weight="1"/>
 
             <ImageView
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:id="@+id/bath_imageView" />
+                android:layout_width="0px"
+                android:layout_height="match_parent"
+                android:id="@+id/bath_imageView"
+                android:layout_weight="1"/>
         </LinearLayout>
 
         <LinearLayout

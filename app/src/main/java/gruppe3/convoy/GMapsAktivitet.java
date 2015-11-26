@@ -6,6 +6,7 @@ import android.content.Context;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
@@ -21,6 +22,8 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.util.ArrayList;
+
 import gruppe3.convoy.functionality.BackendSimulator;
 import gruppe3.convoy.functionality.MyLocation;
 import gruppe3.convoy.functionality.Spot;
@@ -31,6 +34,7 @@ public class GMapsAktivitet extends Activity implements OnMapReadyCallback {
     private Location lastKnownLocation;
     private MyLocation locationListener;
     private BackendSimulator backend;
+    private ArrayList<Spot> spots;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +47,10 @@ public class GMapsAktivitet extends Activity implements OnMapReadyCallback {
         // Find sidste kendte lokation
         String locationProvider = LocationManager.NETWORK_PROVIDER; // Or use LocationManager.GPS_PROVIDER
         lastKnownLocation = locationManager.getLastKnownLocation(locationProvider);
+
+        // TESTKODE
+        lastKnownLocation.setLatitude(55.4);
+        lastKnownLocation.setLongitude(12.4);
 
         try {
             if (googleMap == null) {
@@ -69,89 +77,99 @@ public class GMapsAktivitet extends Activity implements OnMapReadyCallback {
             googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(cPos, 12));
         } else {
             LatLng cPos = new LatLng(lastKnownLocation.getLatitude(), lastKnownLocation.getLongitude());
-            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(cPos, 12));
+            googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(cPos, 12), 2000, null);
             Toast.makeText(this, "Unable to fetch the current location. Using last know location", Toast.LENGTH_SHORT).show();
         }
 
-        Marker mark1 = googleMap.addMarker(new MarkerOptions().position(new LatLng(lastKnownLocation.getLatitude(), lastKnownLocation.getLongitude())).title("Sidst kendte sted"));
+        // TESTKODE - sætter en marker på sidste kendte sted
+        // Marker mark1 = googleMap.addMarker(new MarkerOptions().position(new LatLng(lastKnownLocation.getLatitude(), lastKnownLocation.getLongitude())).title("Sidst kendte sted"));
 
         backend = new BackendSimulator();
-        for (Spot spot : backend.getMarkers()) {
+        spots = backend.getMarkers(); // Hent spots fra serveren
+
+        // Tilføjer markers til Google Maps
+        for (Spot spot : spots) {
             Marker mark = googleMap.addMarker(new MarkerOptions().position(spot.getPos()).title(spot.getDesc()));
             mark.setDraggable(false);
         }
 
-
+        // Clicklistener til markers. Når man klikker på en marker åbnes en Dialog-boks
         googleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(Marker marker) {
                 final Dialog dialog = new Dialog(GMapsAktivitet.this);
                 dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                dialog.setContentView(R.layout.fragment_spot); // XML-layout til Dialog-boksen
+                Spot spot;
+                try {
+                    spot = getSpot(marker.getTitle());
 
-                //AlertDialog.Builder dialog = new AlertDialog.Builder(GMapsAktivitet.this);
-                dialog.setContentView(R.layout.fragment_spot);
-                Spot spot = getSpot(marker.getTitle());
-                TextView title = (TextView) dialog.findViewById(R.id.title_TextView);
-                title.setText(spot.getDesc());
+                    TextView title = (TextView) dialog.findViewById(R.id.title_TextView);
+                    title.setText(spot.getDesc());
 
-                ImageView adblue = (ImageView) dialog.findViewById(R.id.adblue_imageView);
-                ImageView bed = (ImageView) dialog.findViewById(R.id.bed_imageView);
-                ImageView bath = (ImageView) dialog.findViewById(R.id.bath_imageView);
-                ImageView food = (ImageView) dialog.findViewById(R.id.food_imageView);
-                ImageView fuel = (ImageView) dialog.findViewById(R.id.fuel_imageView);
-                ImageView wc = (ImageView) dialog.findViewById(R.id.wc_imageView);
+                    ImageView adblue = (ImageView) dialog.findViewById(R.id.adblue_imageView);
+                    ImageView bed = (ImageView) dialog.findViewById(R.id.bed_imageView);
+                    ImageView bath = (ImageView) dialog.findViewById(R.id.bath_imageView);
+                    ImageView food = (ImageView) dialog.findViewById(R.id.food_imageView);
+                    ImageView fuel = (ImageView) dialog.findViewById(R.id.fuel_imageView);
+                    ImageView wc = (ImageView) dialog.findViewById(R.id.wc_imageView);
 
-                if (spot.isAdblue()) {
-                    adblue.setImageResource(R.drawable.adblue_t_check);
-                } else {
-                    adblue.setImageResource(R.drawable.adblue_t);
-                }
-                if (spot.isBath()) {
-                    bath.setImageResource(R.drawable.bath_t_check);
-                } else {
-                    bath.setImageResource(R.drawable.bath_t);
-                }
-                if (spot.isBed()) {
-                    bed.setImageResource(R.drawable.bed_t_check);
-                } else {
-                    bed.setImageResource(R.drawable.bed_t);
-                }
-                if (spot.isFood()) {
-                    food.setImageResource(R.drawable.food_t_check);
-                } else {
-                    food.setImageResource(R.drawable.food_t);
-                }
-                if (spot.isFuel()) {
-                    fuel.setImageResource(R.drawable.fuel_t_check);
-                } else {
-                    fuel.setImageResource(R.drawable.fuel_t);
-                }
-                if (spot.isWc()) {
-                    wc.setImageResource(R.drawable.wc_t_check);
-                } else {
-                    wc.setImageResource(R.drawable.wc_t);
-                }
-
-                dialog.show();
-
-                Button route = (Button) dialog.findViewById(R.id.findRoute_button);
-                route.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Toast.makeText(GMapsAktivitet.this, "Finding route. Please wait...", Toast.LENGTH_LONG).show();
-                        dialog.hide();
-
+                    // Sæt billederne afhængig af hvilken service der er tilgængelig på det pågældende spot
+                    if (spot.isAdblue()) {
+                        adblue.setImageResource(R.drawable.adblue_t_check);
+                    } else {
+                        adblue.setImageResource(R.drawable.adblue_t);
                     }
-                });
-
-                ImageView close = (ImageView) dialog.findViewById(R.id.close_imageView);
-                close.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Toast.makeText(GMapsAktivitet.this, "Closing dialog", Toast.LENGTH_SHORT).show();
-                        dialog.hide();
+                    if (spot.isBath()) {
+                        bath.setImageResource(R.drawable.bath_t_check);
+                    } else {
+                        bath.setImageResource(R.drawable.bath_t);
                     }
-                });
+                    if (spot.isBed()) {
+                        bed.setImageResource(R.drawable.bed_t_check);
+                    } else {
+                        bed.setImageResource(R.drawable.bed_t);
+                    }
+                    if (spot.isFood()) {
+                        food.setImageResource(R.drawable.food_t_check);
+                    } else {
+                        food.setImageResource(R.drawable.food_t);
+                    }
+                    if (spot.isFuel()) {
+                        fuel.setImageResource(R.drawable.fuel_t_check);
+                    } else {
+                        fuel.setImageResource(R.drawable.fuel_t);
+                    }
+                    if (spot.isWc()) {
+                        wc.setImageResource(R.drawable.wc_t_check);
+                    } else {
+                        wc.setImageResource(R.drawable.wc_t);
+                    }
+
+                    // Clicklistener til "FIND ROUTE"-knappen
+                    Button route = (Button) dialog.findViewById(R.id.findRoute_button);
+                    route.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Toast.makeText(GMapsAktivitet.this, "Finding route. Please wait...", Toast.LENGTH_LONG).show();
+                            dialog.hide(); // TO DO
+                        }
+                    });
+
+                    // Clicklistener til "Luk"-knappen (man kan også bare klikke udenfor Dialog-boksen)
+                    ImageView close = (ImageView) dialog.findViewById(R.id.close_imageView);
+                    close.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Toast.makeText(GMapsAktivitet.this, "Closing dialog", Toast.LENGTH_SHORT).show();
+                            dialog.hide();
+                        }
+                    });
+                    dialog.show();
+                } catch (Exception e){
+                    // TO DO : Fejlhåndtering
+                    // Hvad skal der ske hvis man klikker på en marker som vi ikke kan identificere?
+                }
 
                 return true;
             }
@@ -159,13 +177,15 @@ public class GMapsAktivitet extends Activity implements OnMapReadyCallback {
         locationListener.setMap(googleMap, this);
     }
 
-    private Spot getSpot(String desc){
-        for (Spot spot : backend.getMarkers()){
+    // Finder hvilken spot der er trykket på ud fra en beskrivelsestekst. Skal optimeres!!
+    private Spot getSpot(String desc) throws Exception {
+        for (Spot spot : spots){
             if(spot.getDesc().equals(desc)){
                 return spot;
             }
         }
-        return new Spot("Overskrift her", false, false, false, false, false,false, false, new LatLng(55.5,16.324));
+        Log.d("Error", "Kunne ikke finde spot: " + desc);
+        throw new Exception("Error. Could not find: " + desc);
     }
 
 }
