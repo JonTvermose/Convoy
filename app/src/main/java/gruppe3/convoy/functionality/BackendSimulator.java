@@ -34,5 +34,17 @@ public class BackendSimulator {
         return markers;
     }
 
+    public ArrayList<Spot> getMarkers(LatLng pos){
+        // DO something
+        return markers;
+    }
+
+    public ArrayList<Spot> getMarkers(LatLng pos, boolean[] choices){
+        // DO something
+        return markers;
+    }
+
+
+
 
 }

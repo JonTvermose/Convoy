@@ -48,12 +48,13 @@ public class GMapsAktivitet extends Activity implements OnMapReadyCallback {
         String locationProvider = LocationManager.NETWORK_PROVIDER; // Or use LocationManager.GPS_PROVIDER
         lastKnownLocation = locationManager.getLastKnownLocation(locationProvider);
 
-        // TESTKODE
         if(lastKnownLocation==null){
             lastKnownLocation = new Location("");
+            lastKnownLocation.setLatitude(0);
+            lastKnownLocation.setLongitude(0);
         }
-        lastKnownLocation.setLatitude(55.4);
-        lastKnownLocation.setLongitude(0.4);
+        // lastKnownLocation.setLatitude(0); // TESTKODE
+        // lastKnownLocation.setLongitude(0); // TESTKODE
 
         try {
             if (googleMap == null) {
@@ -80,7 +81,7 @@ public class GMapsAktivitet extends Activity implements OnMapReadyCallback {
             googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(cPos, 12));
         } else {
             LatLng cPos = new LatLng(lastKnownLocation.getLatitude(), lastKnownLocation.getLongitude());
-            googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(cPos, 12), 2000, null);
+            googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(cPos, 1), 1000, null);
             Toast.makeText(this, "Unable to fetch the current location. Using last know location", Toast.LENGTH_SHORT).show();
         }
 
@@ -164,7 +165,6 @@ public class GMapsAktivitet extends Activity implements OnMapReadyCallback {
                     close.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            Toast.makeText(GMapsAktivitet.this, "Closing dialog", Toast.LENGTH_SHORT).show();
                             dialog.hide();
                         }
                     });
@@ -172,6 +172,7 @@ public class GMapsAktivitet extends Activity implements OnMapReadyCallback {
                 } catch (Exception e){
                     // TO DO : Fejlhåndtering
                     // Hvad skal der ske hvis man klikker på en marker som vi ikke kan identificere?
+                    Toast.makeText(GMapsAktivitet.this, "Could not find matching POI: " +marker.getTitle(), Toast.LENGTH_LONG).show();
                 }
 
                 return true;

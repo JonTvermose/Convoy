@@ -19,6 +19,7 @@
             android:id="@+id/title_TextView"
             android:layout_alignParentTop="true"
             android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true"
             android:textStyle="bold"
             android:layout_margin="15dp"
             android:textSize="30dp" />
@@ -29,51 +30,62 @@
             android:id="@+id/close_imageView"
             android:layout_alignParentTop="true"
             android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
             android:src="@mipmap/ic_launcher"
             android:layout_margin="15dp"/>
 
         <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/title_TextView"
-            android:layout_centerHorizontal="true"
-            android:id="@+id/linearLayout1"
-            android:weightSum="6">
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/title_TextView"
+        android:layout_centerHorizontal="true"
+        android:id="@+id/linearLayout1"
+        android:weightSum="3">
 
             <ImageView
                 android:layout_width="0px"
-                android:layout_height="match_parent"
+                android:layout_height="50dp"
                 android:id="@+id/wc_imageView"
                 android:layout_weight="1"/>
 
             <ImageView
                 android:layout_width="0px"
-                android:layout_height="match_parent"
+                android:layout_height="50dp"
                 android:id="@+id/bed_imageView"
                 android:layout_weight="1"/>
 
             <ImageView
                 android:layout_width="0px"
-                android:layout_height="match_parent"
+                android:layout_height="50dp"
                 android:id="@+id/adblue_imageView"
                 android:layout_weight="1"/>
+            </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/linearLayout1"
+            android:layout_centerHorizontal="true"
+            android:id="@+id/linearLayout2"
+            android:weightSum="3">
 
             <ImageView
                 android:layout_width="0px"
-                android:layout_height="match_parent"
+                android:layout_height="50dp"
                 android:id="@+id/food_imageView"
                 android:layout_weight="1"/>
 
             <ImageView
                 android:layout_width="0px"
-                android:layout_height="match_parent"
+                android:layout_height="50dp"
                 android:id="@+id/fuel_imageView"
                 android:layout_weight="1"/>
 
             <ImageView
                 android:layout_width="0px"
-                android:layout_height="match_parent"
+                android:layout_height="50dp"
                 android:id="@+id/bath_imageView"
                 android:layout_weight="1"/>
         </LinearLayout>
@@ -82,39 +94,30 @@
             android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/linearLayout1"
-            android:id="@+id/linearLayout2">
+            android:layout_below="@+id/linearLayout2"
+            android:id="@+id/linearLayout3"
+            android:weightSum="5">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceLarge"
-                android:text="5,7 km"
+                android:text="5,7 km | 19 min"
                 android:id="@+id/distance_textView"
-                android:layout_margin="15dp"
+                android:layout_weight="5"
                 android:textStyle="bold"
-                android:textSize="40dp"
-                android:layout_gravity="left"
-                />
+                android:textSize="30dp"
+                android:gravity="center_horizontal"
+                android:layout_margin="20dp"/>
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:text="20 min"
-                android:id="@+id/time_textView"
-                android:layout_margin="15dp"
-                android:textStyle="bold"
-                android:textSize="40dp"
-                android:layout_gravity="right" />
-        </LinearLayout>
+             </LinearLayout>
 
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="FIND ROUTE"
             android:id="@+id/findRoute_button"
-            android:layout_below="@+id/linearLayout2"
+            android:layout_below="@+id/linearLayout3"
             android:layout_centerHorizontal="true"
             android:layout_margin="25dp"/>
     </RelativeLayout>

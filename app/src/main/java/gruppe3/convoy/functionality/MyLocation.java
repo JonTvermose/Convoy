@@ -30,10 +30,14 @@ public class MyLocation implements LocationListener {
     public void onLocationChanged(Location location) {
         this.current = location;
         Log.d("Location", "Current Location updated: " + location.getLatitude() + " : " + location.getLongitude());
-        if (!adjustedCamera){
+        if (!adjustedCamera && context != null && map != null){
             adjustedCamera = true;
             updateMapView();
             Toast.makeText(context, "Location updated", Toast.LENGTH_LONG).show();
+        } else if(map == null){
+            // TO DO -> her er sket en fejl
+        } else {
+            //updateMapView(); // Opdater map med position uden at ændre zoom m.m.
         }
     }
 
