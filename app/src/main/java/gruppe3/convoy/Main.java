@@ -19,7 +19,10 @@ import android.widget.HorizontalScrollView;
 
 public class Main extends AppCompatActivity {
 
-    static Boolean  food=false,
+    public static String dest,maxSpeed,roadTrain;
+    public static int timer,minutter;
+
+    public static Boolean  food=false,
                     wc=false,
                     bed=false,
                     bath=false,
@@ -59,6 +62,11 @@ public class Main extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent i = new Intent(Main.this, GMapsAktivitet.class);
+//                dest=AdvancedFragment.dest.getText().toString();
+//                timer=AdvancedFragment.timer.getValue();
+//                minutter=AdvancedFragment.minutter.getValue();
+//                maxSpeed=AdvancedFragment.maxSpeed.getText().toString();
+//                roadTrain=AdvancedFragment.roadTrain.get.getText().toString();
                 Main.this.startActivity(i);
 
             }

@@ -16,6 +16,10 @@ import android.widget.Switch;
  */
 public class AdvancedFragment extends Fragment {
 
+    static EditText dest,maxSpeed;
+    static NumberPicker timer,minutter;
+    static Switch roadTrain;
+
     public AdvancedFragment() {
         // Required empty public constructor
     }
@@ -25,11 +29,33 @@ public class AdvancedFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rod = inflater.inflate(R.layout.fragment_advanced, container, false);
-        EditText dest = (EditText) rod.findViewById(R.id.destination_editText);
-        NumberPicker timer = (NumberPicker) rod.findViewById(R.id.timer_numberPicker);
-        NumberPicker minutter = (NumberPicker) rod.findViewById(R.id.minutter_numberPicker);
-        EditText maxSpeed = (EditText) rod.findViewById(R.id.maxSpeed_editText);
-        Switch roadTrain = (Switch) rod.findViewById(R.id.roadTrain_switch);
+        dest = (EditText) rod.findViewById(R.id.destination_editText);
+        timer = (NumberPicker) rod.findViewById(R.id.timer_numberPicker);
+
+        String[] hours = new String[24];
+        for(int i=0; i<hours.length; i++)
+            hours[i] = Integer.toString(i);
+
+        timer.setMinValue(0);
+        timer.setMaxValue(23);
+        timer.setWrapSelectorWheel(false);
+        timer.setDisplayedValues(hours);
+        timer.setValue(0);
+
+        minutter = (NumberPicker) rod.findViewById(R.id.minutter_numberPicker);
+
+        String[] mins = new String[12];
+        for(int i=0; i<mins.length; i++)
+            mins[i] = Integer.toString(i*5);
+
+        minutter.setMinValue(0);
+        minutter.setMaxValue(11);
+        minutter.setWrapSelectorWheel(false);
+        minutter.setDisplayedValues(mins);
+        minutter.setValue(0);
+
+        maxSpeed = (EditText) rod.findViewById(R.id.maxSpeed_editText);
+        roadTrain = (Switch) rod.findViewById(R.id.roadTrain_switch);
         return rod;
     }
 

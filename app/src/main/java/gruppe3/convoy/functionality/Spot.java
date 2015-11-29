@@ -2,6 +2,8 @@ package gruppe3.convoy.functionality;
 
 import com.google.android.gms.maps.model.LatLng;
 
+import gruppe3.convoy.Main;
+
 /**
  * Created by Jon on 25/11/2015.
  */
