@@ -30,14 +30,16 @@ public class MyLocation implements LocationListener {
     public void onLocationChanged(Location location) {
         this.current = location;
         Log.d("Location", "Current Location updated: " + location.getLatitude() + " : " + location.getLongitude());
+        System.out.println("**** Position opdateret: " + current.getLatitude() + " : " + current.getLongitude() + " ********"); // TESKODE
         if (!adjustedCamera && context != null && map != null){
             adjustedCamera = true;
             updateMapView();
             Toast.makeText(context, "Location updated", Toast.LENGTH_LONG).show();
         } else if(map == null){
+            System.out.println("*** FORSØGTE AT OPDATERE POSISTION. MAP == NULL ****");
             // TO DO -> her er sket en fejl
         } else {
-            //updateMapView(); // Opdater map med position uden at ændre zoom m.m.
+            // updateMapView(); // Opdater map med position uden at ændre zoom m.m. Google Maps burde opdatere ens positionsmarker automatisk
         }
     }
 
@@ -67,6 +69,7 @@ public class MyLocation implements LocationListener {
 
     public void updateMapView(){
         LatLng cPos = new LatLng(current.getLatitude(), current.getLongitude());
-        map.animateCamera(CameraUpdateFactory.newLatLngZoom(cPos, ZOOM), 2000, null);
+        map.moveCamera(CameraUpdateFactory.newLatLngZoom(cPos, ZOOM));
+
     }
 }

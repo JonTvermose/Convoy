@@ -1,11 +1,15 @@
 package gruppe3.convoy;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
@@ -35,17 +39,76 @@ public class GMapsAktivitet extends Activity implements OnMapReadyCallback {
     private MyLocation locationListener;
     private BackendSimulator backend;
     private ArrayList<Spot> spots;
+    private final int MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_gmaps_aktivitet);
 
+        if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+            // Hvis vi ikke har permissions skal vi bede om permission
+            Log.d("Access", "Mangler adgang til ACCESS_FINE_LOCATION");
+
+            // Should we show an explanation?
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                    Manifest.permission.ACCESS_FINE_LOCATION)) {
+                // TODO
+                // Show an expanation to the user *asynchronously* -- don't block
+                // this thread waiting for the user's response! After the user
+                // sees the explanation, try again to request the permission.
+
+            } else {
+
+                // No explanation needed, we can request the permission.
+
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.READ_CONTACTS},
+                        MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
+
+                // MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION is an
+                // app-defined int constant. The callback method gets the
+                // result of the request.
+            }
+        } else {
+            // Hvis vi har tilladelse i orden startes maps bare
+            Log.d("Access", "ACCESS_FINE_LOCATION er ok");
+            getMap();
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // permission was granted, yay! Do the
+                    // contacts-related task you need to do.
+                    getMap(); // Hent google maps kort m.m. Appen fortsætter
+
+                } else {
+                    // TODO - permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+                }
+                return;
+            }
+            default: {
+                // TODO - der er sket en fejl
+            }
+        }
+    }
+
+    private void getMap(){
         LocationManager locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
         locationListener = new MyLocation();
-        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 1000, 5, locationListener); // Mindste tid mellem update = 1 sek, minmumsdistance = 5 meter
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 0, locationListener); // Mindste tid mellem update = 0 ms, minmumsdistance = 0 meter
         // Find sidste kendte lokation
-        String locationProvider = LocationManager.NETWORK_PROVIDER; // Or use LocationManager.GPS_PROVIDER
+        String locationProvider = LocationManager.GPS_PROVIDER; // Or use LocationManager.GPS_PROVIDER
         lastKnownLocation = locationManager.getLastKnownLocation(locationProvider);
 
         if(lastKnownLocation==null){
@@ -53,14 +116,18 @@ public class GMapsAktivitet extends Activity implements OnMapReadyCallback {
             lastKnownLocation.setLatitude(0);
             lastKnownLocation.setLongitude(0);
         }
-        // lastKnownLocation.setLatitude(0); // TESTKODE
-        // lastKnownLocation.setLongitude(0); // TESTKODE
+         lastKnownLocation.setLatitude(0); // TESTKODE
+         lastKnownLocation.setLongitude(0); // TESTKODE
 
         try {
             if (googleMap == null) {
                 MapFragment m = ((MapFragment) getFragmentManager().
                         findFragmentById(R.id.map));
+                System.out.println("**** Henter nyt kort *****"); // TESTKODE
                 m.getMapAsync(this);
+            } else{
+                System.out.println("**** Kort eksisterer allerede *****"); // TESTKODE
+                onMapReady(googleMap);
             }
         }
         catch (Exception e) {
@@ -71,6 +138,7 @@ public class GMapsAktivitet extends Activity implements OnMapReadyCallback {
     @Override
     public void onMapReady(GoogleMap googleMap) {
         this.googleMap = googleMap;
+        locationListener.setMap(googleMap, this);
         // Gør det muligt at finde nuværende position og ændre maptype
         googleMap.setMyLocationEnabled(true);
         googleMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
@@ -81,7 +149,7 @@ public class GMapsAktivitet extends Activity implements OnMapReadyCallback {
             googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(cPos, 12));
         } else {
             LatLng cPos = new LatLng(lastKnownLocation.getLatitude(), lastKnownLocation.getLongitude());
-            googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(cPos, 1), 1000, null);
+            googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(cPos, 12), 2000, null);
             Toast.makeText(this, "Unable to fetch the current location. Using last know location", Toast.LENGTH_SHORT).show();
         }
 
@@ -169,16 +237,16 @@ public class GMapsAktivitet extends Activity implements OnMapReadyCallback {
                         }
                     });
                     dialog.show();
-                } catch (Exception e){
+                } catch (Exception e) {
                     // TO DO : Fejlhåndtering
                     // Hvad skal der ske hvis man klikker på en marker som vi ikke kan identificere?
-                    Toast.makeText(GMapsAktivitet.this, "Could not find matching POI: " +marker.getTitle(), Toast.LENGTH_LONG).show();
+                    Toast.makeText(GMapsAktivitet.this, "Could not find matching POI: " + marker.getTitle(), Toast.LENGTH_LONG).show();
                 }
 
                 return true;
             }
         });
-        locationListener.setMap(googleMap, this);
+
     }
 
     // Finder hvilken spot der er trykket på ud fra en beskrivelsestekst. Skal optimeres!!
