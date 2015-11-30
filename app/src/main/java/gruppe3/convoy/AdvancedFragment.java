@@ -19,6 +19,7 @@ public class AdvancedFragment extends Fragment {
     static EditText dest,maxSpeed;
     static NumberPicker timer,minutter;
     static Switch roadTrain;
+    public static String[] hours,mins;
 
     public AdvancedFragment() {
         // Required empty public constructor
@@ -32,7 +33,7 @@ public class AdvancedFragment extends Fragment {
         dest = (EditText) rod.findViewById(R.id.destination_editText);
         timer = (NumberPicker) rod.findViewById(R.id.timer_numberPicker);
 
-        String[] hours = new String[24];
+        hours = new String[24];
         for(int i=0; i<hours.length; i++)
             hours[i] = Integer.toString(i);
 
@@ -44,7 +45,7 @@ public class AdvancedFragment extends Fragment {
 
         minutter = (NumberPicker) rod.findViewById(R.id.minutter_numberPicker);
 
-        String[] mins = new String[12];
+        mins = new String[12];
         for(int i=0; i<mins.length; i++)
             mins[i] = Integer.toString(i*5);
 

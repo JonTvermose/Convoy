@@ -19,7 +19,7 @@ import android.widget.HorizontalScrollView;
 
 public class Main extends AppCompatActivity {
 
-    public static String dest,maxSpeed,roadTrain;
+    public static String dest,maxSpeed,roadTrain,distancetext;
     public static int timer,minutter;
 
     public static Boolean  food=false,
@@ -63,8 +63,13 @@ public class Main extends AppCompatActivity {
             public void onClick(View v) {
                 Intent i = new Intent(Main.this, GMapsAktivitet.class);
 //                dest=AdvancedFragment.dest.getText().toString();
-//                timer=AdvancedFragment.timer.getValue();
-//                minutter=AdvancedFragment.minutter.getValue();
+                timer=AdvancedFragment.timer.getValue();
+                minutter=AdvancedFragment.minutter.getValue();
+                if(!(timer==0 && minutter==0)){
+                    distancetext="Timer: "+AdvancedFragment.hours[AdvancedFragment.timer.getValue()]+" | Minutter: "+AdvancedFragment.mins[AdvancedFragment.minutter.getValue()];
+                } else {
+                    distancetext="Tid ikke sat.";
+                }
 //                maxSpeed=AdvancedFragment.maxSpeed.getText().toString();
 //                roadTrain=AdvancedFragment.roadTrain.get.getText().toString();
                 Main.this.startActivity(i);

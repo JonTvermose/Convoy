@@ -180,6 +180,10 @@ public class GMapsAktivitet extends Activity implements OnMapReadyCallback {
                     TextView title = (TextView) dialog.findViewById(R.id.title_TextView);
                     title.setText(spot.getDesc());
 
+                    TextView distance = (TextView) dialog.findViewById(R.id.distance_textView);
+                    distance.setText(Main.distancetext);
+                    distance.setTextSize(20);
+
                     ImageView adblue = (ImageView) dialog.findViewById(R.id.adblue_imageView);
                     ImageView bed = (ImageView) dialog.findViewById(R.id.bed_imageView);
                     ImageView bath = (ImageView) dialog.findViewById(R.id.bath_imageView);
