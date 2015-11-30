@@ -40,6 +40,7 @@ public class GMapsAktivitet extends Activity implements OnMapReadyCallback {
     private BackendSimulator backend;
     private ArrayList<Spot> spots;
     private final int MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
+    private final int UPDATE_INTERVAL = 1000; // GPS update interval i ms
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -106,7 +107,7 @@ public class GMapsAktivitet extends Activity implements OnMapReadyCallback {
     private void getMap(){
         LocationManager locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
         locationListener = new MyLocation();
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 0, locationListener); // Mindste tid mellem update = 0 ms, minmumsdistance = 0 meter
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, UPDATE_INTERVAL, 0, locationListener); // Mindste tid mellem update = 0 ms, minmumsdistance = 0 meter
         // Find sidste kendte lokation
         String locationProvider = LocationManager.GPS_PROVIDER; // Or use LocationManager.GPS_PROVIDER
         lastKnownLocation = locationManager.getLastKnownLocation(locationProvider);
@@ -116,8 +117,8 @@ public class GMapsAktivitet extends Activity implements OnMapReadyCallback {
             lastKnownLocation.setLatitude(0);
             lastKnownLocation.setLongitude(0);
         }
-         lastKnownLocation.setLatitude(0); // TESTKODE
-         lastKnownLocation.setLongitude(0); // TESTKODE
+         lastKnownLocation.setLatitude(55); // TESTKODE
+         lastKnownLocation.setLongitude(12); // TESTKODE
 
         try {
             if (googleMap == null) {
@@ -149,7 +150,7 @@ public class GMapsAktivitet extends Activity implements OnMapReadyCallback {
             googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(cPos, 12));
         } else {
             LatLng cPos = new LatLng(lastKnownLocation.getLatitude(), lastKnownLocation.getLongitude());
-            googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(cPos, 12), 2000, null);
+            googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(cPos, 6), 2000, null);
             Toast.makeText(this, "Unable to fetch the current location. Using last know location", Toast.LENGTH_SHORT).show();
         }
 
