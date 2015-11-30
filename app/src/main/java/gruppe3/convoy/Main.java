@@ -66,7 +66,7 @@ public class Main extends AppCompatActivity {
                 timer=AdvancedFragment.timer.getValue();
                 minutter=AdvancedFragment.minutter.getValue();
                 if(!(timer==0 && minutter==0)){
-                    distancetext="Timer: "+AdvancedFragment.hours[AdvancedFragment.timer.getValue()]+" | Minutter: "+AdvancedFragment.mins[AdvancedFragment.minutter.getValue()];
+                    distancetext="Timer: "+AdvancedFragment.hours[timer]+" | Minutter: "+AdvancedFragment.mins[minutter];
                 } else {
                     distancetext="Tid ikke sat.";
                 }
