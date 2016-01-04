@@ -43,11 +43,13 @@ public class MainButtonsFragment extends Fragment {
                 if ((Integer) food.getTag() == R.drawable.food_t) {
                     food.setImageResource(R.drawable.food_t_check);
                     food.setTag(R.drawable.food_t_check);
-                    Main.food=true;
+                    food.setSelected(true);
+                    Main.food = true;
                 } else {
                     food.setImageResource(R.drawable.food_t);
                     food.setTag(R.drawable.food_t);
-                    Main.food=false;
+                    food.setSelected(false);
+                    Main.food = false;
                 }
             }
         });
@@ -61,11 +63,13 @@ public class MainButtonsFragment extends Fragment {
                 if ((Integer) wc.getTag() == R.drawable.wc_t) {
                     wc.setImageResource(R.drawable.wc_t_check);
                     wc.setTag(R.drawable.wc_t_check);
-                    Main.wc=true;
+                    wc.setSelected(true);
+                    Main.wc = true;
                 } else {
                     wc.setImageResource(R.drawable.wc_t);
                     wc.setTag(R.drawable.wc_t);
-                    Main.wc=false;
+                    wc.setSelected(false);
+                    Main.wc = false;
                 }
             }
         });
@@ -79,11 +83,13 @@ public class MainButtonsFragment extends Fragment {
                 if ((Integer) bed.getTag() == R.drawable.bed_t) {
                     bed.setImageResource(R.drawable.bed_t_check);
                     bed.setTag(R.drawable.bed_t_check);
-                    Main.bed=true;
+                    bed.setSelected(true);
+                    Main.bed = true;
                 } else {
                     bed.setImageResource(R.drawable.bed_t);
                     bed.setTag(R.drawable.bed_t);
-                    Main.bed=false;
+                    bed.setSelected(false);
+                    Main.bed = false;
                 }
             }
         });
@@ -91,16 +97,19 @@ public class MainButtonsFragment extends Fragment {
         bath = (ImageView) knapper.findViewById(R.id.imageBath);
         bath.setTag(R.drawable.bath_t);
         bath.setImageResource(R.drawable.bath_t);
+
         bath.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if ((Integer) bath.getTag() == R.drawable.bath_t) {
                     bath.setImageResource(R.drawable.bath_t_check);
                     bath.setTag(R.drawable.bath_t_check);
+                    bath.setSelected(true);
                     Main.bath=true;
                 } else {
                     bath.setImageResource(R.drawable.bath_t);
                     bath.setTag(R.drawable.bath_t);
+                    bath.setSelected(false);
                     Main.bath=false;
                 }
             }
@@ -115,10 +124,12 @@ public class MainButtonsFragment extends Fragment {
                 if ((Integer) fuel.getTag() == R.drawable.fuel_t) {
                     fuel.setImageResource(R.drawable.fuel_t_check);
                     fuel.setTag(R.drawable.fuel_t_check);
+                    fuel.setSelected(true);
                     Main.fuel=true;
                 } else {
                     fuel.setImageResource(R.drawable.fuel_t);
                     fuel.setTag(R.drawable.fuel_t);
+                    fuel.setSelected(false);
                     Main.fuel=false;
                 }
             }
@@ -133,10 +144,12 @@ public class MainButtonsFragment extends Fragment {
                 if ((Integer) adblue.getTag() == R.drawable.adblue_t) {
                     adblue.setImageResource(R.drawable.adblue_t_check);
                     adblue.setTag(R.drawable.adblue_t_check);
+                    adblue.setSelected(true);
                     Main.adblue=true;
                 } else {
                     adblue.setImageResource(R.drawable.adblue_t);
                     adblue.setTag(R.drawable.adblue_t);
+                    adblue.setSelected(false);
                     Main.adblue=false;
                 }
             }
