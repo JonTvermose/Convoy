@@ -12,6 +12,9 @@ public class MainButtonsFragment extends Fragment {
 
     ImageView food,wc,bed,bath,fuel,adblue;
 
+    public void resetButtons(){
+
+    }
 
     public static MainButtonsFragment newInstance(String param1, String param2) {
         MainButtonsFragment fragment = new MainButtonsFragment();

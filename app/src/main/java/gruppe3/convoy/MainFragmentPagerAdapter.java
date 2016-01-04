@@ -13,6 +13,8 @@ public class MainFragmentPagerAdapter extends FragmentPagerAdapter {
     final int PAGE_COUNT = 2;
     private String tabTitles[] = new String[] { "Choice", "Advanced"};
     private Context context;
+    private Fragment mainButton = new MainButtonsFragment(),advanced = new AdvancedFragment();
+    private Fragment[] pageTitles = new Fragment[]{mainButton,advanced};
 
     public MainFragmentPagerAdapter(FragmentManager fm, Context context) {
         super(fm);
@@ -26,19 +28,24 @@ public class MainFragmentPagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public Fragment getItem(int position) {
-        switch (position) {
-            case 0:
-                return new MainButtonsFragment();
-            case 1:
-                return new AdvancedFragment();
-        }
-        return null;
+//        switch (position) {
+//            case 0:
+//                return new MainButtonsFragment();
+//            case 1:
+//                return new AdvancedFragment();
+//        }
+//        return null;
+        return pageTitles[position];
     }
 
     @Override
     public CharSequence getPageTitle(int position) {
         // Generate title based on item position
         return tabTitles[position];
+    }
+
+    public Fragment getMainFrag(){
+        return pageTitles[0];
     }
 }
 
