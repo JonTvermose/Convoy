@@ -17,13 +17,17 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.HorizontalScrollView;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.parse.FindCallback;
 import com.parse.Parse;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import gruppe3.convoy.functionality.Spot;
 
 
 public class Main extends AppCompatActivity {
@@ -40,6 +44,8 @@ public class Main extends AppCompatActivity {
 
     Button search;
 
+    ArrayList<Spot> spots;
+
     /**
      * The pager widget, which handles animation and allows swiping horizontally to access previous
      * and next wizard steps.
@@ -55,13 +61,19 @@ public class Main extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Parse.enableLocalDatastore(this);
+//        Parse.enableLocalDatastore(this);
 
         Parse.initialize(this);
 
 //        ParseObject testObject = new ParseObject("TestObject");
 //        testObject.put("foo", "Yaaaas");
 //        testObject.saveInBackground();
+
+//        LatLng pos = new LatLng(75.3456,20.4256);
+//
+//        Spot test = new Spot("München Truck Stop",true ,false ,true ,false ,true ,false ,true, pos);
+//
+//        test.pushToDB();
 
         setContentView(R.layout.activity_main);
 
@@ -86,6 +98,37 @@ public class Main extends AppCompatActivity {
             }
         });
 
+        ParseQuery<ParseObject> query2 = ParseQuery.getQuery("Spots");
+//        query2.whereExists("objectId");
+        query2.findInBackground(new FindCallback<ParseObject>() {
+            public void done(List<ParseObject> spotList, ParseException e) {
+                if (e == null) {
+                    Main.this.spots = new ArrayList<Spot>();
+                    for (int i = 0; spotList.size() > i; i++) {
+
+                        LatLng pos = new LatLng(spotList.get(i).getDouble("posLat"), spotList.get(i).getDouble("posLng"));
+                        Main.this.spots.add(new Spot(
+                                spotList.get(i).getString("desc"),
+                                spotList.get(i).getBoolean("adblue"),
+                                spotList.get(i).getBoolean("food"),
+                                spotList.get(i).getBoolean("bath"),
+                                spotList.get(i).getBoolean("bed"),
+                                spotList.get(i).getBoolean("wc"),
+                                spotList.get(i).getBoolean("fuel"),
+                                spotList.get(i).getBoolean("roadtrain"),
+                                pos
+                        ));
+
+                    }
+
+                } else {
+                    Log.d("score", "Error: " + e.getMessage());
+                }
+            }
+        });
+
+
+
         // Instantiate a ViewPager and a PagerAdapter.
         mPager = (ViewPager) findViewById(R.id.pager);
         mPagerAdapter = new MainFragmentPagerAdapter(getSupportFragmentManager(),Main.this);
@@ -98,6 +141,7 @@ public class Main extends AppCompatActivity {
         search.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                System.out.println(spots.get(0).getDesc());
                 Intent i = new Intent(Main.this, GMapsAktivitet.class);
 //                dest=AdvancedFragment.dest.getText().toString();
                 timer = AdvancedFragment.timer.getValue();

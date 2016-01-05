@@ -1,6 +1,7 @@
 package gruppe3.convoy.functionality;
 
 import com.google.android.gms.maps.model.LatLng;
+import com.parse.ParseObject;
 
 import gruppe3.convoy.Main;
 
@@ -100,5 +101,23 @@ public class Spot {
 
     public void setRoadtrain(boolean roadtrain) {
         this.roadtrain = roadtrain;
+    }
+
+    public void pushToDB(){
+
+        ParseObject spotObject = new ParseObject("Spots");
+
+        spotObject.put("desc", desc);
+        spotObject.put("adblue", adblue);
+        spotObject.put("food", food);
+        spotObject.put("bath", bath);
+        spotObject.put("bed", bed);
+        spotObject.put("wc", wc);
+        spotObject.put("fuel", fuel);
+        spotObject.put("roadtrain", roadtrain);
+        spotObject.put("posLat", pos.latitude);
+        spotObject.put("posLng", pos.longitude);
+
+        spotObject.saveInBackground();
     }
 }
