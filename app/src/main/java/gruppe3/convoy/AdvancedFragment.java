@@ -55,7 +55,7 @@ public class AdvancedFragment extends Fragment {
         minutter.setDisplayedValues(mins);
         minutter.setValue(0);
 
-        maxSpeed = (EditText) rod.findViewById(R.id.maxSpeed_editText);
+
         roadTrain = (Switch) rod.findViewById(R.id.roadTrain_switch);
         return rod;
     }

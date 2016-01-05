@@ -9,7 +9,7 @@
         android:layout_alignParentTop="true"
         android:layout_alignParentStart="true"
         android:layout_alignParentLeft="true"
-        android:background="@color/blå_300">
+        android:background="@color/primary_color">
 
         <TableRow
             android:layout_width="match_parent"
