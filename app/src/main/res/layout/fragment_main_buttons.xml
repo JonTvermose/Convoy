@@ -14,10 +14,11 @@
         <TableRow
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:layout_marginBottom="10dp"
-            android:layout_marginTop="15dp">
+            android:layout_marginLeft="0dp"
+            android:layout_marginRight="0dp"
+            android:layout_marginBottom="0dp"
+            android:layout_marginTop="0dp">
+
 
             <ImageView
                 android:layout_width="0px"
@@ -27,13 +28,14 @@
                 android:layout_column="0"
                 android:src="@drawable/food_t"
                 android:scaleType="fitCenter"
-                android:padding="1dp"
+                android:padding="0dp"
                 android:background="@drawable/knap_blaa_bg"
-                android:layout_marginTop="1dp"
-                android:layout_marginBottom="5dp"
-                android:layout_marginLeft="5dp"
-                android:layout_marginRight="10dp"
-                android:elevation="5dp"/>
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="8dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="8dp"
+                android:elevation="2dp"
+                />
 
             <ImageView
                 android:layout_width="0px"
@@ -43,21 +45,21 @@
                 android:layout_column="1"
                 android:src="@drawable/wc_t"
                 android:scaleType="fitCenter"
-                android:padding="1dp"
+                android:padding="0dp"
                 android:background="@drawable/knap_blaa_bg"
-                android:elevation="5dp"
-                android:layout_marginTop="1dp"
-                android:layout_marginBottom="5dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="5dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="8dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="16dp"
+                android:elevation="2dp"
                 />
         </TableRow>
 
         <TableRow
             android:layout_width="match_parent"
             android:layout_height="200dp"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp">
+            android:layout_marginLeft="0dp"
+            android:layout_marginRight="0dp">
 
             <ImageView
                 android:layout_width="0px"
@@ -67,13 +69,14 @@
                 android:layout_column="0"
                 android:src="@drawable/bed_t"
                 android:scaleType="fitCenter"
-                android:padding="1dp"
+                android:padding="0dp"
                 android:background="@drawable/knap_blaa_bg"
-                android:layout_marginTop="5dp"
-                android:layout_marginBottom="5dp"
-                android:layout_marginLeft="5dp"
-                android:layout_marginRight="10dp"
-                android:elevation="5dp"/>
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="8dp"
+                android:elevation="2dp"
+                />
 
             <ImageView
                 android:layout_width="0px"
@@ -83,22 +86,23 @@
                 android:layout_column="1"
                 android:src="@drawable/bath_t"
                 android:scaleType="fitCenter"
-                android:padding="1dp"
+                android:padding="0dp"
                 android:background="@drawable/knap_blaa_bg"
-                android:elevation="5dp"
-                android:layout_marginTop="5dp"
-                android:layout_marginBottom="5dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="5dp"/>
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="16dp"
+                android:elevation="2dp"
+                />
         </TableRow>
 
         <TableRow
             android:layout_width="match_parent"
             android:layout_height="200dp"
-            android:layout_marginLeft="10dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginRight="10dp"
-            android:layout_marginBottom="10dp">
+            android:layout_marginLeft="0dp"
+            android:layout_marginTop="0dp"
+            android:layout_marginRight="0dp"
+            android:layout_marginBottom="0dp">
 
             <ImageView
                 android:layout_width="0px"
@@ -108,13 +112,14 @@
                 android:layout_column="0"
                 android:src="@drawable/fuel_t"
                 android:scaleType="fitCenter"
-                android:padding="1dp"
+                android:padding="0dp"
                 android:background="@drawable/knap_blaa_bg"
-                android:layout_marginTop="5dp"
-                android:layout_marginBottom="5dp"
-                android:layout_marginLeft="5dp"
-                android:layout_marginRight="10dp"
-                android:elevation="5dp"/>
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="16dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="8dp"
+                android:elevation="2dp"
+                />
 
 
             <ImageView
@@ -125,13 +130,14 @@
                 android:layout_column="1"
                 android:src="@drawable/adblue_t"
                 android:scaleType="fitCenter"
-                android:padding="1dp"
+                android:padding="0dp"
                 android:background="@drawable/knap_blaa_bg"
-                android:elevation="5dp"
-                android:layout_marginTop="5dp"
-                android:layout_marginBottom="5dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="5dp"/>
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="16dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="16dp"
+                android:elevation="2dp"
+                />
         </TableRow>
     </TableLayout>
 

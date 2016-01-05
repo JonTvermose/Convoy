@@ -11,22 +11,23 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="center_horizontal|top"
-        android:background="#7cd175">
+        android:background="@color/blå_300">
 
         <LinearLayout
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:weightSum="100"
-            android:background="#ffffff"
+            android:background="@drawable/knap_blaa_bg"
             android:layout_marginTop="10dp"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
-            android:id="@+id/linje1">
+            android:id="@+id/linje1"
+            >
 
             <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
                 android:text="Destination:"
-                android:padding="10dp"/>
+                android:padding="10dp" />
 
             <EditText
                 android:layout_width="fill_parent"
@@ -35,14 +36,16 @@
                 android:gravity="center"
                 android:textColor="#1b90ea"
                 android:textSize="30dp"
-                android:padding="10dp" />
+                android:padding="10dp"
+                />
+
         </LinearLayout>
 
         <LinearLayout
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="#ffffff"
+            android:background="@drawable/knap_blaa_bg"
             android:layout_marginTop="10dp"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
@@ -69,14 +72,18 @@
                     android:layout_height="wrap_content"
                     android:id="@+id/timer_numberPicker"
                     android:layout_below="@+id/linearLayout"
-                    android:orientation="horizontal"/>
+                    android:orientation="horizontal"
+                    android:background="#E1F5FE"
+                    />
 
                 <NumberPicker
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/minutter_numberPicker"
                     android:layout_alignTop="@+id/timer_numberPicker"
-                    android:orientation="horizontal" />
+                    android:orientation="horizontal"
+                    android:background="#E1F5FE"
+                    />
             </LinearLayout>
 
         </LinearLayout>
@@ -85,28 +92,12 @@
             android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="#ffffff"
+            android:background="@drawable/knap_blaa_bg"
             android:layout_marginTop="10dp"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
             android:layout_below="@+id/linje2"
             android:id="@+id/linje3">
-
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Maximum speed:"
-                android:id="@+id/textView"
-                android:padding="10dp" />
-
-            <EditText
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:inputType="number"
-                android:ems="10"
-                android:id="@+id/maxSpeed_editText"
-                android:padding="10dp" />
 
         </LinearLayout>
 
@@ -119,7 +110,7 @@
             android:layout_below="@+id/linje3"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="10dp"
-            android:background="#ffffff"
+            android:background="@drawable/knap_blaa_bg"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
             android:padding="10dp"
