@@ -27,6 +27,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 
 import org.json.JSONObject;
@@ -49,7 +50,7 @@ public class GMapsAktivitet extends Activity implements OnMapReadyCallback {
     private BackendSimulator backend;
     private ArrayList<Spot> spots;
     private final int MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
-    private final int UPDATE_INTERVAL = 1000; // GPS update interval i ms
+    private final int UPDATE_INTERVAL = 5000, MIN_DIST = 5; // GPS update interval i ms, og meter
     private Spot spot;
 
     @Override
@@ -117,7 +118,7 @@ public class GMapsAktivitet extends Activity implements OnMapReadyCallback {
     private void getMap(){
         LocationManager locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
         locationListener = new MyLocation();
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, UPDATE_INTERVAL, 0, locationListener); // Mindste tid mellem update = 0 ms, minmumsdistance = 0 meter
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, UPDATE_INTERVAL, MIN_DIST, locationListener); // Mindste tid mellem update = UPDATE_INTERVAL, minmumsdistance = MIN_DIST
         // Find sidste kendte lokation
         String locationProvider = LocationManager.GPS_PROVIDER; // Or use LocationManager.GPS_PROVIDER
         lastKnownLocation = locationManager.getLastKnownLocation(locationProvider);
@@ -172,16 +173,21 @@ public class GMapsAktivitet extends Activity implements OnMapReadyCallback {
         spots = backend.getMarkers(); // Hent spots fra serveren
 
         // Tilføjer markers til Google Maps
+        int id = 0;
         for (Spot spot : spots) {
             Marker mark = googleMap.addMarker(new MarkerOptions().position(spot.getPos()).title(spot.getDesc()));
             mark.setDraggable(false);
+            mark.setSnippet(Integer.toString(id)); // Tilføj unikt ID til marker
+            id++;
         }
 
         // Clicklistener til markers. Når man klikker på en marker åbnes en Dialog-boks
         googleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
 
+            Polyline poly = null;
             PolylineOptions polyLineOptions = null;
             TextView distance;
+            Button route;
 
             @Override
             public boolean onMarkerClick(Marker marker) {
@@ -189,8 +195,13 @@ public class GMapsAktivitet extends Activity implements OnMapReadyCallback {
                 dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
                 dialog.setContentView(R.layout.fragment_spot); // XML-layout til Dialog-boksen
 
+                // Fjern rute fra kort hvis der eksisterer et i forvejen
+                if(poly!=null){
+                    poly.remove();
+                }
+
                 try {
-                    spot = getSpot(marker.getTitle());
+                    spot = spots.get(Integer.valueOf(marker.getSnippet())); //getSpot(marker.getTitle());
 
                     /* Henter rute til POI */
                     Location startLoc = locationListener.getLocation();
@@ -245,15 +256,16 @@ public class GMapsAktivitet extends Activity implements OnMapReadyCallback {
                     }
 
                     // Clicklistener til "FIND ROUTE"-knappen
-                    Button route = (Button) dialog.findViewById(R.id.findRoute_button);
+                    route = (Button) dialog.findViewById(R.id.findRoute_button);
+                    route.setEnabled(false);
                     route.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            Toast.makeText(GMapsAktivitet.this, "Drawing route...", Toast.LENGTH_LONG).show();
+                            Toast.makeText(GMapsAktivitet.this, "Drawing route.", Toast.LENGTH_SHORT).show();
                             if(polyLineOptions==null){
                                 Toast.makeText(GMapsAktivitet.this, "Route not ready!", Toast.LENGTH_LONG).show();
                             } else {
-                                GMapsAktivitet.this.googleMap.addPolyline(polyLineOptions);
+                                poly = GMapsAktivitet.this.googleMap.addPolyline(polyLineOptions);
                                 dialog.hide();
                             }
                         }
@@ -296,7 +308,6 @@ public class GMapsAktivitet extends Activity implements OnMapReadyCallback {
                     new ParserTask().execute(result);
                 }
 
-
                 class ParserTask extends
                         AsyncTask<String, Integer, List<List<HashMap<String, String>>>> {
                     private PathJSONParser parser;
@@ -324,12 +335,17 @@ public class GMapsAktivitet extends Activity implements OnMapReadyCallback {
 
                         // Opdaterer afstand & tid på popuppen.
                         String distAndTime = parser.getDist() + " | " + parser.getDur();
+                        distAndTime = distAndTime.replace("hours", "h");
+                        distAndTime = distAndTime.replace("mins", "m");
+                        distAndTime = distAndTime.replace(",", ".");
                         distance.setText(distAndTime);
+                        route.setEnabled(true);
 
                         // traversing through routes
                         for (int i = 0; i < routes.size(); i++) {
                             points = new ArrayList<LatLng>();
                             polyLineOptions = new PolylineOptions();
+
                             List<HashMap<String, String>> path = routes.get(i);
 
                             for (int j = 0; j < path.size(); j++) {
@@ -343,25 +359,13 @@ public class GMapsAktivitet extends Activity implements OnMapReadyCallback {
                             }
 
                             polyLineOptions.addAll(points);
-                            polyLineOptions.width(2);
-                            polyLineOptions.color(Color.BLUE);
+                            polyLineOptions.width(6); // Tykkelse på stregerne
+                            polyLineOptions.color(Color.BLUE); // Farve på stregerne
                         }
                     }
                 }
             }
         });
-
-    }
-
-    // Finder hvilken spot der er trykket på ud fra en beskrivelsestekst. Skal optimeres!!
-    private Spot getSpot(String desc) throws Exception {
-        for (Spot spot : spots){
-            if(spot.getDesc().equals(desc)){
-                return spot;
-            }
-        }
-        Log.d("Error", "Kunne ikke finde spot: " + desc);
-        throw new Exception("Error. Could not find: " + desc);
     }
 
     private String getMapsApiDirectionsUrl(Location start, LatLng dest) {
@@ -389,5 +393,4 @@ public class GMapsAktivitet extends Activity implements OnMapReadyCallback {
         Log.d("Rute", "Url: " + url);
         return url;
     }
-
 }
