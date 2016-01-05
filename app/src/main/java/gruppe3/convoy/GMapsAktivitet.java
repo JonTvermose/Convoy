@@ -135,10 +135,10 @@ public class GMapsAktivitet extends Activity implements OnMapReadyCallback {
             if (googleMap == null) {
                 MapFragment m = ((MapFragment) getFragmentManager().
                         findFragmentById(R.id.map));
-                System.out.println("**** Henter nyt kort *****"); // TESTKODE
+                Log.d("Kort", "Henter nyt kort");
                 m.getMapAsync(this);
             } else{
-                System.out.println("**** Kort eksisterer allerede *****"); // TESTKODE
+                Log.d("Kort", "Kort eksisterer allerede");
                 onMapReady(googleMap);
             }
         }
@@ -179,6 +179,10 @@ public class GMapsAktivitet extends Activity implements OnMapReadyCallback {
 
         // Clicklistener til markers. Når man klikker på en marker åbnes en Dialog-boks
         googleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+
+            PolylineOptions polyLineOptions = null;
+            TextView distance;
+
             @Override
             public boolean onMarkerClick(Marker marker) {
                 final Dialog dialog = new Dialog(GMapsAktivitet.this);
@@ -188,12 +192,17 @@ public class GMapsAktivitet extends Activity implements OnMapReadyCallback {
                 try {
                     spot = getSpot(marker.getTitle());
 
+                    /* Henter rute til POI */
+                    Location startLoc = locationListener.getLocation();
+                    if(startLoc==null){
+                        startLoc=lastKnownLocation;
+                    }
+                    String url = GMapsAktivitet.this.getMapsApiDirectionsUrl(startLoc, GMapsAktivitet.this.spot.getPos());
+                    ReadTask downloadTask = new ReadTask();
+                    downloadTask.execute(url);
+
                     TextView title = (TextView) dialog.findViewById(R.id.title_TextView);
                     title.setText(spot.getDesc());
-
-                    TextView distance = (TextView) dialog.findViewById(R.id.distance_textView);
-                    distance.setText(Main.distancetext);
-                    distance.setTextSize(20);
 
                     ImageView adblue = (ImageView) dialog.findViewById(R.id.adblue_imageView);
                     ImageView bed = (ImageView) dialog.findViewById(R.id.bed_imageView);
@@ -201,6 +210,7 @@ public class GMapsAktivitet extends Activity implements OnMapReadyCallback {
                     ImageView food = (ImageView) dialog.findViewById(R.id.food_imageView);
                     ImageView fuel = (ImageView) dialog.findViewById(R.id.fuel_imageView);
                     ImageView wc = (ImageView) dialog.findViewById(R.id.wc_imageView);
+                    distance = (TextView) dialog.findViewById(R.id.distance_textView);
 
                     // Sæt billederne afhængig af hvilken service der er tilgængelig på det pågældende spot
                     if (spot.isAdblue()) {
@@ -239,91 +249,14 @@ public class GMapsAktivitet extends Activity implements OnMapReadyCallback {
                     route.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            Location startLoc = locationListener.getLocation();
-                            if(startLoc==null){
-                                startLoc=lastKnownLocation;
-                            }
-
-                            String url = GMapsAktivitet.this.getMapsApiDirectionsUrl(startLoc, GMapsAktivitet.this.spot.getPos());
-                            ReadTask downloadTask = new ReadTask();
-                            downloadTask.execute(url);
-
-                            Toast.makeText(GMapsAktivitet.this, "Finding route. Please wait...", Toast.LENGTH_LONG).show();
-                            dialog.hide();
-                        }
-
-                        class ReadTask extends AsyncTask<String, Void, String> {
-                            @Override
-                            protected String doInBackground(String... url) {
-                                String data = "";
-                                try {
-                                    HttpConnection http = new HttpConnection();
-                                    data = http.readUrl(url[0]);
-                                } catch (Exception e) {
-                                    Log.d("Background Task", e.toString());
-                                }
-                                return data;
-                            }
-
-                            @Override
-                            protected void onPostExecute(String result) {
-                                super.onPostExecute(result);
-                                new ParserTask().execute(result);
-                            }
-
-
-                            class ParserTask extends
-                                    AsyncTask<String, Integer, List<List<HashMap<String, String>>>> {
-
-                                @Override
-                                protected List<List<HashMap<String, String>>> doInBackground(
-                                        String... jsonData) {
-
-                                    JSONObject jObject;
-                                    List<List<HashMap<String, String>>> routes = null;
-
-                                    try {
-                                        jObject = new JSONObject(jsonData[0]);
-                                        PathJSONParser parser = new PathJSONParser();
-                                        routes = parser.parse(jObject);
-                                    } catch (Exception e) {
-                                        e.printStackTrace();
-                                    }
-                                    return routes;
-                                }
-
-                                @Override
-                                protected void onPostExecute(List<List<HashMap<String, String>>> routes) {
-                                    ArrayList<LatLng> points = null;
-                                    PolylineOptions polyLineOptions = null;
-
-                                    // traversing through routes
-                                    for (int i = 0; i < routes.size(); i++) {
-                                        points = new ArrayList<LatLng>();
-                                        polyLineOptions = new PolylineOptions();
-                                        List<HashMap<String, String>> path = routes.get(i);
-
-                                        for (int j = 0; j < path.size(); j++) {
-                                            HashMap<String, String> point = path.get(j);
-
-                                            double lat = Double.parseDouble(point.get("lat"));
-                                            double lng = Double.parseDouble(point.get("lng"));
-                                            LatLng position = new LatLng(lat, lng);
-
-                                            points.add(position);
-                                        }
-
-                                        polyLineOptions.addAll(points);
-                                        polyLineOptions.width(2);
-                                        polyLineOptions.color(Color.BLUE);
-                                    }
-
-                                    GMapsAktivitet.this.googleMap.addPolyline(polyLineOptions);
-                                }
+                            Toast.makeText(GMapsAktivitet.this, "Drawing route...", Toast.LENGTH_LONG).show();
+                            if(polyLineOptions==null){
+                                Toast.makeText(GMapsAktivitet.this, "Route not ready!", Toast.LENGTH_LONG).show();
+                            } else {
+                                GMapsAktivitet.this.googleMap.addPolyline(polyLineOptions);
+                                dialog.hide();
                             }
                         }
-
-
                     });
 
                     // Clicklistener til "Luk"-knappen (man kan også bare klikke udenfor Dialog-boksen)
@@ -342,6 +275,79 @@ public class GMapsAktivitet extends Activity implements OnMapReadyCallback {
                 }
 
                 return true;
+            }
+
+            class ReadTask extends AsyncTask<String, Void, String> {
+                @Override
+                protected String doInBackground(String... url) {
+                    String data = "";
+                    try {
+                        HttpConnection http = new HttpConnection();
+                        data = http.readUrl(url[0]);
+                    } catch (Exception e) {
+                        Log.d("Background Task", e.toString());
+                    }
+                    return data;
+                }
+
+                @Override
+                protected void onPostExecute(String result) {
+                    super.onPostExecute(result);
+                    new ParserTask().execute(result);
+                }
+
+
+                class ParserTask extends
+                        AsyncTask<String, Integer, List<List<HashMap<String, String>>>> {
+                    private PathJSONParser parser;
+
+                    @Override
+                    protected List<List<HashMap<String, String>>> doInBackground(
+                            String... jsonData) {
+
+                        JSONObject jObject;
+                        List<List<HashMap<String, String>>> routes = null;
+
+                        try {
+                            jObject = new JSONObject(jsonData[0]);
+                            parser = new PathJSONParser();
+                            routes = parser.parse(jObject);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                        return routes;
+                    }
+
+                    @Override
+                    protected void onPostExecute(List<List<HashMap<String, String>>> routes) {
+                        ArrayList<LatLng> points = null;
+
+                        // Opdaterer afstand & tid på popuppen.
+                        String distAndTime = parser.getDist() + " | " + parser.getDur();
+                        distance.setText(distAndTime);
+
+                        // traversing through routes
+                        for (int i = 0; i < routes.size(); i++) {
+                            points = new ArrayList<LatLng>();
+                            polyLineOptions = new PolylineOptions();
+                            List<HashMap<String, String>> path = routes.get(i);
+
+                            for (int j = 0; j < path.size(); j++) {
+                                HashMap<String, String> point = path.get(j);
+
+                                double lat = Double.parseDouble(point.get("lat"));
+                                double lng = Double.parseDouble(point.get("lng"));
+                                LatLng position = new LatLng(lat, lng);
+
+                                points.add(position);
+                            }
+
+                            polyLineOptions.addAll(points);
+                            polyLineOptions.width(2);
+                            polyLineOptions.color(Color.BLUE);
+                        }
+                    }
+                }
             }
         });
 
@@ -377,11 +383,10 @@ public class GMapsAktivitet extends Activity implements OnMapReadyCallback {
         String output = "json";
         String url = "https://maps.googleapis.com/maps/api/directions/" + output + "?" + params;
 
-        System.out.println("***** Finder rute *****");
-        System.out.println("***** Fra: " + start.getLatitude() + "," + start.getLongitude());
-        System.out.println("***** Til: " + dest.latitude + "," + dest.longitude);
-        System.out.println("Url: " + url);
-        System.out.println("**********");
+        Log.d("Rute", "Påbegynder at finde rute");
+        Log.d("Rute", "Fra: " + start.getLatitude() + "," + start.getLongitude());
+        Log.d("Rute", "Til: " + dest.latitude + "," + dest.longitude);
+        Log.d("Rute", "Url: " + url);
         return url;
     }
 

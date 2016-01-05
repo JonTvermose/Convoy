@@ -28,7 +28,7 @@ import java.util.List;
 
 public class Main extends AppCompatActivity {
 
-    public static String dest,maxSpeed,roadTrain,distancetext;
+    public static String dest,maxSpeed,roadTrain;
     public static int timer,minutter;
 
     public static Boolean  food=false,
@@ -102,11 +102,7 @@ public class Main extends AppCompatActivity {
 //                dest=AdvancedFragment.dest.getText().toString();
                 timer = AdvancedFragment.timer.getValue();
                 minutter = AdvancedFragment.minutter.getValue();
-                if (!(timer == 0 && minutter == 0)) {
-                    distancetext = "Timer: " + AdvancedFragment.hours[timer] + " | Minutter: " + AdvancedFragment.mins[minutter];
-                } else {
-                    distancetext = "Tid ikke sat.";
-                }
+
 //                maxSpeed=AdvancedFragment.maxSpeed.getText().toString();
 //                roadTrain=AdvancedFragment.roadTrain.get.getText().toString();
                 Main.this.startActivity(i);

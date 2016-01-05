@@ -9,6 +9,8 @@ package gruppe3.convoy.functionality;
  * Klassens formål er at oversætte et JSON object fra Google Directions API til
  */
 
+import android.util.Log;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -20,6 +22,8 @@ import org.json.JSONObject;
 import com.google.android.gms.maps.model.LatLng;
 
 public class PathJSONParser {
+
+    private String dist, dur;
 
     public List<List<HashMap<String, String>>> parse(JSONObject jObject) {
         List<List<HashMap<String, String>>> routes = new ArrayList<List<HashMap<String, String>>>();
@@ -33,9 +37,16 @@ public class PathJSONParser {
                 jLegs = ((JSONObject) jRoutes.get(i)).getJSONArray("legs");
                 List<HashMap<String, String>> path = new ArrayList<HashMap<String, String>>();
 
+                // Finder den samlede distance og tid
+                dist = (String) ((JSONObject) ((JSONObject) jLegs.get(0)).get("distance")).get("text");
+                dur = (String) ((JSONObject) ((JSONObject) jLegs.get(0)).get("duration")).get("text");
+                Log.d("Rute", "Samlet Distance: " + dist);
+                Log.d("Rute", "Samlet Tid: " + dur);
+
                 /** Traversing all legs */
                 for (int j = 0; j < jLegs.length(); j++) {
                     jSteps = ((JSONObject) jLegs.get(j)).getJSONArray("steps");
+                    Log.d("Rute", "Antal Steps: " + jSteps.length());
 
                     /** Traversing all steps */
                     for (int k = 0; k < jSteps.length(); k++) {
@@ -102,4 +113,7 @@ public class PathJSONParser {
         }
         return poly;
     }
+
+    public String getDist(){ return dist; }
+    public String getDur(){ return dur; }
 }
