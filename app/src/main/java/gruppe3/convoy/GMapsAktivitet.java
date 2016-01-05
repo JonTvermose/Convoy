@@ -5,8 +5,10 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationManager;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -25,11 +27,18 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.PolylineOptions;
+
+import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 import gruppe3.convoy.functionality.BackendSimulator;
+import gruppe3.convoy.functionality.HttpConnection;
 import gruppe3.convoy.functionality.MyLocation;
+import gruppe3.convoy.functionality.PathJSONParser;
 import gruppe3.convoy.functionality.Spot;
 
 public class GMapsAktivitet extends Activity implements OnMapReadyCallback {
@@ -41,6 +50,7 @@ public class GMapsAktivitet extends Activity implements OnMapReadyCallback {
     private ArrayList<Spot> spots;
     private final int MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
     private final int UPDATE_INTERVAL = 1000; // GPS update interval i ms
+    private Spot spot;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -113,12 +123,13 @@ public class GMapsAktivitet extends Activity implements OnMapReadyCallback {
         lastKnownLocation = locationManager.getLastKnownLocation(locationProvider);
 
         if(lastKnownLocation==null){
-            lastKnownLocation = new Location("");
-            lastKnownLocation.setLatitude(0);
-            lastKnownLocation.setLongitude(0);
+            lastKnownLocation = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+            //lastKnownLocation = new Location("");
+            //lastKnownLocation.setLatitude(0);
+            //lastKnownLocation.setLongitude(0);
         }
-         lastKnownLocation.setLatitude(55); // TESTKODE
-         lastKnownLocation.setLongitude(12); // TESTKODE
+        //lastKnownLocation.setLatitude(55); // TESTKODE
+        //lastKnownLocation.setLongitude(12); // TESTKODE
 
         try {
             if (googleMap == null) {
@@ -151,7 +162,7 @@ public class GMapsAktivitet extends Activity implements OnMapReadyCallback {
         } else {
             LatLng cPos = new LatLng(lastKnownLocation.getLatitude(), lastKnownLocation.getLongitude());
             googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(cPos, 6), 2000, null);
-            Toast.makeText(this, "Unable to fetch the current location. Using last know location", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Using last know location", Toast.LENGTH_SHORT).show();
         }
 
         // TESTKODE - sætter en marker på sidste kendte sted
@@ -173,7 +184,7 @@ public class GMapsAktivitet extends Activity implements OnMapReadyCallback {
                 final Dialog dialog = new Dialog(GMapsAktivitet.this);
                 dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
                 dialog.setContentView(R.layout.fragment_spot); // XML-layout til Dialog-boksen
-                Spot spot;
+
                 try {
                     spot = getSpot(marker.getTitle());
 
@@ -228,9 +239,91 @@ public class GMapsAktivitet extends Activity implements OnMapReadyCallback {
                     route.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
+                            Location startLoc = locationListener.getLocation();
+                            if(startLoc==null){
+                                startLoc=lastKnownLocation;
+                            }
+
+                            String url = GMapsAktivitet.this.getMapsApiDirectionsUrl(startLoc, GMapsAktivitet.this.spot.getPos());
+                            ReadTask downloadTask = new ReadTask();
+                            downloadTask.execute(url);
+
                             Toast.makeText(GMapsAktivitet.this, "Finding route. Please wait...", Toast.LENGTH_LONG).show();
-                            dialog.hide(); // TO DO
+                            dialog.hide();
                         }
+
+                        class ReadTask extends AsyncTask<String, Void, String> {
+                            @Override
+                            protected String doInBackground(String... url) {
+                                String data = "";
+                                try {
+                                    HttpConnection http = new HttpConnection();
+                                    data = http.readUrl(url[0]);
+                                } catch (Exception e) {
+                                    Log.d("Background Task", e.toString());
+                                }
+                                return data;
+                            }
+
+                            @Override
+                            protected void onPostExecute(String result) {
+                                super.onPostExecute(result);
+                                new ParserTask().execute(result);
+                            }
+
+
+                            class ParserTask extends
+                                    AsyncTask<String, Integer, List<List<HashMap<String, String>>>> {
+
+                                @Override
+                                protected List<List<HashMap<String, String>>> doInBackground(
+                                        String... jsonData) {
+
+                                    JSONObject jObject;
+                                    List<List<HashMap<String, String>>> routes = null;
+
+                                    try {
+                                        jObject = new JSONObject(jsonData[0]);
+                                        PathJSONParser parser = new PathJSONParser();
+                                        routes = parser.parse(jObject);
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+                                    return routes;
+                                }
+
+                                @Override
+                                protected void onPostExecute(List<List<HashMap<String, String>>> routes) {
+                                    ArrayList<LatLng> points = null;
+                                    PolylineOptions polyLineOptions = null;
+
+                                    // traversing through routes
+                                    for (int i = 0; i < routes.size(); i++) {
+                                        points = new ArrayList<LatLng>();
+                                        polyLineOptions = new PolylineOptions();
+                                        List<HashMap<String, String>> path = routes.get(i);
+
+                                        for (int j = 0; j < path.size(); j++) {
+                                            HashMap<String, String> point = path.get(j);
+
+                                            double lat = Double.parseDouble(point.get("lat"));
+                                            double lng = Double.parseDouble(point.get("lng"));
+                                            LatLng position = new LatLng(lat, lng);
+
+                                            points.add(position);
+                                        }
+
+                                        polyLineOptions.addAll(points);
+                                        polyLineOptions.width(2);
+                                        polyLineOptions.color(Color.BLUE);
+                                    }
+
+                                    GMapsAktivitet.this.googleMap.addPolyline(polyLineOptions);
+                                }
+                            }
+                        }
+
+
                     });
 
                     // Clicklistener til "Luk"-knappen (man kan også bare klikke udenfor Dialog-boksen)
@@ -263,6 +356,33 @@ public class GMapsAktivitet extends Activity implements OnMapReadyCallback {
         }
         Log.d("Error", "Kunne ikke finde spot: " + desc);
         throw new Exception("Error. Could not find: " + desc);
+    }
+
+    private String getMapsApiDirectionsUrl(Location start, LatLng dest) {
+        String locations =
+                "origin=" + start.getLatitude() + "," + start.getLongitude()
+                        + "&"
+                        + "destination=" + dest.latitude + "," + dest.longitude;
+        String key = "key=" + "AIzaSyCZSGpLIQ6JUmEJsj8TexBJMdrVZ-mwu40"; // TO DO - bør nok gemmes eller hentes fra andet sted?
+        String mode = "mode=" + "driving"; // Dette kan udelades (er default for Google Directions)
+        String units = "units=" + "metric"; // Eventuelt variabel baseret på indstillinger i appen
+        /*
+        Google Directions bruger som standard hastighedsgrænser for biler. Vha. traffic_model forsøger vi at nedsætte hastigheden
+        så den er mere realistisk for en lastbil der skal følge andre hastighedsgrænser (80 eller 90 km/t på motorveje).
+         */
+        String trafficModel = "traffic_model=" + "pessimistic";
+        String departTime = "departure_time=" + "now";
+
+        String params = locations + "&" + mode + "&" + trafficModel + "&" + units + "&" + departTime; // + "&" + key;
+        String output = "json";
+        String url = "https://maps.googleapis.com/maps/api/directions/" + output + "?" + params;
+
+        System.out.println("***** Finder rute *****");
+        System.out.println("***** Fra: " + start.getLatitude() + "," + start.getLongitude());
+        System.out.println("***** Til: " + dest.latitude + "," + dest.longitude);
+        System.out.println("Url: " + url);
+        System.out.println("**********");
+        return url;
     }
 
 }
