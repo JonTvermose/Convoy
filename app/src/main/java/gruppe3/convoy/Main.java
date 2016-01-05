@@ -10,11 +10,20 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.HorizontalScrollView;
+
+import com.parse.FindCallback;
+import com.parse.Parse;
+import com.parse.ParseException;
+import com.parse.ParseObject;
+import com.parse.ParseQuery;
+
+import java.util.List;
 
 
 public class Main extends AppCompatActivity {
@@ -45,9 +54,37 @@ public class Main extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        Parse.enableLocalDatastore(this);
+
+        Parse.initialize(this);
+
+//        ParseObject testObject = new ParseObject("TestObject");
+//        testObject.put("foo", "Yaaaas");
+//        testObject.saveInBackground();
+
         setContentView(R.layout.activity_main);
 
         search = (Button) findViewById(R.id.searchButton);
+
+
+        ParseQuery<ParseObject> query = ParseQuery.getQuery("TestObject");
+        query.whereExists("foo");
+        query.findInBackground(new FindCallback<ParseObject>() {
+            public void done(List<ParseObject> fooList, ParseException e) {
+                if (e == null) {
+                    for(int i=0;fooList.size()>i;i++){
+                        if (fooList.get(i).getString("foo").length()==6){
+                            System.out.println(fooList.get(i).getString("foo"));
+                            search.setText(fooList.get(i).getString("foo"));
+                        }
+                    }
+
+                } else {
+                    Log.d("score", "Error: " + e.getMessage());
+                }
+            }
+        });
 
         // Instantiate a ViewPager and a PagerAdapter.
         mPager = (ViewPager) findViewById(R.id.pager);
@@ -63,12 +100,12 @@ public class Main extends AppCompatActivity {
             public void onClick(View v) {
                 Intent i = new Intent(Main.this, GMapsAktivitet.class);
 //                dest=AdvancedFragment.dest.getText().toString();
-                timer=AdvancedFragment.timer.getValue();
-                minutter=AdvancedFragment.minutter.getValue();
-                if(!(timer==0 && minutter==0)){
-                    distancetext="Timer: "+AdvancedFragment.hours[timer]+" | Minutter: "+AdvancedFragment.mins[minutter];
+                timer = AdvancedFragment.timer.getValue();
+                minutter = AdvancedFragment.minutter.getValue();
+                if (!(timer == 0 && minutter == 0)) {
+                    distancetext = "Timer: " + AdvancedFragment.hours[timer] + " | Minutter: " + AdvancedFragment.mins[minutter];
                 } else {
-                    distancetext="Tid ikke sat.";
+                    distancetext = "Tid ikke sat.";
                 }
 //                maxSpeed=AdvancedFragment.maxSpeed.getText().toString();
 //                roadTrain=AdvancedFragment.roadTrain.get.getText().toString();
