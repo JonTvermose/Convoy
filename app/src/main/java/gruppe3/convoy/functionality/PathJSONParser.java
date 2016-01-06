@@ -6,7 +6,7 @@ package gruppe3.convoy.functionality;
 
 /**
  * Klassen er lånt af http://javapapers.com/android/draw-path-on-google-maps-android-api/
- * Klassens formål er at oversætte et JSON object fra Google Directions API til
+ * Klassens formål er at oversætte et JSON object fra Google Directions API
  */
 
 import android.util.Log;
