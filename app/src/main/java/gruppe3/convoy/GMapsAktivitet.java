@@ -37,6 +37,7 @@ import java.util.List;
 import gruppe3.convoy.functionality.BackendSimulator;
 import gruppe3.convoy.functionality.HttpConnection;
 import gruppe3.convoy.functionality.PathJSONParser;
+import gruppe3.convoy.functionality.SingleTon;
 import gruppe3.convoy.functionality.Spot;
 
 public class GMapsAktivitet extends Activity implements OnMapReadyCallback {
@@ -141,7 +142,8 @@ public class GMapsAktivitet extends Activity implements OnMapReadyCallback {
         // Marker mark1 = gMap.addMarker(new MarkerOptions().position(new LatLng(lastKnownLocation.getLatitude(), lastKnownLocation.getLongitude())).title("Sidst kendte sted"));
 
         backend = new BackendSimulator();
-        spots = backend.getMarkers(); // Hent spots fra serveren
+//        spots = backend.getMarkers(); // Hent spots fra serveren
+        spots = SingleTon.spots;
 
         // Tilføjer markers til Google Maps
         int id = 0;

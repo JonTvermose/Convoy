@@ -61,7 +61,7 @@ public class Main extends AppCompatActivity {
 
 //        Parse.enableLocalDatastore(this);
 
-        Parse.initialize(this);
+//        Parse.initialize(this);
 
 //        ParseObject testObject = new ParseObject("TestObject");
 //        testObject.put("foo", "Yaaaas");
