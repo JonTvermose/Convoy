@@ -1,0 +1,23 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="gruppe3.convoy.SearchButtonFragment">
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="0px"
+        android:layout_weight="1"
+        android:padding="0dp"
+        android:layout_marginBottom="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginLeft="16dp"
+        android:text="SEARCH"
+        android:id="@+id/searchButton"
+        android:layout_gravity="center_horizontal"
+        android:background="@drawable/knap_blaa_bg"
+        android:textSize="60sp"
+        android:layout_margin="10dp"
+        android:elevation="2dp"/>
+
+</FrameLayout>

@@ -1,17 +1,16 @@
 package gruppe3.convoy;
 
-import android.Manifest;
-import android.app.Activity;
 import android.app.Dialog;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
+import android.support.v4.app.Fragment;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -20,8 +19,8 @@ import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -34,56 +33,56 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import gruppe3.convoy.functionality.BackendSimulator;
 import gruppe3.convoy.functionality.HttpConnection;
 import gruppe3.convoy.functionality.PathJSONParser;
 import gruppe3.convoy.functionality.SingleTon;
 import gruppe3.convoy.functionality.Spot;
 
-public class GMapsAktivitet extends Activity implements OnMapReadyCallback {
+public class GMapsAktivitet extends Fragment implements OnMapReadyCallback {
 
     public static GoogleMap gMap;
-    private BackendSimulator backend;
-    private ArrayList<Spot> spots;
     private final int MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
     private Spot spot;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                                Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_gmaps_aktivitet);
+        View view = inflater.inflate(R.layout.activity_gmaps_aktivitet, container, false);
+        getMap();
 
-        if (ContextCompat.checkSelfPermission(this,
-                Manifest.permission.ACCESS_FINE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED) {
-            // Hvis vi ikke har permissions skal vi bede om permission
-            Log.d("Access", "Mangler adgang til ACCESS_FINE_LOCATION");
-
-            // Should we show an explanation?
-            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
-                    Manifest.permission.ACCESS_FINE_LOCATION)) {
-                // TODO
-                // Show an expanation to the user *asynchronously* -- don't block
-                // this thread waiting for the user's response! After the user
-                // sees the explanation, try again to request the permission.
-
-            } else {
-
-                // No explanation needed, we can request the permission.
-
-                ActivityCompat.requestPermissions(this,
-                        new String[]{Manifest.permission.READ_CONTACTS},
-                        MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
-
-                // MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION is an
-                // app-defined int constant. The callback method gets the
-                // result of the request.
-            }
-        } else {
-            // Hvis vi har tilladelse i orden startes maps bare
-            Log.d("Access", "ACCESS_FINE_LOCATION er ok");
-            getMap();
-        }
+//        if (ContextCompat.checkSelfPermission(this,
+//                Manifest.permission.ACCESS_FINE_LOCATION)
+//                != PackageManager.PERMISSION_GRANTED) {
+//            // Hvis vi ikke har permissions skal vi bede om permission
+//            Log.d("Access", "Mangler adgang til ACCESS_FINE_LOCATION");
+//
+//            // Should we show an explanation?
+//            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+//                    Manifest.permission.ACCESS_FINE_LOCATION)) {
+//                // TODO
+//                // Show an expanation to the user *asynchronously* -- don't block
+//                // this thread waiting for the user's response! After the user
+//                // sees the explanation, try again to request the permission.
+//
+//            } else {
+//
+//                // No explanation needed, we can request the permission.
+//
+//                ActivityCompat.requestPermissions(this,
+//                        new String[]{Manifest.permission.READ_CONTACTS},
+//                        MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
+//
+//                // MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION is an
+//                // app-defined int constant. The callback method gets the
+//                // result of the request.
+//            }
+//        } else {
+//            // Hvis vi har tilladelse i orden startes maps bare
+//            Log.d("Access", "ACCESS_FINE_LOCATION er ok");
+//            getMap();
+//        }
+        return view;
     }
 
     @Override
@@ -113,9 +112,9 @@ public class GMapsAktivitet extends Activity implements OnMapReadyCallback {
     private void getMap(){
         try {
             if (gMap == null) {
-                MapFragment m = ((MapFragment) getFragmentManager().
+                SupportMapFragment m = ((SupportMapFragment) getFragmentManager().
                         findFragmentById(R.id.map));
-                Log.d("Kort", "Henter nyt kort");
+                Log.d("Kort", "Henter nyt kort - asynkront");
                 m.getMapAsync(this);
             } else{
                 Log.d("Kort", "Kort eksisterer allerede");
@@ -141,13 +140,10 @@ public class GMapsAktivitet extends Activity implements OnMapReadyCallback {
         // TESTKODE - sætter en marker på sidste kendte sted
         // Marker mark1 = gMap.addMarker(new MarkerOptions().position(new LatLng(lastKnownLocation.getLatitude(), lastKnownLocation.getLongitude())).title("Sidst kendte sted"));
 
-        backend = new BackendSimulator();
-//        spots = backend.getMarkers(); // Hent spots fra serveren
-        spots = SingleTon.spots;
 
         // Tilføjer markers til Google Maps
         int id = 0;
-        for (Spot spot : spots) {
+        for (Spot spot : SingleTon.spots) {
             Marker mark = gMap.addMarker(new MarkerOptions().position(spot.getPos()).title(spot.getDesc()));
             mark.setDraggable(false);
             mark.setSnippet(Integer.toString(id)); // Tilføj unikt ID til marker, svarende til indekset for det pågældende spot i listen over spots
@@ -165,7 +161,7 @@ public class GMapsAktivitet extends Activity implements OnMapReadyCallback {
 
             @Override
             public boolean onMarkerClick(Marker marker) {
-                final Dialog dialog = new Dialog(GMapsAktivitet.this);
+                final Dialog dialog = new Dialog(getActivity());
                 dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
                 dialog.setContentView(R.layout.fragment_spot); // XML-layout til Dialog-boksen
 
@@ -175,7 +171,7 @@ public class GMapsAktivitet extends Activity implements OnMapReadyCallback {
                 }
 
                 try {
-                    spot = spots.get(Integer.valueOf(marker.getSnippet())); //getSpot(marker.getTitle());
+                    spot = SingleTon.spots.get(Integer.valueOf(marker.getSnippet())); //getSpot(marker.getTitle());
 
                     /* Henter rute til POI */
                     Location startLoc = Main.myLocation.getLocation();
@@ -232,9 +228,9 @@ public class GMapsAktivitet extends Activity implements OnMapReadyCallback {
                     route.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            Toast.makeText(GMapsAktivitet.this, "Drawing route.", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getActivity(), "Drawing route.", Toast.LENGTH_SHORT).show();
                             if(polyLineOptions==null){ // Kan fjernes så længe knappen er deaktiveret indtil ruten er modtaget og parset
-                                Toast.makeText(GMapsAktivitet.this, "Route not ready!", Toast.LENGTH_LONG).show();
+                                Toast.makeText(getActivity(), "Route not ready!", Toast.LENGTH_LONG).show();
                             } else {
                                 poly = GMapsAktivitet.this.gMap.addPolyline(polyLineOptions);
                                 dialog.hide();
@@ -254,7 +250,7 @@ public class GMapsAktivitet extends Activity implements OnMapReadyCallback {
                 } catch (Exception e) {
                     // TO DO : Fejlhåndtering
                     // Hvad skal der ske hvis man klikker på en marker som vi ikke kan identificere?
-                    Toast.makeText(GMapsAktivitet.this, "Could not find matching POI: " + marker.getTitle(), Toast.LENGTH_LONG).show();
+                    Toast.makeText(getActivity(), "Could not find matching POI: " + marker.getTitle(), Toast.LENGTH_LONG).show();
                 }
 
                 return true;
