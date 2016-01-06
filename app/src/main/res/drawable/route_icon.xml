@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+
+  <!-- Den mest generelle skal være nederst -->
+  <item>
+    <shape android:shape="ring">
+      <corners android:radius="4dp"/>
+      <solid android:color="@color/blue_300"/>
+    </shape>
+  </item>
+
+</selector>
+

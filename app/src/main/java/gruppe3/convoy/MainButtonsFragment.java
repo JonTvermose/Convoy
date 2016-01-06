@@ -80,7 +80,7 @@ public class MainButtonsFragment extends Fragment {
         bed.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if ((Integer) bed.getTag() == R.drawable.bed_t) {
+                if (bed.isSelected() == false) {
                     bed.setImageResource(R.drawable.bed_t_check);
                     bed.setTag(R.drawable.bed_t_check);
                     bed.setSelected(true);

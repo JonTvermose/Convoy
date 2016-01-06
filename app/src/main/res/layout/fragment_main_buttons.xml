@@ -34,7 +34,7 @@
                 android:layout_marginBottom="8dp"
                 android:layout_marginLeft="16dp"
                 android:layout_marginRight="8dp"
-                android:elevation="@dimen/elevation_low"
+                android:elevation="@dimen/elevation_buttons"
                 />
 
             <ImageView
@@ -51,7 +51,7 @@
                 android:layout_marginBottom="8dp"
                 android:layout_marginLeft="8dp"
                 android:layout_marginRight="16dp"
-                android:elevation="@dimen/elevation_low"
+                android:elevation="@dimen/elevation_buttons"
                 />
         </TableRow>
 
@@ -75,7 +75,7 @@
                 android:layout_marginBottom="8dp"
                 android:layout_marginLeft="16dp"
                 android:layout_marginRight="8dp"
-                android:elevation="@dimen/elevation_low"
+                android:elevation="@dimen/elevation_buttons"
                 />
 
             <ImageView
@@ -92,7 +92,7 @@
                 android:layout_marginBottom="8dp"
                 android:layout_marginLeft="8dp"
                 android:layout_marginRight="16dp"
-                android:elevation="@dimen/elevation_low"
+                android:elevation="@dimen/elevation_buttons"
                 />
         </TableRow>
 
@@ -118,7 +118,7 @@
                 android:layout_marginBottom="16dp"
                 android:layout_marginLeft="16dp"
                 android:layout_marginRight="8dp"
-                android:elevation="@dimen/elevation_low"
+                android:elevation="@dimen/elevation_buttons"
                 />
 
 
@@ -136,7 +136,7 @@
                 android:layout_marginBottom="16dp"
                 android:layout_marginLeft="8dp"
                 android:layout_marginRight="16dp"
-                android:elevation="@dimen/elevation_low"
+                android:elevation="@dimen/elevation_buttons"
                 />
         </TableRow>
     </TableLayout>

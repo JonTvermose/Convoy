@@ -19,26 +19,26 @@
             android:layout_height="wrap_content"
             android:weightSum="100"
             android:background="@drawable/knap_blaa_bg"
-            android:layout_marginTop="10dp"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginBottom="8dp"
             android:id="@+id/linje1"
+            android:elevation="@dimen/elevation_cards"
             >
 
             <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
                 android:text="Destination:"
-                android:padding="10dp" />
+                android:padding="8dp" />
 
             <EditText
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/destination_editText"
                 android:gravity="center"
-                android:textColor="@color/deep_orange_200"
-
                 android:textSize="30dp"
                 android:padding="10dp"
-                />
+                android:linksClickable="true" />
 
         </LinearLayout>
 
@@ -47,11 +47,13 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/knap_blaa_bg"
-            android:layout_marginTop="10dp"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginBottom="8dp"
             android:layout_below="@+id/linje1"
             android:id="@+id/linje2"
+            android:elevation="@dimen/elevation_cards"
             >
 
             <TextView
@@ -60,7 +62,7 @@
                 android:text="Time remaining untill break:"
                 android:id="@+id/timeRemaining_TextView"
                 android:textSize="15dp"
-                android:padding="10dp" />
+                android:padding="8dp" />
 
             <LinearLayout
                 android:orientation="horizontal"
@@ -75,7 +77,7 @@
                     android:id="@+id/timer_numberPicker"
                     android:layout_below="@+id/linearLayout"
                     android:orientation="horizontal"
-                    android:background="#E1F5FE"
+                    android:background="#80ffffff"
                     />
 
                 <NumberPicker
@@ -84,7 +86,8 @@
                     android:id="@+id/minutter_numberPicker"
                     android:layout_alignTop="@+id/timer_numberPicker"
                     android:orientation="horizontal"
-                    android:background="#E1F5FE"
+                    android:background="#80ffffff"
+
                     />
             </LinearLayout>
 
@@ -94,29 +97,33 @@
             android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/accent_color"
-            android:layout_marginTop="10dp"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
+            android:background="@drawable/knap_blaa_bg"
+            android:layout_marginTop="8dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginBottom="8dp"
             android:layout_below="@+id/linje2"
-            android:id="@+id/linje3">
+            android:id="@+id/linje3"
+            android:elevation="@dimen/elevation_cards"
 
+            >
+            <Switch
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Road train > 25m"
+                android:id="@+id/roadTrain_switch"
+                android:checked="false"
+                android:layout_below="@+id/linje3"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/knap_blaa_bg"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:enabled="true"
+                />
         </LinearLayout>
 
-        <Switch
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Road train > 25m"
-            android:id="@+id/roadTrain_switch"
-            android:checked="false"
-            android:layout_below="@+id/linje3"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="10dp"
-            android:background="@drawable/knap_blaa_bg"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
-            android:padding="10dp"
-            android:enabled="true" />
+
 
     </RelativeLayout>
 
