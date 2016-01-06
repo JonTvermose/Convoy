@@ -48,19 +48,25 @@
                 android:layout_width="0px"
                 android:layout_height="50dp"
                 android:id="@+id/wc_imageView"
-                android:layout_weight="1"/>
+                android:layout_weight="1"
+                android:background="@drawable/spot_icon"
+                />
 
             <ImageView
                 android:layout_width="0px"
                 android:layout_height="50dp"
                 android:id="@+id/bed_imageView"
-                android:layout_weight="1"/>
+                android:layout_weight="1"
+                android:background="@drawable/spot_icon"
+                />
 
             <ImageView
                 android:layout_width="0px"
                 android:layout_height="50dp"
                 android:id="@+id/adblue_imageView"
-                android:layout_weight="1"/>
+                android:layout_weight="1"
+                android:background="@drawable/spot_icon"
+                />
             </LinearLayout>
 
         <LinearLayout
@@ -77,19 +83,26 @@
                 android:layout_width="0px"
                 android:layout_height="50dp"
                 android:id="@+id/food_imageView"
-                android:layout_weight="1"/>
+                android:layout_weight="1"
+                android:background="@drawable/spot_icon"
+                />
+
 
             <ImageView
                 android:layout_width="0px"
                 android:layout_height="50dp"
                 android:id="@+id/fuel_imageView"
-                android:layout_weight="1"/>
+                android:layout_weight="1"
+                android:background="@drawable/spot_icon"
+                />
 
             <ImageView
                 android:layout_width="0px"
                 android:layout_height="50dp"
                 android:id="@+id/bath_imageView"
-                android:layout_weight="1"/>
+                android:layout_weight="1"
+                android:background="@drawable/spot_icon"
+                />
         </LinearLayout>
 
         <LinearLayout
