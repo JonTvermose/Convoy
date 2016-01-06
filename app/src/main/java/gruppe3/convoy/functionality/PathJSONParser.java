@@ -6,7 +6,7 @@ package gruppe3.convoy.functionality;
 
 /**
  * Klassen er lånt af http://javapapers.com/android/draw-path-on-google-maps-android-api/
- * Klassens formål er at oversætte et JSON object fra Google Directions API til
+ * Klassens formål er at oversætte et JSON object fra Google Directions API
  */
 
 import android.util.Log;
@@ -23,7 +23,7 @@ import com.google.android.gms.maps.model.LatLng;
 
 public class PathJSONParser {
 
-    private String dist, dur;
+    private String dist, dur, startAdress, endAdress;
 
     public List<List<HashMap<String, String>>> parse(JSONObject jObject) {
         List<List<HashMap<String, String>>> routes = new ArrayList<List<HashMap<String, String>>>();
@@ -40,8 +40,12 @@ public class PathJSONParser {
                 // Finder den samlede distance og tid
                 dist = (String) ((JSONObject) ((JSONObject) jLegs.get(0)).get("distance")).get("text");
                 dur = (String) ((JSONObject) ((JSONObject) jLegs.get(0)).get("duration")).get("text");
+                startAdress = (String) ((JSONObject) jLegs.get(0)).get("start_address");
+                endAdress = (String) ((JSONObject) jLegs.get(0)).get("end_address");
                 Log.d("Rute", "Samlet Distance: " + dist);
                 Log.d("Rute", "Samlet Tid: " + dur);
+                Log.d("Rute", "Start adresse: " + startAdress);
+                Log.d("Rute", "Slut adresse: " + endAdress);
 
                 /** Traversing all legs */
                 for (int j = 0; j < jLegs.length(); j++) {
@@ -116,4 +120,6 @@ public class PathJSONParser {
 
     public String getDist(){ return dist; }
     public String getDur(){ return dur; }
+    public String getStartAdress(){ return startAdress; }
+    public String getEndAdress(){ return endAdress; }
 }

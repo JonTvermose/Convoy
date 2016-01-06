@@ -52,6 +52,7 @@ public class GMapsAktivitet extends Activity implements OnMapReadyCallback {
     private final int MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
     private final int UPDATE_INTERVAL = 5000, MIN_DIST = 5; // GPS update interval i ms, og meter
     private Spot spot;
+    private LocationManager locationManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -116,11 +117,11 @@ public class GMapsAktivitet extends Activity implements OnMapReadyCallback {
     }
 
     private void getMap(){
-        LocationManager locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+        locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
         locationListener = new MyLocation();
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, UPDATE_INTERVAL, MIN_DIST, locationListener); // Mindste tid mellem update = UPDATE_INTERVAL, minmumsdistance = MIN_DIST
         // Find sidste kendte lokation
-        String locationProvider = LocationManager.GPS_PROVIDER; // Or use LocationManager.GPS_PROVIDER
+        String locationProvider = LocationManager.GPS_PROVIDER; // Or use LocationManager.NETWORK_PROVIDER
         lastKnownLocation = locationManager.getLastKnownLocation(locationProvider);
 
         if(lastKnownLocation==null){
@@ -129,8 +130,12 @@ public class GMapsAktivitet extends Activity implements OnMapReadyCallback {
             //lastKnownLocation.setLatitude(0);
             //lastKnownLocation.setLongitude(0);
         }
-        //lastKnownLocation.setLatitude(55); // TESTKODE
-        //lastKnownLocation.setLongitude(12); // TESTKODE
+        if(lastKnownLocation==null){
+            // TO DO! - Hvis der ikke findes en sidst kendt lokation - hvad gør vi så?
+            lastKnownLocation.setLatitude(55); // TESTKODE
+            lastKnownLocation.setLongitude(12); // TESTKODE
+        }
+
 
         try {
             if (googleMap == null) {
@@ -177,7 +182,7 @@ public class GMapsAktivitet extends Activity implements OnMapReadyCallback {
         for (Spot spot : spots) {
             Marker mark = googleMap.addMarker(new MarkerOptions().position(spot.getPos()).title(spot.getDesc()));
             mark.setDraggable(false);
-            mark.setSnippet(Integer.toString(id)); // Tilføj unikt ID til marker
+            mark.setSnippet(Integer.toString(id)); // Tilføj unikt ID til marker, svarende til indekset for det pågældende spot i listen over spots
             id++;
         }
 
@@ -186,8 +191,9 @@ public class GMapsAktivitet extends Activity implements OnMapReadyCallback {
 
             Polyline poly = null;
             PolylineOptions polyLineOptions = null;
-            TextView distance;
+            TextView distance, title ;
             Button route;
+
 
             @Override
             public boolean onMarkerClick(Marker marker) {
@@ -212,8 +218,8 @@ public class GMapsAktivitet extends Activity implements OnMapReadyCallback {
                     ReadTask downloadTask = new ReadTask();
                     downloadTask.execute(url);
 
-                    TextView title = (TextView) dialog.findViewById(R.id.title_TextView);
-                    title.setText(spot.getDesc());
+                    title = (TextView) dialog.findViewById(R.id.title_TextView);
+                    title.setText("");
 
                     ImageView adblue = (ImageView) dialog.findViewById(R.id.adblue_imageView);
                     ImageView bed = (ImageView) dialog.findViewById(R.id.bed_imageView);
@@ -262,7 +268,7 @@ public class GMapsAktivitet extends Activity implements OnMapReadyCallback {
                         @Override
                         public void onClick(View v) {
                             Toast.makeText(GMapsAktivitet.this, "Drawing route.", Toast.LENGTH_SHORT).show();
-                            if(polyLineOptions==null){
+                            if(polyLineOptions==null){ // Kan fjernes så længe knappen er deaktiveret indtil ruten er modtaget og parset
                                 Toast.makeText(GMapsAktivitet.this, "Route not ready!", Toast.LENGTH_LONG).show();
                             } else {
                                 poly = GMapsAktivitet.this.googleMap.addPolyline(polyLineOptions);
@@ -333,13 +339,14 @@ public class GMapsAktivitet extends Activity implements OnMapReadyCallback {
                     protected void onPostExecute(List<List<HashMap<String, String>>> routes) {
                         ArrayList<LatLng> points = null;
 
-                        // Opdaterer afstand & tid på popuppen.
+                        // Opdaterer afstand, tid og adresse/overskrift på popuppen.
                         String distAndTime = parser.getDist() + " | " + parser.getDur();
                         distAndTime = distAndTime.replace("hours", "h");
                         distAndTime = distAndTime.replace("mins", "m");
                         distAndTime = distAndTime.replace(",", ".");
                         distance.setText(distAndTime);
-                        route.setEnabled(true);
+                        title.setText(parser.getEndAdress()); // TO DO - her mangler noget logik for hvis teksten bliver for lang eller "Unnamed road" er en del af den
+
 
                         // traversing through routes
                         for (int i = 0; i < routes.size(); i++) {
@@ -362,6 +369,8 @@ public class GMapsAktivitet extends Activity implements OnMapReadyCallback {
                             polyLineOptions.width(6); // Tykkelse på stregerne
                             polyLineOptions.color(Color.BLUE); // Farve på stregerne
                         }
+
+                        route.setEnabled(true); // Gør "Find Route"-knappen tilgængelig
                     }
                 }
             }
@@ -392,5 +401,17 @@ public class GMapsAktivitet extends Activity implements OnMapReadyCallback {
         Log.d("Rute", "Til: " + dest.latitude + "," + dest.longitude);
         Log.d("Rute", "Url: " + url);
         return url;
+    }
+
+    @Override
+    protected void onStop(){
+        locationManager.removeUpdates(locationListener); // Stopper opdateringen fra GPS/Network
+        super.onStop();
+    }
+
+    @Override
+    protected void onStart(){
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, UPDATE_INTERVAL, MIN_DIST, locationListener); // Start opdatering fra GPS
+        super.onStart();
     }
 }
