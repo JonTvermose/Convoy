@@ -191,8 +191,9 @@ public class GMapsAktivitet extends Activity implements OnMapReadyCallback {
 
             Polyline poly = null;
             PolylineOptions polyLineOptions = null;
-            TextView distance;
+            TextView distance, title ;
             Button route;
+
 
             @Override
             public boolean onMarkerClick(Marker marker) {
@@ -217,8 +218,8 @@ public class GMapsAktivitet extends Activity implements OnMapReadyCallback {
                     ReadTask downloadTask = new ReadTask();
                     downloadTask.execute(url);
 
-                    TextView title = (TextView) dialog.findViewById(R.id.title_TextView);
-                    title.setText(spot.getDesc());
+                    title = (TextView) dialog.findViewById(R.id.title_TextView);
+                    title.setText("");
 
                     ImageView adblue = (ImageView) dialog.findViewById(R.id.adblue_imageView);
                     ImageView bed = (ImageView) dialog.findViewById(R.id.bed_imageView);
@@ -338,13 +339,14 @@ public class GMapsAktivitet extends Activity implements OnMapReadyCallback {
                     protected void onPostExecute(List<List<HashMap<String, String>>> routes) {
                         ArrayList<LatLng> points = null;
 
-                        // Opdaterer afstand & tid på popuppen.
+                        // Opdaterer afstand, tid og adresse/overskrift på popuppen.
                         String distAndTime = parser.getDist() + " | " + parser.getDur();
                         distAndTime = distAndTime.replace("hours", "h");
                         distAndTime = distAndTime.replace("mins", "m");
                         distAndTime = distAndTime.replace(",", ".");
                         distance.setText(distAndTime);
-                        route.setEnabled(true);
+                        title.setText(parser.getEndAdress()); // TO DO - her mangler noget logik for hvis teksten bliver for lang eller "Unnamed road" er en del af den
+
 
                         // traversing through routes
                         for (int i = 0; i < routes.size(); i++) {
@@ -367,6 +369,8 @@ public class GMapsAktivitet extends Activity implements OnMapReadyCallback {
                             polyLineOptions.width(6); // Tykkelse på stregerne
                             polyLineOptions.color(Color.BLUE); // Farve på stregerne
                         }
+
+                        route.setEnabled(true); // Gør "Find Route"-knappen tilgængelig
                     }
                 }
             }
