@@ -2,74 +2,124 @@ package gruppe3.convoy.functionality;
 
 import android.content.Context;
 import android.location.Location;
-import android.location.LocationListener;
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.Toast;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationListener;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
+
+import java.text.DateFormat;
+import java.util.Date;
+
+import gruppe3.convoy.GMapsAktivitet;
+import gruppe3.convoy.Main;
 
 /**
  * Created by Jon on 25/11/2015.
  */
-public class MyLocation implements LocationListener {
+public class MyLocation implements LocationListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener{
 
-    private Location current;
-    private GoogleMap map;
-    private Context context;
-    private boolean adjustedCamera;
-    private final int ZOOM = 12;
+    private LocationRequest mLocationRequest;
+    private GoogleApiClient mGoogleApiClient;
+    private Location mCurrentLocation, mLastLocation;
+    private static final long INTERVAL = 1000 * 10; // Update interval i ms
+    private static final long FASTEST_INTERVAL = 1000 * 5; // Hurtigste update interval i ms
+    private String mLastUpdateTime;
+    private boolean mRequestingLocationUpdates = false, POSUPDATED = false;
+    private final String TAG = "STEDBESTEMMELSE";
 
     public MyLocation(){
-        adjustedCamera = false;
+    }
+
+    @Override
+    public void onConnected(Bundle bundle) {
+        Log.d(TAG, "**** MyLocation.onConnected()");
+        mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+        if(mLastLocation==null){
+            // TO DO - hvis der ikke kan findes en sidst kendt lokation
+            mLastLocation.setLatitude(55);
+            mLastLocation.setLongitude(12);
+        }
+
+        startLocationUpdates();
+    }
+
+    protected void startLocationUpdates() {
+        mRequestingLocationUpdates = true;
+        LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
+        Log.d(TAG, "Stedbestemmelse startet");
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+
     }
 
     @Override
     public void onLocationChanged(Location location) {
-        this.current = location;
-        Log.d("Location", "Current Location updated: " + location.getLatitude() + " : " + location.getLongitude());
-        System.out.println("**** Position opdateret: " + current.getLatitude() + " : " + current.getLongitude() + " ********"); // TESKODE
-        if (!adjustedCamera && context != null && map != null){
-            adjustedCamera = true;
-            updateMapView();
-            Toast.makeText(context, "Location updated", Toast.LENGTH_LONG).show();
-        } else if(map == null){
-            System.out.println("*** FORSØGTE AT OPDATERE POSISTION. MAP == NULL ****");
-            // TO DO -> her er sket en fejl
-        } else {
-            // updateMapView(); // Opdater map med position uden at ændre zoom m.m. Google Maps burde opdatere ens positionsmarker automatisk
+        Log.d(TAG, "Lokation opdateret: " + location.getLatitude() + " : " + location.getLongitude());
+        mCurrentLocation = location;
+        mLastUpdateTime = DateFormat.getTimeInstance().format(new Date());
+        // TO DO - Hvad skal opdateres når vi modtager en ny lokation?
+        if(GMapsAktivitet.gMap != null && !POSUPDATED){
+            GMapsAktivitet.gMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()), 12));
+            POSUPDATED = true;
         }
     }
 
     @Override
-    public void onStatusChanged(String provider, int status, Bundle extras) {
+    public void onConnectionFailed(ConnectionResult connectionResult) {
 
     }
 
-    @Override
-    public void onProviderEnabled(String provider) {
-
+    private void createLocationRequest() {
+        mLocationRequest = new LocationRequest();
+        mLocationRequest.setInterval(INTERVAL);
+        mLocationRequest.setFastestInterval(FASTEST_INTERVAL);
+        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
     }
 
-    @Override
-    public void onProviderDisabled(String provider) {
+    /**
+     * Denne metoder starter stedbestemmelse i appen
+     */
+    public void startLocationService(Context context){
+        createLocationRequest();
+        mGoogleApiClient = new GoogleApiClient.Builder(context)
+                .addApi(LocationServices.API)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .build();
+        mGoogleApiClient.connect();
+    }
 
+    public void onResume() {
+        if (mGoogleApiClient.isConnected() && !mRequestingLocationUpdates) {
+            startLocationUpdates();
+        }
+    }
+
+    public void stopLocationUpdates() {
+        Log.d(TAG, "Stedbestemmelse stoppet");
+        mRequestingLocationUpdates = false;
+        LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
     }
 
     public Location getLocation(){
-        return current;
-    }
-
-    public void setMap(GoogleMap googleMap, Context context) {
-        this.map = googleMap;
-        this.context = context;
-    }
-
-    public void updateMapView(){
-        LatLng cPos = new LatLng(current.getLatitude(), current.getLongitude());
-        map.moveCamera(CameraUpdateFactory.newLatLngZoom(cPos, ZOOM));
-
+        if(mCurrentLocation==null){
+            if(mLastLocation==null){
+                mLastLocation = new Location("");
+                // TO DO - hvis der ikke kan findes en sidst kendt lokation
+                mLastLocation.setLatitude(55);
+                mLastLocation.setLongitude(12);
+            }
+            return mLastLocation;
+        } else {
+            return mCurrentLocation;
+        }
     }
 }

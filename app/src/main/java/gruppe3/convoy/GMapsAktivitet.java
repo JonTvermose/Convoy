@@ -3,11 +3,9 @@ package gruppe3.convoy;
 import android.Manifest;
 import android.app.Activity;
 import android.app.Dialog;
-import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Location;
-import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
@@ -38,21 +36,16 @@ import java.util.List;
 
 import gruppe3.convoy.functionality.BackendSimulator;
 import gruppe3.convoy.functionality.HttpConnection;
-import gruppe3.convoy.functionality.MyLocation;
 import gruppe3.convoy.functionality.PathJSONParser;
 import gruppe3.convoy.functionality.Spot;
 
 public class GMapsAktivitet extends Activity implements OnMapReadyCallback {
 
-    private GoogleMap googleMap;
-    private Location lastKnownLocation;
-    private MyLocation locationListener;
+    public static GoogleMap gMap;
     private BackendSimulator backend;
     private ArrayList<Spot> spots;
     private final int MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
-    private final int UPDATE_INTERVAL = 5000, MIN_DIST = 5; // GPS update interval i ms, og meter
     private Spot spot;
-    private LocationManager locationManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -117,35 +110,15 @@ public class GMapsAktivitet extends Activity implements OnMapReadyCallback {
     }
 
     private void getMap(){
-        locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
-        locationListener = new MyLocation();
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, UPDATE_INTERVAL, MIN_DIST, locationListener); // Mindste tid mellem update = UPDATE_INTERVAL, minmumsdistance = MIN_DIST
-        // Find sidste kendte lokation
-        String locationProvider = LocationManager.GPS_PROVIDER; // Or use LocationManager.NETWORK_PROVIDER
-        lastKnownLocation = locationManager.getLastKnownLocation(locationProvider);
-
-        if(lastKnownLocation==null){
-            lastKnownLocation = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-            //lastKnownLocation = new Location("");
-            //lastKnownLocation.setLatitude(0);
-            //lastKnownLocation.setLongitude(0);
-        }
-        if(lastKnownLocation==null){
-            // TO DO! - Hvis der ikke findes en sidst kendt lokation - hvad gør vi så?
-            lastKnownLocation.setLatitude(55); // TESTKODE
-            lastKnownLocation.setLongitude(12); // TESTKODE
-        }
-
-
         try {
-            if (googleMap == null) {
+            if (gMap == null) {
                 MapFragment m = ((MapFragment) getFragmentManager().
                         findFragmentById(R.id.map));
                 Log.d("Kort", "Henter nyt kort");
                 m.getMapAsync(this);
             } else{
                 Log.d("Kort", "Kort eksisterer allerede");
-                onMapReady(googleMap);
+                onMapReady(gMap);
             }
         }
         catch (Exception e) {
@@ -155,24 +128,17 @@ public class GMapsAktivitet extends Activity implements OnMapReadyCallback {
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        this.googleMap = googleMap;
-        locationListener.setMap(googleMap, this);
+        this.gMap = googleMap;
+
         // Gør det muligt at finde nuværende position og ændre maptype
-        googleMap.setMyLocationEnabled(true);
-        googleMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+        gMap.setMyLocationEnabled(true);
+        gMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
 
-
-        if (locationListener.getLocation() != null) {
-            LatLng cPos = new LatLng(locationListener.getLocation().getLatitude(), locationListener.getLocation().getLongitude());
-            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(cPos, 12));
-        } else {
-            LatLng cPos = new LatLng(lastKnownLocation.getLatitude(), lastKnownLocation.getLongitude());
-            googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(cPos, 6), 2000, null);
-            Toast.makeText(this, "Using last know location", Toast.LENGTH_SHORT).show();
-        }
+        LatLng cPos = new LatLng(Main.myLocation.getLocation().getLatitude(), Main.myLocation.getLocation().getLongitude());
+        gMap.moveCamera(CameraUpdateFactory.newLatLngZoom(cPos, 12));
 
         // TESTKODE - sætter en marker på sidste kendte sted
-        // Marker mark1 = googleMap.addMarker(new MarkerOptions().position(new LatLng(lastKnownLocation.getLatitude(), lastKnownLocation.getLongitude())).title("Sidst kendte sted"));
+        // Marker mark1 = gMap.addMarker(new MarkerOptions().position(new LatLng(lastKnownLocation.getLatitude(), lastKnownLocation.getLongitude())).title("Sidst kendte sted"));
 
         backend = new BackendSimulator();
         spots = backend.getMarkers(); // Hent spots fra serveren
@@ -180,14 +146,14 @@ public class GMapsAktivitet extends Activity implements OnMapReadyCallback {
         // Tilføjer markers til Google Maps
         int id = 0;
         for (Spot spot : spots) {
-            Marker mark = googleMap.addMarker(new MarkerOptions().position(spot.getPos()).title(spot.getDesc()));
+            Marker mark = gMap.addMarker(new MarkerOptions().position(spot.getPos()).title(spot.getDesc()));
             mark.setDraggable(false);
             mark.setSnippet(Integer.toString(id)); // Tilføj unikt ID til marker, svarende til indekset for det pågældende spot i listen over spots
             id++;
         }
 
         // Clicklistener til markers. Når man klikker på en marker åbnes en Dialog-boks
-        googleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+        gMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
 
             Polyline poly = null;
             PolylineOptions polyLineOptions = null;
@@ -210,10 +176,7 @@ public class GMapsAktivitet extends Activity implements OnMapReadyCallback {
                     spot = spots.get(Integer.valueOf(marker.getSnippet())); //getSpot(marker.getTitle());
 
                     /* Henter rute til POI */
-                    Location startLoc = locationListener.getLocation();
-                    if(startLoc==null){
-                        startLoc=lastKnownLocation;
-                    }
+                    Location startLoc = Main.myLocation.getLocation();
                     String url = GMapsAktivitet.this.getMapsApiDirectionsUrl(startLoc, GMapsAktivitet.this.spot.getPos());
                     ReadTask downloadTask = new ReadTask();
                     downloadTask.execute(url);
@@ -271,7 +234,7 @@ public class GMapsAktivitet extends Activity implements OnMapReadyCallback {
                             if(polyLineOptions==null){ // Kan fjernes så længe knappen er deaktiveret indtil ruten er modtaget og parset
                                 Toast.makeText(GMapsAktivitet.this, "Route not ready!", Toast.LENGTH_LONG).show();
                             } else {
-                                poly = GMapsAktivitet.this.googleMap.addPolyline(polyLineOptions);
+                                poly = GMapsAktivitet.this.gMap.addPolyline(polyLineOptions);
                                 dialog.hide();
                             }
                         }
@@ -377,18 +340,23 @@ public class GMapsAktivitet extends Activity implements OnMapReadyCallback {
         });
     }
 
+    /**
+     * Kreerer en Google Directions API URL ud fra en start lokation og en slutposition.
+     * @param start Start lokation (latitude og longitude)
+     * @param dest Slut lokation (latiture og longitude)
+     * @return URL til Google Directions API der returnerer et JSON object med ruten mellem de to punkter
+     */
     private String getMapsApiDirectionsUrl(Location start, LatLng dest) {
         String locations =
                 "origin=" + start.getLatitude() + "," + start.getLongitude()
                         + "&"
                         + "destination=" + dest.latitude + "," + dest.longitude;
-        String key = "key=" + "AIzaSyCZSGpLIQ6JUmEJsj8TexBJMdrVZ-mwu40"; // TO DO - bør nok gemmes eller hentes fra andet sted?
+        // String key = "key=" + "AIzaSyCZSGpLIQ6JUmEJsj8TexBJMdrVZ-mwu40"; // TO DO - bør nok gemmes eller hentes fra andet sted?
         String mode = "mode=" + "driving"; // Dette kan udelades (er default for Google Directions)
         String units = "units=" + "metric"; // Eventuelt variabel baseret på indstillinger i appen
-        /*
-        Google Directions bruger som standard hastighedsgrænser for biler. Vha. traffic_model forsøger vi at nedsætte hastigheden
-        så den er mere realistisk for en lastbil der skal følge andre hastighedsgrænser (80 eller 90 km/t på motorveje).
-         */
+
+        // Google Directions bruger som standard hastighedsgrænser for biler. Vha. traffic_model forsøger vi at nedsætte hastigheden
+        // så den er mere realistisk for en lastbil der skal følge andre hastighedsgrænser (80 eller 90 km/t på motorveje)
         String trafficModel = "traffic_model=" + "pessimistic";
         String departTime = "departure_time=" + "now";
 
@@ -403,15 +371,4 @@ public class GMapsAktivitet extends Activity implements OnMapReadyCallback {
         return url;
     }
 
-    @Override
-    protected void onStop(){
-        locationManager.removeUpdates(locationListener); // Stopper opdateringen fra GPS/Network
-        super.onStop();
-    }
-
-    @Override
-    protected void onStart(){
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, UPDATE_INTERVAL, MIN_DIST, locationListener); // Start opdatering fra GPS
-        super.onStart();
-    }
 }

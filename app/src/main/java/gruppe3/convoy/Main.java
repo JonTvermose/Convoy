@@ -3,19 +3,12 @@ package gruppe3.convoy;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.Button;
-import android.widget.HorizontalScrollView;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.parse.FindCallback;
@@ -27,6 +20,7 @@ import com.parse.ParseQuery;
 import java.util.ArrayList;
 import java.util.List;
 
+import gruppe3.convoy.functionality.MyLocation;
 import gruppe3.convoy.functionality.Spot;
 
 
@@ -41,9 +35,7 @@ public class Main extends AppCompatActivity {
                     bath=false,
                     fuel=false,
                     adblue=false;
-
     Button search;
-
     ArrayList<Spot> spots;
 
     /**
@@ -57,9 +49,15 @@ public class Main extends AppCompatActivity {
      */
     private PagerAdapter mPagerAdapter;
 
+    public static MyLocation myLocation;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        myLocation = new MyLocation();
+        myLocation.startLocationService(this); // Starter stedbestemmelse
 
 //        Parse.enableLocalDatastore(this);
 
@@ -78,7 +76,6 @@ public class Main extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         search = (Button) findViewById(R.id.searchButton);
-
 
         ParseQuery<ParseObject> query = ParseQuery.getQuery("TestObject");
         query.whereExists("foo");
@@ -127,8 +124,6 @@ public class Main extends AppCompatActivity {
             }
         });
 
-
-
         // Instantiate a ViewPager and a PagerAdapter.
         mPager = (ViewPager) findViewById(R.id.pager);
         mPagerAdapter = new MainFragmentPagerAdapter(getSupportFragmentManager(),Main.this);
@@ -153,5 +148,17 @@ public class Main extends AppCompatActivity {
 
             }
         });
+    }
+
+    @Override
+         protected void onStop(){
+        myLocation.stopLocationUpdates(); // Stopper opdateringen fra GPS/Network
+        super.onStop();
+    }
+
+    @Override
+    protected void onStart(){
+        myLocation.onResume(); // Start opdatering fra GPS
+        super.onStart();
     }
 }
