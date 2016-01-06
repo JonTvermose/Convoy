@@ -37,7 +37,7 @@ public class BackendSimulator {
     }
 
     public ArrayList<Spot> getMarkers(){
-        return markers;
+        return SingleTon.spots;
     }
 
     public ArrayList<Spot> getMarkers(LatLng pos){
