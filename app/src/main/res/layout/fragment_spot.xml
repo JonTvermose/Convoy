@@ -10,11 +10,11 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="center"
-        android:background="@color/primary_color"
+        android:background="@color/grey_200"
         android:alpha="0.8">
 
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="300dp"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:text="Q8, Hamborg"
@@ -33,11 +33,11 @@
             android:layout_alignParentTop="true"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
-            android:src="@mipmap/close_icon"
+            android:src="@drawable/ic_clear_black_48dp"
             android:layout_marginRight="8dp"
-            android:layout_marginTop="12dp"
-            android:layout_marginBottom="12dp"
-            android:paddingRight="10dp"/>
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="0dp"
+            android:paddingRight="0dp"/>
 
         <LinearLayout
         android:orientation="horizontal"
@@ -53,7 +53,6 @@
                 android:layout_height="50dp"
                 android:id="@+id/wc_imageView"
                 android:layout_weight="1"
-                android:background="@drawable/spot_icon"
                 android:elevation="1dp"
                 />
 
@@ -62,7 +61,6 @@
                 android:layout_height="50dp"
                 android:id="@+id/bed_imageView"
                 android:layout_weight="1"
-                android:background="@drawable/spot_icon"
                 android:elevation="1dp"
                 />
 
@@ -71,7 +69,6 @@
                 android:layout_height="50dp"
                 android:id="@+id/adblue_imageView"
                 android:layout_weight="1"
-                android:background="@drawable/spot_icon"
                 android:elevation="1dp"
                 />
             </LinearLayout>
@@ -91,7 +88,6 @@
                 android:layout_height="50dp"
                 android:id="@+id/food_imageView"
                 android:layout_weight="1"
-                android:background="@drawable/spot_icon"
                 android:elevation="1dp"
                 />
 
@@ -101,7 +97,6 @@
                 android:layout_height="50dp"
                 android:id="@+id/fuel_imageView"
                 android:layout_weight="1"
-                android:background="@drawable/spot_icon"
                 android:elevation="1dp"
                 />
 
@@ -110,7 +105,6 @@
                 android:layout_height="50dp"
                 android:id="@+id/bath_imageView"
                 android:layout_weight="1"
-                android:background="@drawable/spot_icon"
                 android:elevation="1dp"
                 />
         </LinearLayout>
@@ -139,7 +133,7 @@
 
         <Button
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="50dp"
             android:text="FIND ROUTE"
             android:id="@+id/findRoute_button"
             android:layout_below="@+id/linearLayout3"
@@ -147,8 +141,8 @@
             android:layout_margin="25dp"
             android:padding="16dp"
             android:height="24dp"
-            android:background="@drawable/knap_spot"
             android:elevation="2dp"
+
             />
 
     </RelativeLayout>
