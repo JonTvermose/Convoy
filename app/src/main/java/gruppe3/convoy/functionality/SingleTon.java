@@ -4,6 +4,7 @@ import android.app.Application;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.util.Log;
+import android.util.TypedValue;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.parse.FindCallback;
@@ -14,6 +15,8 @@ import com.parse.ParseQuery;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import gruppe3.convoy.MainFragment;
 
 /**
  * Created by Jon on 06/01/2016.
@@ -27,6 +30,7 @@ public class SingleTon extends Application {
     public static LocationListener locationListener;
     public static String dest;
     public static int timer,minutter;
+    public static final String searchTxt1 = "Finding Location", searchTxt2 = "Fetching Data", searchTxt3 = "SEARCH";
     public static Boolean food, wc, bed, bath, fuel, adblue, roadTrain = false;
 
     public static SingleTon getInstance() {
@@ -39,6 +43,16 @@ public class SingleTon extends Application {
         Log.d("Data", "SingleTon OnCreate");
         Parse.initialize(this);
         Log.d("Data", "Parse initialiseret");
+
+        if(locationManager==null){
+            // Lav en locationmanager
+        }
+        if(locationListener==null){
+            // Lav en locationlistener
+        }
+    }
+
+    public static void fetchData(){
         if(spots==null){
             Log.d("Data", "Spots er null");
             // Asynkront kald til DB
@@ -75,15 +89,9 @@ public class SingleTon extends Application {
             });
         }
 
-        if(locationManager==null){
-            // Lav en locationmanager
-        }
-        if(locationListener==null){
-            // Lav en locationlistener
-        }
-    }
-
-    public static void fetchData(){
+        MainFragment.search.setText(SingleTon.searchTxt3);
+        MainFragment.search.setTextSize(TypedValue.COMPLEX_UNIT_SP, 60);
+        MainFragment.search.setEnabled(true);
 
     }
 

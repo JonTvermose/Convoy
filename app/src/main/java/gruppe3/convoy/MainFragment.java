@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,6 +23,7 @@ public class MainFragment extends Fragment {
 
     private ViewPager mPager;
     private PagerAdapter mPagerAdapter;
+    public static Button search;
 
     public MainFragment() {
         // Required empty public constructor
@@ -43,7 +45,11 @@ public class MainFragment extends Fragment {
         tabLayout.setupWithViewPager(mPager);
 
         // Search-knappen's onClickListener
-        Button search = (Button) rod.findViewById(R.id.searchButton);
+        search = (Button) rod.findViewById(R.id.searchButton);
+        search.setEnabled(false);
+        search.setText(SingleTon.searchTxt1);
+        search.setTextSize(TypedValue.COMPLEX_UNIT_SP, 30);
+
         search.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

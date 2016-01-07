@@ -4,6 +4,7 @@ import android.content.Context;
 import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.TypedValue;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -18,6 +19,7 @@ import java.util.Date;
 
 import gruppe3.convoy.GMapsAktivitet;
 import gruppe3.convoy.Main;
+import gruppe3.convoy.MainFragment;
 
 /**
  * Created by Jon on 25/11/2015.
@@ -65,7 +67,12 @@ public class MyLocation implements LocationListener, GoogleApiClient.ConnectionC
         Log.d(TAG, "Lokation opdateret: " + location.getLatitude() + " : " + location.getLongitude());
         mCurrentLocation = location;
         mLastUpdateTime = DateFormat.getTimeInstance().format(new Date());
-        // TO DO - Hvad skal opdateres når vi modtager en ny lokation?
+        if(!POSUPDATED){
+            MainFragment.search.setText(SingleTon.searchTxt2);
+            MainFragment.search.setTextSize(TypedValue.COMPLEX_UNIT_SP, 30);
+            POSUPDATED = true;
+            SingleTon.fetchData();
+        }
         if(GMapsAktivitet.gMap != null && !POSUPDATED){
             GMapsAktivitet.gMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()), 12));
             POSUPDATED = true;
