@@ -7,6 +7,6 @@
 
     <dimen name="diameter">48dp</dimen>
     <dimen name="elevation_buttons">2dp</dimen>
-    <dimen name="elevation_cards">4dp</dimen>
+    <dimen name="elevation_cards">2dp</dimen>
     <dimen name="add_button_margin">16dp</dimen>
 </resources>

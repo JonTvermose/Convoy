@@ -56,7 +56,7 @@
         <ImageView
             android:layout_width="56dp"
             android:layout_height="match_parent"
-            android:id="@+id/adLoc"
+            android:id="@+id/imageAddLoc"
             android:layout_row="0"
             android:layout_column="4"
             android:background="@drawable/toolbar_buttons"
@@ -96,7 +96,7 @@
         <ImageView
             android:layout_width="56dp"
             android:layout_height="56dp"
-            android:id="@+id/zoomLocation"
+            android:id="@+id/imageMyLoc"
             android:layout_row="29"
             android:layout_column="19"
             android:background="@drawable/route_icon_white"
