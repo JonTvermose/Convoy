@@ -39,9 +39,12 @@ public class SingleTon extends Application {
         if(spots==null){
             Log.d("Data", "Spots er null");
             // Asynkront kald til DB
-            ParseQuery<ParseObject> query2 = ParseQuery.getQuery("Spots");
+
+            ParseQuery<ParseObject> query2 = ParseQuery.getQuery("Spots1");
+            query2.setLimit(1000);
             query2.findInBackground(new FindCallback<ParseObject>() {
                 public void done(List<ParseObject> spotList, ParseException e) {
+                    Log.d("Data", "e = "+e);
                     if (e == null) {
                         spots = new ArrayList<Spot>();
                         for (int i = 0; spotList.size() > i; i++) {
@@ -61,6 +64,7 @@ public class SingleTon extends Application {
 
                         }
                         Log.d("Data", "Done with spots!");
+                        Log.d("Data", "Size of Spots = "+spots.size());
                     } else {
                         Log.d("score", "Error: " + e.getMessage());
                     }
@@ -79,5 +83,7 @@ public class SingleTon extends Application {
     public static void fetchData(){
 
     }
+
+
 
 }
