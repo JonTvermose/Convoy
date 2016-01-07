@@ -45,38 +45,34 @@ import gruppe3.convoy.functionality.PathJSONParser;
 import gruppe3.convoy.functionality.SingleTon;
 import gruppe3.convoy.functionality.Spot;
 
-public class GMapsAktivitet extends Fragment implements OnMapReadyCallback {
+public class GMapsAktivitet extends Fragment implements OnMapReadyCallback, View.OnClickListener {
 
     public static GoogleMap gMap;
     private final int MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
     private Spot spot;
     private View view;
-    private ImageView goButton;
+    private ImageView goButton, zoomLocation;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                                Bundle savedInstanceState) {
+                             Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         view = inflater.inflate(R.layout.activity_gmaps_aktivitet, container, false);
+
+        /**
+         * Knap til at zoome ind på nuværende lokation
+         */
+        zoomLocation = (ImageView) view.findViewById(R.id.zoomLocation);
+        zoomLocation.setOnClickListener(this);
+
+        /*
+        Knap til at starte vejvisning til et valgt POI
+         */
         goButton = (ImageView) view.findViewById(R.id.goButton);
         goButton.setVisibility(View.GONE); // Skjuler knappen indtil den kan bruges
-        goButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(spot!=null) {
-                    Intent intent = new Intent(android.content.Intent.ACTION_VIEW,
-                            Uri.parse("http://maps.google.com/maps?&daddr="
-                                    + spot.getPos().latitude + ","
-                                    + spot.getPos().longitude));
-                    intent.setClassName("com.google.android.apps.maps", "com.google.android.maps.MapsActivity");
-                    startActivity(intent);
-                } else {
-                    Toast.makeText(getActivity(), "You must choose where to go!", Toast.LENGTH_LONG).show(); // Safety-text, bør ikke rammes
-                }
-            }
-        });
+        goButton.setOnClickListener(this);
 
-    getMap();
+        getMap();
 
 //        if (ContextCompat.checkSelfPermission(this,
 //                Manifest.permission.ACCESS_FINE_LOCATION)
@@ -141,7 +137,7 @@ public class GMapsAktivitet extends Fragment implements OnMapReadyCallback {
             if (gMap == null) {
                 SupportMapFragment m = ((SupportMapFragment) getChildFragmentManager().
                         findFragmentById(R.id.map));
-                        Log.d("Kort", "Forsøger at hente nyt kort - asynkront");
+                Log.d("Kort", "Forsøger at hente nyt kort - asynkront");
                 if(m==null) {
                     Log.d("Kort", "SupportMapFragment m er null, kunne ikke finde map");
                 }
@@ -397,4 +393,29 @@ public class GMapsAktivitet extends Fragment implements OnMapReadyCallback {
         return url;
     }
 
+    @Override
+    public void onClick(View v) {
+        if(v==zoomLocation){
+            Log.d("Kort", "Der klikkes på Zoomknap");
+            if (gMap != null){
+                LatLng cPos = new LatLng(SingleTon.myLocation.getLocation().getLatitude(), SingleTon.myLocation.getLocation().getLongitude());
+                gMap.animateCamera(CameraUpdateFactory.newLatLngZoom(cPos, 12), 1000, null);
+                Log.d("Kort", "Der zoomes til: " + cPos.latitude + ", " + cPos.longitude);
+            } else {
+                Log.d("Kort", "Der blev forsøgt zoomet til lokation, men gMap er null");
+            }
+        } else if (v==goButton){
+            Log.d("Kort", "Der klikkes på GO-knap");
+            if(spot!=null) {
+                Intent intent = new Intent(android.content.Intent.ACTION_VIEW,
+                        Uri.parse("http://maps.google.com/maps?&daddr="
+                                + spot.getPos().latitude + ","
+                                + spot.getPos().longitude));
+                intent.setClassName("com.google.android.apps.maps", "com.google.android.maps.MapsActivity");
+                startActivity(intent);
+            } else {
+                Toast.makeText(getActivity(), "You must choose where to go!", Toast.LENGTH_LONG).show(); // Safety-text, bør ikke rammes
+            }
+        }
+    }
 }

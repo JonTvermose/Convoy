@@ -50,6 +50,7 @@ public class MainFragment extends Fragment {
                 getChildFragmentManager()
                         .beginTransaction()
                         .replace(R.id.StartLayoutFrame, new GMapsAktivitet())
+                        .addToBackStack("Main")
                         .setTransitionStyle(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
                         .commit();
 
