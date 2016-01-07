@@ -1,6 +1,7 @@
 package gruppe3.convoy;
 
 import android.app.Dialog;
+import android.app.FragmentManager;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Location;
@@ -112,9 +113,12 @@ public class GMapsAktivitet extends Fragment implements OnMapReadyCallback {
     private void getMap(){
         try {
             if (gMap == null) {
-                SupportMapFragment m = ((SupportMapFragment) getFragmentManager().
+                SupportMapFragment m = ((SupportMapFragment) getActivity().getSupportFragmentManager().
                         findFragmentById(R.id.map));
-                Log.d("Kort", "Henter nyt kort - asynkront");
+                Log.d("Kort", "Forsøger at hente nyt kort - asynkront");
+                if(m==null) {
+                    Log.d("Kort", "SupportMapFragment m er null, kunne ikke finde map");
+                }
                 m.getMapAsync(this);
             } else{
                 Log.d("Kort", "Kort eksisterer allerede");
@@ -128,6 +132,7 @@ public class GMapsAktivitet extends Fragment implements OnMapReadyCallback {
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
+        Log.d("Kort", "GMapsAktivitet.onMapReady() er kaldt *****");
         this.gMap = googleMap;
 
         // Gør det muligt at finde nuværende position og ændre maptype
@@ -149,6 +154,7 @@ public class GMapsAktivitet extends Fragment implements OnMapReadyCallback {
             mark.setSnippet(Integer.toString(id)); // Tilføj unikt ID til marker, svarende til indekset for det pågældende spot i listen over spots
             id++;
         }
+        Log.d("Kort", "Tilføjet " + id + " markers(spots) til kortet");
 
         // Clicklistener til markers. Når man klikker på en marker åbnes en Dialog-boks
         gMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
