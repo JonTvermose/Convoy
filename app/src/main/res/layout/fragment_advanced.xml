@@ -27,8 +27,10 @@
             android:elevation="@dimen/elevation_cards"
             >
 
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                android:text="Destination:"
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Destination"
                 android:textSize="20dp"
                 android:fontFamily="sans-serif-medium"
                 android:padding="8dp" />
@@ -37,7 +39,6 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/destination_editText"
-                android:gravity="center"
                 android:textSize="16dp"
                 android:padding="10dp"
                 android:linksClickable="true"
@@ -63,9 +64,10 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Time remaining untill break:"
+                android:text="Time remaining untill break"
                 android:id="@+id/timeRemaining_TextView"
-                android:textSize="15dp"
+                android:textSize="20dp"
+                android:fontFamily="sans-serif-medium"
                 android:padding="8dp" />
 
             <LinearLayout
@@ -112,20 +114,28 @@
             android:padding="8dp"
 
             >
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="Road train > 25m"
+                android:textSize="20dp"
+                android:fontFamily="sans-serif-medium"
+                android:id="@+id/textView2" />
             <Switch
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Road train > 25m"
-                android:textAlignment="textStart"
                 android:id="@+id/roadTrain_switch"
                 android:checked="false"
                 android:layout_below="@+id/linje3"
-                android:layout_marginTop="10dp"
                 android:background="@drawable/knap_blaa_bg"
                 android:layout_marginLeft="20dp"
                 android:layout_marginRight="20dp"
                 android:enabled="true"
+
                 />
+
+
         </LinearLayout>
 
 
