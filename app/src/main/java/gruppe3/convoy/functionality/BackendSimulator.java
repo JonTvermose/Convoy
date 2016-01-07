@@ -30,7 +30,7 @@ public class BackendSimulator {
             LatLng pos = new LatLng(r.nextDouble()*12+42, r.nextDouble()*28+5);
 //            markers.add(new Spot("Testspot"+i, r.nextBoolean(), r.nextBoolean(), r.nextBoolean(), r.nextBoolean(), r.nextBoolean(), r.nextBoolean(), r.nextBoolean(), pos));
             Spot plet = new Spot("Testspot"+i, r.nextBoolean(), r.nextBoolean(), r.nextBoolean(), r.nextBoolean(), r.nextBoolean(), r.nextBoolean(), r.nextBoolean(), pos);
-            if(plet.isAdblue()== Main.adblue && plet.isBath()== Main.bath && plet.isBed()== Main.bed && plet.isWc()== Main.wc && plet.isFood()== Main.food && plet.isFuel()== Main.fuel){
+            if(plet.isAdblue()== SingleTon.adblue && plet.isBath()== SingleTon.bath && plet.isBed()== SingleTon.bed && plet.isWc()== SingleTon.wc && plet.isFood()== SingleTon.food && plet.isFuel()== SingleTon.fuel){
                 markers.add(plet);
             }
         }

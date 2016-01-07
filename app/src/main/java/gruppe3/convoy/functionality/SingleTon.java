@@ -25,6 +25,9 @@ public class SingleTon extends Application {
     public static MyLocation myLocation;
     public static LocationManager locationManager;
     public static LocationListener locationListener;
+    public static String dest;
+    public static int timer,minutter;
+    public static Boolean food, wc, bed, bath, fuel, adblue, roadTrain = false;
 
     public static SingleTon getInstance() {
         return ourInstance;

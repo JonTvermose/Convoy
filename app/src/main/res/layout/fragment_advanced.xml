@@ -126,7 +126,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/roadTrain_switch"
-                android:checked="false"
                 android:layout_below="@+id/linje3"
                 android:background="@drawable/knap_blaa_bg"
                 android:layout_marginLeft="20dp"

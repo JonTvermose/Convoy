@@ -49,7 +49,7 @@ public class GMapsAktivitet extends Fragment implements OnMapReadyCallback, View
 
     public static GoogleMap gMap;
     private final int MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
-    private Spot spot;
+    private Spot spot; // Det spot der er klikket på
     private View view;
     private ImageView goButton, zoomLocation;
 
