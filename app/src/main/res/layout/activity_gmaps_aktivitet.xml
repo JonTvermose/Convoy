@@ -96,7 +96,7 @@
         <ImageView
             android:layout_width="56dp"
             android:layout_height="56dp"
-            android:id="@+id/imageMyLoc"
+            android:id="@+id/zoomLocation"
             android:layout_row="29"
             android:layout_column="19"
             android:background="@drawable/route_icon_white"
