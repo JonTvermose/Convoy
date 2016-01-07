@@ -3,9 +3,11 @@ package gruppe3.convoy;
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.FragmentManager;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Location;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -48,17 +50,32 @@ public class GMapsAktivitet extends Fragment implements OnMapReadyCallback {
     public static GoogleMap gMap;
     private final int MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
     private Spot spot;
-    View view;
+    private View view;
+    private ImageView goButton;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                 Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         view = inflater.inflate(R.layout.activity_gmaps_aktivitet, container, false);
-//@Override
-//public void onCreate(Bundle savedInstanceState) {
-//    super.onCreate(savedInstanceState);
-//    setContentView(R.layout.activity_gmaps_aktivitet);
+        goButton = (ImageView) view.findViewById(R.id.goButton);
+        goButton.setVisibility(View.GONE); // Skjuler knappen indtil den kan bruges
+        goButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(spot!=null) {
+                    Intent intent = new Intent(android.content.Intent.ACTION_VIEW,
+                            Uri.parse("http://maps.google.com/maps?&daddr="
+                                    + spot.getPos().latitude + ","
+                                    + spot.getPos().longitude));
+                    intent.setClassName("com.google.android.apps.maps", "com.google.android.maps.MapsActivity");
+                    startActivity(intent);
+                } else {
+                    Toast.makeText(getActivity(), "You must choose where to go!", Toast.LENGTH_LONG).show(); // Safety-text, bør ikke rammes
+                }
+            }
+        });
+
     getMap();
 
 //        if (ContextCompat.checkSelfPermission(this,
@@ -122,11 +139,8 @@ public class GMapsAktivitet extends Fragment implements OnMapReadyCallback {
     private void getMap(){
         try {
             if (gMap == null) {
-//                MapView mMapView = (MapView) view.findViewById(R.id.mapView);
                 SupportMapFragment m = ((SupportMapFragment) getChildFragmentManager().
                         findFragmentById(R.id.map));
-//                onMapReady(((SupportMapFragment) Main.fragmentManager.
-//                                findFragmentById(R.id.mapView)).getMap());
                         Log.d("Kort", "Forsøger at hente nyt kort - asynkront");
                 if(m==null) {
                     Log.d("Kort", "SupportMapFragment m er null, kunne ikke finde map");
@@ -154,10 +168,6 @@ public class GMapsAktivitet extends Fragment implements OnMapReadyCallback {
         LatLng cPos = new LatLng(SingleTon.myLocation.getLocation().getLatitude(), SingleTon.myLocation.getLocation().getLongitude());
         gMap.moveCamera(CameraUpdateFactory.newLatLngZoom(cPos, 12));
 
-        // TESTKODE - sætter en marker på sidste kendte sted
-        // Marker mark1 = gMap.addMarker(new MarkerOptions().position(new LatLng(lastKnownLocation.getLatitude(), lastKnownLocation.getLongitude())).title("Sidst kendte sted"));
-
-
         // Tilføjer markers til Google Maps
         int id = 0;
         for (Spot spot : SingleTon.spots) {
@@ -170,15 +180,14 @@ public class GMapsAktivitet extends Fragment implements OnMapReadyCallback {
 
         // Clicklistener til markers. Når man klikker på en marker åbnes en Dialog-boks
         gMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
-
             Polyline poly = null;
             PolylineOptions polyLineOptions = null;
             TextView distance, title ;
             Button route;
 
-
             @Override
             public boolean onMarkerClick(Marker marker) {
+                goButton.setVisibility(View.GONE); // Siker at GO-knappen forsvinder hvis man har trykket på et andet spot før dette
                 final Dialog dialog = new Dialog(getActivity());
                 dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
                 dialog.setContentView(R.layout.fragment_spot); // XML-layout til Dialog-boksen
@@ -252,6 +261,7 @@ public class GMapsAktivitet extends Fragment implements OnMapReadyCallback {
                             } else {
                                 poly = GMapsAktivitet.this.gMap.addPolyline(polyLineOptions);
                                 dialog.hide();
+                                goButton.setVisibility(View.VISIBLE); // Viser GO-knappen
                             }
                         }
                     });
