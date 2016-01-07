@@ -3,8 +3,8 @@
 
   <!-- Den mest generelle skal være nederst -->
   <item>
-    <shape android:shape="ring">
-      <corners android:radius="4dp"/>
+    <shape android:shape="rectangle">
+      <corners android:radius="48dp"/>
       <solid android:color="@color/blue_300"/>
     </shape>
   </item>
