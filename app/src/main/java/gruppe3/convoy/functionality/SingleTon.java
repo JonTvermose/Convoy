@@ -22,6 +22,7 @@ public class SingleTon extends Application {
 
     private static SingleTon ourInstance = new SingleTon();
     public static ArrayList<Spot> spots;
+    public static MyLocation myLocation;
     public static LocationManager locationManager;
     public static LocationListener locationListener;
 
@@ -29,15 +30,14 @@ public class SingleTon extends Application {
         return ourInstance;
     }
 
-
     @Override
     public void onCreate(){
         super.onCreate();
-        System.out.println("SingleTon OnCreate");
+        Log.d("Data", "SingleTon OnCreate");
         Parse.initialize(this);
-        System.out.println("Parse initialiseret");
+        Log.d("Data", "Parse initialiseret");
         if(spots==null){
-            System.out.println("Spots er null");
+            Log.d("Data", "Spots er null");
             // Asynkront kald til DB
             ParseQuery<ParseObject> query2 = ParseQuery.getQuery("Spots");
             query2.findInBackground(new FindCallback<ParseObject>() {
@@ -60,13 +60,14 @@ public class SingleTon extends Application {
                             ));
 
                         }
-                        System.out.println("Done with spots!");
+                        Log.d("Data", "Done with spots!");
                     } else {
                         Log.d("score", "Error: " + e.getMessage());
                     }
                 }
             });
         }
+
         if(locationManager==null){
             // Lav en locationmanager
         }
@@ -74,4 +75,9 @@ public class SingleTon extends Application {
             // Lav en locationlistener
         }
     }
+
+    public static void fetchData(){
+
+    }
+
 }

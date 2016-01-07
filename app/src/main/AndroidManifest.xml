@@ -36,6 +36,7 @@
             android:name=".GMapsAktivitet"
             android:label="@string/title_activity_gmaps_aktivitet"
             android:screenOrientation="portrait" />
+
     </application>
 
 </manifest>

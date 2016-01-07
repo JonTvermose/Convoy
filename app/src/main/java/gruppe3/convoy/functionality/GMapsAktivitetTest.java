@@ -1,19 +1,14 @@
-package gruppe3.convoy;
+package gruppe3.convoy.functionality;
 
 import android.app.Activity;
 import android.app.Dialog;
-import android.app.FragmentManager;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -23,9 +18,7 @@ import android.widget.Toast;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
-import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -38,28 +31,21 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import gruppe3.convoy.functionality.HttpConnection;
-import gruppe3.convoy.functionality.PathJSONParser;
-import gruppe3.convoy.functionality.SingleTon;
-import gruppe3.convoy.functionality.Spot;
+import gruppe3.convoy.Main;
+import gruppe3.convoy.R;
 
-public class GMapsAktivitet extends Fragment implements OnMapReadyCallback {
+public class GMapsAktivitetTest extends Activity implements OnMapReadyCallback {
 
     public static GoogleMap gMap;
     private final int MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
     private Spot spot;
-    View view;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                                Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        view = inflater.inflate(R.layout.activity_gmaps_aktivitet, container, false);
-//@Override
-//public void onCreate(Bundle savedInstanceState) {
-//    super.onCreate(savedInstanceState);
-//    setContentView(R.layout.activity_gmaps_aktivitet);
-    getMap();
+        setContentView(R.layout.activity_gmaps_aktivitet);
+
+        getMap();
 
 //        if (ContextCompat.checkSelfPermission(this,
 //                Manifest.permission.ACCESS_FINE_LOCATION)
@@ -92,7 +78,6 @@ public class GMapsAktivitet extends Fragment implements OnMapReadyCallback {
 //            Log.d("Access", "ACCESS_FINE_LOCATION er ok");
 //            getMap();
 //        }
-        return view;
     }
 
     @Override
@@ -123,7 +108,7 @@ public class GMapsAktivitet extends Fragment implements OnMapReadyCallback {
         try {
             if (gMap == null) {
 //                MapView mMapView = (MapView) view.findViewById(R.id.mapView);
-                SupportMapFragment m = ((SupportMapFragment) getChildFragmentManager().
+                MapFragment m = ((MapFragment) getFragmentManager().
                         findFragmentById(R.id.map));
 //                onMapReady(((SupportMapFragment) Main.fragmentManager.
 //                                findFragmentById(R.id.mapView)).getMap());
@@ -179,7 +164,7 @@ public class GMapsAktivitet extends Fragment implements OnMapReadyCallback {
 
             @Override
             public boolean onMarkerClick(Marker marker) {
-                final Dialog dialog = new Dialog(getActivity());
+                final Dialog dialog = new Dialog(GMapsAktivitetTest.this);
                 dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
                 dialog.setContentView(R.layout.fragment_spot); // XML-layout til Dialog-boksen
 
@@ -193,7 +178,7 @@ public class GMapsAktivitet extends Fragment implements OnMapReadyCallback {
 
                     /* Henter rute til POI */
                     Location startLoc = SingleTon.myLocation.getLocation();
-                    String url = GMapsAktivitet.this.getMapsApiDirectionsUrl(startLoc, GMapsAktivitet.this.spot.getPos());
+                    String url = GMapsAktivitetTest.this.getMapsApiDirectionsUrl(startLoc, GMapsAktivitetTest.this.spot.getPos());
                     ReadTask downloadTask = new ReadTask();
                     downloadTask.execute(url);
 
@@ -246,11 +231,11 @@ public class GMapsAktivitet extends Fragment implements OnMapReadyCallback {
                     route.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            Toast.makeText(getActivity(), "Drawing route.", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(GMapsAktivitetTest.this, "Drawing route.", Toast.LENGTH_SHORT).show();
                             if(polyLineOptions==null){ // Kan fjernes så længe knappen er deaktiveret indtil ruten er modtaget og parset
-                                Toast.makeText(getActivity(), "Route not ready!", Toast.LENGTH_LONG).show();
+                                Toast.makeText(GMapsAktivitetTest.this, "Route not ready!", Toast.LENGTH_LONG).show();
                             } else {
-                                poly = GMapsAktivitet.this.gMap.addPolyline(polyLineOptions);
+                                poly = GMapsAktivitetTest.this.gMap.addPolyline(polyLineOptions);
                                 dialog.hide();
                             }
                         }
@@ -268,7 +253,7 @@ public class GMapsAktivitet extends Fragment implements OnMapReadyCallback {
                 } catch (Exception e) {
                     // TO DO : Fejlhåndtering
                     // Hvad skal der ske hvis man klikker på en marker som vi ikke kan identificere?
-                    Toast.makeText(getActivity(), "Could not find matching POI: " + marker.getTitle(), Toast.LENGTH_LONG).show();
+                    Toast.makeText(GMapsAktivitetTest.this, "Could not find matching POI: " + marker.getTitle(), Toast.LENGTH_LONG).show();
                 }
 
                 return true;

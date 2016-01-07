@@ -16,7 +16,7 @@ import android.widget.Switch;
  */
 public class AdvancedFragment extends Fragment {
 
-    static EditText dest,maxSpeed;
+    static EditText dest;
     static NumberPicker timer,minutter;
     static Switch roadTrain;
     public static String[] hours,mins;
@@ -51,7 +51,7 @@ public class AdvancedFragment extends Fragment {
 
         minutter.setMinValue(0);
         minutter.setMaxValue(11);
-        minutter.setWrapSelectorWheel(false);
+//        minutter.setWrapSelectorWheel(true);
         minutter.setDisplayedValues(mins);
         minutter.setValue(0);
 
