@@ -32,10 +32,6 @@
             android:name="com.google.android.maps.v2.API_KEY"
             android:value="AIzaSyCZSGpLIQ6JUmEJsj8TexBJMdrVZ-mwu40" />
 
-        <activity
-            android:name=".GMapsAktivitet"
-            android:label="@string/title_activity_gmaps_aktivitet"
-            android:screenOrientation="portrait" />
 
     </application>
 
