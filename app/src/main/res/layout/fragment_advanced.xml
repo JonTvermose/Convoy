@@ -29,6 +29,8 @@
 
             <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
                 android:text="Destination:"
+                android:textSize="20dp"
+                android:fontFamily="sans-serif-medium"
                 android:padding="8dp" />
 
             <EditText
@@ -36,9 +38,11 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/destination_editText"
                 android:gravity="center"
-                android:textSize="30dp"
+                android:textSize="16dp"
                 android:padding="10dp"
-                android:linksClickable="true" />
+                android:linksClickable="true"
+                android:hint="Type in destination city or address"
+                />
 
         </LinearLayout>
 
@@ -105,16 +109,17 @@
             android:layout_below="@+id/linje2"
             android:id="@+id/linje3"
             android:elevation="@dimen/elevation_cards"
+            android:padding="8dp"
 
             >
             <Switch
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Road train > 25m"
+                android:textAlignment="textStart"
                 android:id="@+id/roadTrain_switch"
                 android:checked="false"
                 android:layout_below="@+id/linje3"
-                android:layout_centerHorizontal="true"
                 android:layout_marginTop="10dp"
                 android:background="@drawable/knap_blaa_bg"
                 android:layout_marginLeft="20dp"

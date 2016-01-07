@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ripple xmlns:android="http://schemas.android.com/apk/res/android"
+android:color="@color/pressed_color">
+<item>
+  <selector>
+    <!-- Den mest generelle skal være nederst -->
+    <item>
+      <shape android:shape="rectangle">
+        <corners android:radius="48dp"/>
+        <solid android:color="@color/primary_color"/>
+      </shape>
+    </item>
+
+  </selector>
+</item>
+</ripple>

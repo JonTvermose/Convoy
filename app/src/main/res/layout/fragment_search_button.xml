@@ -13,11 +13,12 @@
         android:layout_marginRight="16dp"
         android:layout_marginLeft="16dp"
         android:text="SEARCH"
+        android:fontFamily="sans-serif-medium"
         android:id="@+id/searchButton"
         android:layout_gravity="center_horizontal"
         android:background="@drawable/knap_blaa_bg"
         android:textSize="60sp"
         android:layout_margin="10dp"
-        android:elevation="2dp"/>
+        android:elevation="@dimen/elevation_buttons"/>
 
 </FrameLayout>
