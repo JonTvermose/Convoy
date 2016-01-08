@@ -2,6 +2,7 @@ package gruppe3.convoy;
 
 
 import android.app.ProgressDialog;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -70,60 +71,69 @@ public class MainFragment extends Fragment {
                 SingleTon.minutter = AdvancedFragment.minutter.getValue();
                 SingleTon.dest = AdvancedFragment.dest.getText().toString();
 
-                if(SingleTon.spots != null) {
-                    // Laver en liste af spots der matcher søgekritierne, baseret på den totale liste af spots.
-                    SingleTon.searchedSpots = new ArrayList<Spot>();
-                    for (Spot searchedSpot : SingleTon.spots) {
-                        boolean mark = true;
-                        if (SingleTon.adblue) {
-                            if (!searchedSpot.isAdblue()) {
-                                mark = false;
+                new AsyncTask<Void, Void, String>(){
+                    @Override
+                    protected String doInBackground(Void... params) {
+                        if(SingleTon.spots != null) {
+                            // Laver en liste af spots der matcher søgekritierne, baseret på den totale liste af spots.
+                            SingleTon.searchedSpots = new ArrayList<Spot>();
+                            for (Spot searchedSpot : SingleTon.spots) {
+                                boolean mark = true;
+                                if (SingleTon.adblue) {
+                                    if (!searchedSpot.isAdblue()) {
+                                        mark = false;
+                                    }
+                                }
+                                if (SingleTon.food) {
+                                    if (!searchedSpot.isFood()) {
+                                        mark = false;
+                                    }
+                                }
+                                if (SingleTon.wc) {
+                                    if (!searchedSpot.isWc()) {
+                                        mark = false;
+                                    }
+                                }
+                                if (SingleTon.bed) {
+                                    if (!searchedSpot.isBed()) {
+                                        mark = false;
+                                    }
+                                }
+                                if (SingleTon.bath) {
+                                    if (!searchedSpot.isBath()) {
+                                        mark = false;
+                                    }
+                                }
+                                if (SingleTon.fuel) {
+                                    if (!searchedSpot.isFuel()) {
+                                        mark = false;
+                                    }
+                                }
+                                if (SingleTon.roadTrain) {
+                                    if (!searchedSpot.isRoadtrain()) {
+                                        mark = false;
+                                    }
+                                }
+                                if (mark) { // Hvis alle tjek er gået godt, så tilføjes spot til listen over de søgte spots
+                                    SingleTon.searchedSpots.add(searchedSpot);
+                                }
                             }
+                            Log.d("Søgning", "Der blev fundet: " + SingleTon.searchedSpots.size() + " søgeresultater ud af: " + SingleTon.spots.size());
                         }
-                        if (SingleTon.food) {
-                            if (!searchedSpot.isFood()) {
-                                mark = false;
-                            }
-                        }
-                        if (SingleTon.wc) {
-                            if (!searchedSpot.isWc()) {
-                                mark = false;
-                            }
-                        }
-                        if (SingleTon.bed) {
-                            if (!searchedSpot.isBed()) {
-                                mark = false;
-                            }
-                        }
-                        if (SingleTon.bath) {
-                            if (!searchedSpot.isBath()) {
-                                mark = false;
-                            }
-                        }
-                        if (SingleTon.fuel) {
-                            if (!searchedSpot.isFuel()) {
-                                mark = false;
-                            }
-                        }
-                        if (SingleTon.roadTrain) {
-                            if (!searchedSpot.isRoadtrain()) {
-                                mark = false;
-                            }
-                        }
-                        if (mark) { // Hvis alle tjek er gået godt, så tilføjes spot til listen over de søgte spots
-                            SingleTon.searchedSpots.add(searchedSpot);
-                        }
+                        progressDialog.setMessage(SingleTon.searchedSpots.size() + " matches found.");
+                        return null;
                     }
-                    Log.d("Søgning", "Der blev fundet: " + SingleTon.searchedSpots.size() + " søgeresultater ud af: " + SingleTon.spots.size());
-                }
-                progressDialog.setMessage(SingleTon.searchedSpots.size() + " matches found.");
 
-                getFragmentManager()
-                        .beginTransaction()
-                        .replace(R.id.MainFragment, new GMapsFragment())
-                        .setTransitionStyle(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
-                        .addToBackStack(null)
-                        .commit();
+                    @Override
+                    protected void onPostExecute(String msg) {
+                        getFragmentManager()
+                                .beginTransaction()
+                                .replace(R.id.MainFragment, new GMapsFragment())
+                                .setTransitionStyle(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+                                .addToBackStack(null)
+                                .commit();
+                    }
+                }.execute();
             }
         });
         return rod;
