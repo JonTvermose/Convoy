@@ -50,7 +50,7 @@ public class GMapsFragment extends Fragment implements OnMapReadyCallback, View.
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        view = inflater.inflate(R.layout.fragment_gmaps, container, false);
+        view = inflater.inflate(R.layout.fragment_gMaps, container, false);
 
         /**
          * Knap til at zoome ind på nuværende lokation
@@ -374,7 +374,7 @@ public class GMapsFragment extends Fragment implements OnMapReadyCallback, View.
             // TO DO - når der tilføjes et nyt POI på nuværende sted
             final Dialog addDialog = new Dialog(getActivity());
             addDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-            addDialog.setContentView(R.layout.dialog_addloc); // XML-layout til Dialog-boksen
+            addDialog.setContentView(R.layout.dialog_addLoc); // XML-layout til Dialog-boksen
 
             addDialog.show();
         }

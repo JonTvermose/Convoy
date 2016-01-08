@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".GMapsFragment">
+
+
+
+
+    <fragment
+        android:id="@+id/map"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        />
+
+    <GridLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+
+
+        >
+
+
+        <GridLayout
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:elevation="2dp"
+            android:background="@color/light_blue_600"
+            >
+
+        <ImageView
+            android:layout_width="56dp"
+            android:layout_height="match_parent"
+            android:id="@+id/imageHome"
+            android:layout_row="0"
+            android:layout_column="0"
+            android:background="@drawable/toolbar_buttons"
+            android:src="@drawable/ic_home_black_48dp"
+            android:padding="8dp"
+            android:layout_marginRight="20dp"
+            android:fadingEdge="horizontal"
+            android:alpha="1"
+            android:clickable="true"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="Destinations"
+            android:fontFamily="sans-serif-medium"
+            android:id="@+id/textView"
+            android:padding="4dp"
+            android:layout_gravity="center"
+
+            />
+
+        <ImageView
+            android:layout_width="56dp"
+            android:layout_height="match_parent"
+            android:id="@+id/imageAddLoc"
+            android:layout_row="0"
+            android:layout_column="4"
+            android:background="@drawable/toolbar_buttons"
+            android:src="@drawable/ic_add_location_black_48dp"
+            android:padding="8dp"
+            android:layout_marginLeft="20dp"
+            android:alpha="1"
+            android:clickable="true"
+            />
+        </GridLayout>
+
+
+    </GridLayout>
+
+    <GridLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true">
+
+        <ImageView
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:id="@+id/goButton"
+            android:layout_row="29"
+            android:layout_column="19"
+            android:background="@drawable/route_icon_blue"
+            android:layout_marginRight="16dp"
+            android:layout_marginBottom="24dp"
+            android:elevation="4dp"
+            android:src="@drawable/ic_navigation_black_48dp"
+            android:padding="8dp"
+            android:alpha="1"
+            android:clickable="true"
+            />
+        <ImageView
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:id="@+id/zoomLocation"
+            android:layout_row="30"
+            android:layout_column="19"
+            android:background="@drawable/route_icon_white"
+            android:layout_marginRight="16dp"
+            android:layout_marginBottom="24dp"
+            android:elevation="4dp"
+            android:src="@drawable/ic_my_location_black_48dp"
+            android:padding="8dp"
+            android:alpha="1"
+            android:clickable="true"
+            />
+
+    </GridLayout>
+
+
+</RelativeLayout>
