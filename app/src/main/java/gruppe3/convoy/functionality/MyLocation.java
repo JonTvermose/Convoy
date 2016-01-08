@@ -72,10 +72,6 @@ public class MyLocation implements LocationListener, GoogleApiClient.ConnectionC
             POSUPDATED = true;
             SingleTon.fetchData();
         }
-        if(GMapsFragment.gMap != null && !POSUPDATED){
-            GMapsFragment.gMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()), 12));
-            POSUPDATED = true;
-        }
     }
 
     @Override

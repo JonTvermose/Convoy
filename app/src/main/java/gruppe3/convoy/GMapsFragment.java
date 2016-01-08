@@ -14,7 +14,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -34,6 +36,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import gruppe3.convoy.functionality.AddSpot;
 import gruppe3.convoy.functionality.HttpConnection;
 import gruppe3.convoy.functionality.PathJSONParser;
 import gruppe3.convoy.functionality.SingleTon;
@@ -41,10 +44,11 @@ import gruppe3.convoy.functionality.Spot;
 
 public class GMapsFragment extends Fragment implements OnMapReadyCallback, View.OnClickListener {
 
-    public static GoogleMap gMap;
+    private GoogleMap gMap;
     private Spot spot; // Det spot der er klikket på
     private View view;
     private ImageView goButton, zoomLocation, addLocation;
+    private AddSpot addSpot;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -108,7 +112,9 @@ public class GMapsFragment extends Fragment implements OnMapReadyCallback, View.
         if(SingleTon.spots!=null){
             int id = 0;
             for (Spot spot : SingleTon.spots) {
-                Marker mark = gMap.addMarker(new MarkerOptions().position(spot.getPos()).title(spot.getDesc()));
+                Marker mark = gMap.addMarker(new MarkerOptions()
+                        .position(spot.getPos())
+                        .title(spot.getDesc()));
                 mark.setDraggable(false);
                 mark.setSnippet(Integer.toString(id)); // Tilføj unikt ID til marker, svarende til indekset for det pågældende spot i listen over spots
                 id++;
@@ -123,7 +129,11 @@ public class GMapsFragment extends Fragment implements OnMapReadyCallback, View.
         gMap.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
             @Override
             public void onMapLongClick(LatLng latLng) {
-                // TO DO - når der tilføjes et nyt sted der hvor man har klikket
+                Location loc = new Location("");
+                loc.setLatitude(latLng.latitude);
+                loc.setLongitude(latLng.longitude);
+                addSpot = new AddSpot(loc, getActivity());
+                GMapsFragment.this.onClick(addLocation); // Genbruger onClick-metoden
             }
         });
 
@@ -228,6 +238,7 @@ public class GMapsFragment extends Fragment implements OnMapReadyCallback, View.
                     // TO DO : Fejlhåndtering
                     // Hvad skal der ske hvis man klikker på en marker som vi ikke kan identificere?
                     Toast.makeText(getActivity(), "Could not find matching POI: " + marker.getTitle(), Toast.LENGTH_LONG).show();
+                    Log.d("Kort", "Kunne ikke finde det rigtige spot. SingleTon.spots størrelse: " + SingleTon.spots.size() + " , der søges efter spot nr: " + marker.getSnippet());
                 }
 
                 return true;
@@ -371,12 +382,131 @@ public class GMapsFragment extends Fragment implements OnMapReadyCallback, View.
             }
         } else if (v==addLocation){
             Log.d("Kort", "Der klikkes på tilføj sted-knap");
-            // TO DO - når der tilføjes et nyt POI på nuværende sted
+            // Hvis der er klikket på knappen er addSpot = null og dermed skal nuværende lokation bruges
+            if(addSpot==null) {
+                addSpot = new AddSpot(SingleTon.myLocation.getLocation(), getActivity());
+            }
+
             final Dialog addDialog = new Dialog(getActivity());
             addDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
             addDialog.setContentView(R.layout.dialog_addlocation); // XML-layout til Dialog-boksen
 
+            final ImageView adblue = (ImageView) addDialog.findViewById(R.id.adblue_img);
+            adblue.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (!addSpot.adblue) {
+                        addSpot.adblue = true;
+                        adblue.setImageResource(R.drawable.adblue_t_check);
+                    } else {
+                        addSpot.adblue = false;
+                        adblue.setImageResource(R.drawable.adblue_t);
+                    }
+                }
+            });
+            final ImageView bed = (ImageView) addDialog.findViewById(R.id.bed_img);
+            bed.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (!addSpot.bed) {
+                        addSpot.bed = true;
+                        bed.setImageResource(R.drawable.bed_t_check);
+                    } else {
+                        addSpot.bed = false;
+                        bed.setImageResource(R.drawable.bed_t);
+                    }
+                }
+            });
+            final ImageView bath = (ImageView) addDialog.findViewById(R.id.bath_img);
+            bath.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (!addSpot.bath) {
+                        addSpot.bath = true;
+                        bath.setImageResource(R.drawable.bath_t_check);
+                    } else {
+                        addSpot.bath = false;
+                        bath.setImageResource(R.drawable.bath_t);
+                    }
+                }
+            });
+            final ImageView food = (ImageView) addDialog.findViewById(R.id.food_img);
+            food.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if(!addSpot.food){
+                        addSpot.food = true;
+                        food.setImageResource(R.drawable.food_t_check);
+                    } else {
+                        addSpot.food = false;
+                        food.setImageResource(R.drawable.food_t);
+                    }
+                }
+            });
+            final ImageView fuel = (ImageView) addDialog.findViewById(R.id.fuel_img);
+            fuel.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (!addSpot.fuel) {
+                        addSpot.fuel = true;
+                        fuel.setImageResource(R.drawable.fuel_t_check);
+                    } else {
+                        addSpot.fuel = false;
+                        fuel.setImageResource(R.drawable.fuel_t);
+                    }
+                }
+            });
+            final ImageView wc = (ImageView) addDialog.findViewById(R.id.wc_img);
+            wc.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (!addSpot.wc) {
+                        addSpot.wc = true;
+                        wc.setImageResource(R.drawable.wc_t_check);
+                    } else {
+                        addSpot.wc = false;
+                        wc.setImageResource(R.drawable.wc_t);
+                    }
+                }
+            });
+
+            Switch roadTrain = (Switch) addDialog.findViewById(R.id.loc_switch);
+            roadTrain.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    addSpot.roadTrain = isChecked;
+                }
+            });
+
             addDialog.show();
+
+            TextView address = (TextView) addDialog.findViewById(R.id.loc_addressTxt);
+            address.setText(addSpot.getAddressTxt()); // Opdaterer adressefeltet med adressen
+
+            Button createLocation = (Button) addDialog.findViewById(R.id.createLocButton);
+            createLocation.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    // TO DO - hent data fra addSpot og send det asynkront til parse.com
+                    addDialog.hide();
+                    // Tilføjer spot til google map kortet
+                    LatLng latLng = new LatLng(addSpot.loc.getLatitude(), addSpot.loc.getLongitude());
+                    Marker mark = gMap.addMarker(new MarkerOptions().
+                            position(latLng).
+                            title(addSpot.getAddressTxt()));
+                    mark.setDraggable(false);
+                    mark.setSnippet(Integer.toString(SingleTon.spots.size()));
+//                    gMap.addMarker(mark);
+
+                    // Tilføjer spot til den hentede liste af spots, så det har samme funktionalitet som alle andre spots
+                    Spot newSpot = new Spot(addSpot.getAddressTxt(), addSpot.adblue, addSpot.food, addSpot.bath, addSpot.bed, addSpot.wc, addSpot.fuel, addSpot.roadTrain, latLng);
+                    SingleTon.spots.add(newSpot);
+                    Toast.makeText(getActivity(), "Location added", Toast.LENGTH_SHORT).show(); // Muligvis på onSuccess fra parse.com?
+                    addSpot = null; // Sikrer vi nulstiller data hvis der tilføjes flere spots i samme session.
+                }
+            });
+
+
         }
     }
 
