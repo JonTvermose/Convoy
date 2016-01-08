@@ -24,6 +24,7 @@ public class MainFragment extends Fragment {
     private ViewPager mPager;
     private PagerAdapter mPagerAdapter;
     public static Button search;
+    private boolean session = false;
 
     public MainFragment() {
         // Required empty public constructor
@@ -46,22 +47,26 @@ public class MainFragment extends Fragment {
 
         // Search-knappen's onClickListener
         search = (Button) rod.findViewById(R.id.searchButton);
-        search.setEnabled(false);
-        search.setText(SingleTon.searchTxt1);
-        search.setTextSize(TypedValue.COMPLEX_UNIT_SP, 30);
+        if(!session){
+            search.setEnabled(false);
+            search.setText(SingleTon.searchTxt1);
+            search.setTextSize(TypedValue.COMPLEX_UNIT_SP, 30);
+        }
 
         search.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                session = true;
                 SingleTon.roadTrain = AdvancedFragment.roadTrain.isChecked();
                 SingleTon.timer = AdvancedFragment.timer.getValue();
                 SingleTon.minutter = AdvancedFragment.minutter.getValue();
                 SingleTon.dest = AdvancedFragment.dest.getText().toString();
 
-                getChildFragmentManager()
+                getFragmentManager()
                         .beginTransaction()
-                        .replace(R.id.StartLayoutFrame, new GMapsFragment())
+                        .replace(R.id.MainFragment, new GMapsFragment())
                         .setTransitionStyle(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+                        .addToBackStack(null)
                         .commit();
             }
         });

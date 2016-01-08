@@ -33,6 +33,7 @@ public class AdvancedFragment extends Fragment {
                              Bundle savedInstanceState) {
         View rod = inflater.inflate(R.layout.fragment_advanced, container, false);
         dest = (EditText) rod.findViewById(R.id.destination_editText);
+        dest.setText(SingleTon.dest);
 
         timer = (NumberPicker) rod.findViewById(R.id.timer_numberPicker);
         hours = new String[24];
@@ -42,7 +43,7 @@ public class AdvancedFragment extends Fragment {
         timer.setMaxValue(23);
         timer.setWrapSelectorWheel(true);
         timer.setDisplayedValues(hours);
-        timer.setValue(0);
+        timer.setValue(SingleTon.timer);
 
         minutter = (NumberPicker) rod.findViewById(R.id.minutter_numberPicker);
         mins = new String[12];
@@ -52,7 +53,7 @@ public class AdvancedFragment extends Fragment {
         minutter.setMaxValue(11);
         minutter.setWrapSelectorWheel(true);
         minutter.setDisplayedValues(mins);
-        minutter.setValue(0);
+        minutter.setValue(SingleTon.minutter);
 
         roadTrain = (Switch) rod.findViewById(R.id.roadTrain_switch);
         roadTrain.setChecked(SingleTon.roadTrain);

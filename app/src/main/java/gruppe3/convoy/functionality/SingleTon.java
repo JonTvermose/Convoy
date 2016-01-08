@@ -28,7 +28,7 @@ public class SingleTon extends Application {
     public static MyLocation myLocation;
     public static LocationManager locationManager;
     public static LocationListener locationListener;
-    public static String dest;
+    public static String dest = "";
     public static int timer,minutter;
     public static final String searchTxt1 = "Finding Location", searchTxt2 = "Fetching Data", searchTxt3 = "SEARCH";
     public static Boolean food, wc, bed, bath, fuel, adblue, roadTrain = false;
@@ -43,13 +43,6 @@ public class SingleTon extends Application {
         Log.d("Data", "SingleTon OnCreate");
         Parse.initialize(this);
         Log.d("Data", "Parse initialiseret");
-
-        if(locationManager==null){
-            // Lav en locationmanager
-        }
-        if(locationListener==null){
-            // Lav en locationlistener
-        }
     }
 
     public static void fetchData(){
