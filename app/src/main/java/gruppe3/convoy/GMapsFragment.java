@@ -1,17 +1,13 @@
 package gruppe3.convoy;
 
-import android.app.Activity;
 import android.app.Dialog;
-import android.app.FragmentManager;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Location;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,8 +20,6 @@ import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapFragment;
-import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
@@ -45,7 +39,7 @@ import gruppe3.convoy.functionality.PathJSONParser;
 import gruppe3.convoy.functionality.SingleTon;
 import gruppe3.convoy.functionality.Spot;
 
-public class GMapsAktivitet extends Fragment implements OnMapReadyCallback, View.OnClickListener {
+public class GMapsFragment extends Fragment implements OnMapReadyCallback, View.OnClickListener {
 
     public static GoogleMap gMap;
     private Spot spot; // Det spot der er klikket på
@@ -56,7 +50,7 @@ public class GMapsAktivitet extends Fragment implements OnMapReadyCallback, View
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        view = inflater.inflate(R.layout.activity_gmaps_aktivitet, container, false);
+        view = inflater.inflate(R.layout.fragment_gmaps, container, false);
 
         /**
          * Knap til at zoome ind på nuværende lokation
@@ -145,7 +139,7 @@ public class GMapsAktivitet extends Fragment implements OnMapReadyCallback, View
                 goButton.setVisibility(View.GONE); // Siker at GO-knappen forsvinder hvis man har trykket på et andet spot før dette
                 final Dialog dialog = new Dialog(getActivity());
                 dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-                dialog.setContentView(R.layout.fragment_spot); // XML-layout til Dialog-boksen
+                dialog.setContentView(R.layout.dialog_spot); // XML-layout til Dialog-boksen
 
                 // Fjern rute fra kort hvis der eksisterer et i forvejen
                 if (poly != null) {
@@ -157,7 +151,7 @@ public class GMapsAktivitet extends Fragment implements OnMapReadyCallback, View
 
                     /* Henter rute til POI */
                     Location startLoc = SingleTon.myLocation.getLocation();
-                    String url = GMapsAktivitet.this.getMapsApiDirectionsUrl(startLoc, GMapsAktivitet.this.spot.getPos());
+                    String url = GMapsFragment.this.getMapsApiDirectionsUrl(startLoc, GMapsFragment.this.spot.getPos());
                     ReadTask downloadTask = new ReadTask();
                     downloadTask.execute(url);
 
@@ -214,7 +208,7 @@ public class GMapsAktivitet extends Fragment implements OnMapReadyCallback, View
                             if (polyLineOptions == null) { // Kan fjernes så længe knappen er deaktiveret indtil ruten er modtaget og parset
                                 Toast.makeText(getActivity(), "Route not ready!", Toast.LENGTH_LONG).show();
                             } else {
-                                poly = GMapsAktivitet.this.gMap.addPolyline(polyLineOptions);
+                                poly = GMapsFragment.this.gMap.addPolyline(polyLineOptions);
                                 dialog.hide();
                                 goButton.setVisibility(View.VISIBLE); // Viser GO-knappen
                             }
@@ -376,7 +370,13 @@ public class GMapsAktivitet extends Fragment implements OnMapReadyCallback, View
                 Toast.makeText(getActivity(), "You must choose where to go!", Toast.LENGTH_LONG).show(); // Safety-text, bør ikke rammes
             }
         } else if (v==addLocation){
+            Log.d("Kort", "Der klikkes på tilføj sted-knap");
             // TO DO - når der tilføjes et nyt POI på nuværende sted
+            final Dialog addDialog = new Dialog(getActivity());
+            addDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+            addDialog.setContentView(R.layout.dialog_addloc); // XML-layout til Dialog-boksen
+
+            addDialog.show();
         }
     }
 

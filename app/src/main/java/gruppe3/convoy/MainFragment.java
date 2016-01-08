@@ -60,7 +60,7 @@ public class MainFragment extends Fragment {
 
                 getChildFragmentManager()
                         .beginTransaction()
-                        .replace(R.id.StartLayoutFrame, new GMapsAktivitet())
+                        .replace(R.id.StartLayoutFrame, new GMapsFragment())
                         .setTransitionStyle(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
                         .commit();
             }

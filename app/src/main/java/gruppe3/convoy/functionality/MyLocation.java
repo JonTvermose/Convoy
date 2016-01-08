@@ -17,8 +17,7 @@ import com.google.android.gms.maps.model.LatLng;
 import java.text.DateFormat;
 import java.util.Date;
 
-import gruppe3.convoy.GMapsAktivitet;
-import gruppe3.convoy.Main;
+import gruppe3.convoy.GMapsFragment;
 import gruppe3.convoy.MainFragment;
 
 /**
@@ -73,8 +72,8 @@ public class MyLocation implements LocationListener, GoogleApiClient.ConnectionC
             POSUPDATED = true;
             SingleTon.fetchData();
         }
-        if(GMapsAktivitet.gMap != null && !POSUPDATED){
-            GMapsAktivitet.gMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()), 12));
+        if(GMapsFragment.gMap != null && !POSUPDATED){
+            GMapsFragment.gMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()), 12));
             POSUPDATED = true;
         }
     }
