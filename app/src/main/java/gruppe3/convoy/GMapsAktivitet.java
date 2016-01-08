@@ -48,10 +48,9 @@ import gruppe3.convoy.functionality.Spot;
 public class GMapsAktivitet extends Fragment implements OnMapReadyCallback, View.OnClickListener {
 
     public static GoogleMap gMap;
-    private final int MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
     private Spot spot; // Det spot der er klikket på
     private View view;
-    private ImageView goButton, zoomLocation;
+    private ImageView goButton, zoomLocation, addLocation;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -65,6 +64,9 @@ public class GMapsAktivitet extends Fragment implements OnMapReadyCallback, View
         zoomLocation = (ImageView) view.findViewById(R.id.zoomLocation);
         zoomLocation.setOnClickListener(this);
 
+        addLocation = (ImageView) view.findViewById(R.id.imageAddLoc);
+        addLocation.setOnClickListener(this);
+
         /*
         Knap til at starte vejvisning til et valgt POI
          */
@@ -73,63 +75,7 @@ public class GMapsAktivitet extends Fragment implements OnMapReadyCallback, View
         goButton.setOnClickListener(this);
 
         getMap();
-
-//        if (ContextCompat.checkSelfPermission(this,
-//                Manifest.permission.ACCESS_FINE_LOCATION)
-//                != PackageManager.PERMISSION_GRANTED) {
-//            // Hvis vi ikke har permissions skal vi bede om permission
-//            Log.d("Access", "Mangler adgang til ACCESS_FINE_LOCATION");
-//
-//            // Should we show an explanation?
-//            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
-//                    Manifest.permission.ACCESS_FINE_LOCATION)) {
-//                // TODO
-//                // Show an expanation to the user *asynchronously* -- don't block
-//                // this thread waiting for the user's response! After the user
-//                // sees the explanation, try again to request the permission.
-//
-//            } else {
-//
-//                // No explanation needed, we can request the permission.
-//
-//                ActivityCompat.requestPermissions(this,
-//                        new String[]{Manifest.permission.READ_CONTACTS},
-//                        MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
-//
-//                // MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION is an
-//                // app-defined int constant. The callback method gets the
-//                // result of the request.
-//            }
-//        } else {
-//            // Hvis vi har tilladelse i orden startes maps bare
-//            Log.d("Access", "ACCESS_FINE_LOCATION er ok");
-//            getMap();
-//        }
         return view;
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode,
-                                           String permissions[], int[] grantResults) {
-        switch (requestCode) {
-            case MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION: {
-                // If request is cancelled, the result arrays are empty.
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    // permission was granted, yay! Do the
-                    // contacts-related task you need to do.
-                    getMap(); // Hent google maps kort m.m. Appen fortsætter
-
-                } else {
-                    // TODO - permission denied, boo! Disable the
-                    // functionality that depends on this permission.
-                }
-                return;
-            }
-            default: {
-                // TODO - der er sket en fejl
-            }
-        }
     }
 
     private void getMap(){
@@ -165,20 +111,33 @@ public class GMapsAktivitet extends Fragment implements OnMapReadyCallback, View
         gMap.moveCamera(CameraUpdateFactory.newLatLngZoom(cPos, 12));
 
         // Tilføjer markers til Google Maps
-        int id = 0;
-        for (Spot spot : SingleTon.spots) {
-            Marker mark = gMap.addMarker(new MarkerOptions().position(spot.getPos()).title(spot.getDesc()));
-            mark.setDraggable(false);
-            mark.setSnippet(Integer.toString(id)); // Tilføj unikt ID til marker, svarende til indekset for det pågældende spot i listen over spots
-            id++;
+        if(SingleTon.spots!=null){
+            int id = 0;
+            for (Spot spot : SingleTon.spots) {
+                Marker mark = gMap.addMarker(new MarkerOptions().position(spot.getPos()).title(spot.getDesc()));
+                mark.setDraggable(false);
+                mark.setSnippet(Integer.toString(id)); // Tilføj unikt ID til marker, svarende til indekset for det pågældende spot i listen over spots
+                id++;
+            }
+            Log.d("Kort", "Tilføjet " + id + " markers(spots) til kortet");
+        } else {
+            Toast.makeText(getActivity(), "No destinations was found. Try to widen your search.", Toast.LENGTH_LONG).show();
+            Log.d("Error", "Der er ingen spots at vise på kortet");
         }
-        Log.d("Kort", "Tilføjet " + id + " markers(spots) til kortet");
+
+        // Clicklistener til når der trykkes på kortet og holdes nede i lang tid
+        gMap.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
+            @Override
+            public void onMapLongClick(LatLng latLng) {
+                // TO DO - når der tilføjes et nyt sted der hvor man har klikket
+            }
+        });
 
         // Clicklistener til markers. Når man klikker på en marker åbnes en Dialog-boks
         gMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             Polyline poly = null;
             PolylineOptions polyLineOptions = null;
-            TextView distance, title ;
+            TextView distance, title;
             Button route;
 
             @Override
@@ -189,7 +148,7 @@ public class GMapsAktivitet extends Fragment implements OnMapReadyCallback, View
                 dialog.setContentView(R.layout.fragment_spot); // XML-layout til Dialog-boksen
 
                 // Fjern rute fra kort hvis der eksisterer et i forvejen
-                if(poly!=null){
+                if (poly != null) {
                     poly.remove();
                 }
 
@@ -252,7 +211,7 @@ public class GMapsAktivitet extends Fragment implements OnMapReadyCallback, View
                         @Override
                         public void onClick(View v) {
                             Toast.makeText(getActivity(), "Drawing route.", Toast.LENGTH_SHORT).show();
-                            if(polyLineOptions==null){ // Kan fjernes så længe knappen er deaktiveret indtil ruten er modtaget og parset
+                            if (polyLineOptions == null) { // Kan fjernes så længe knappen er deaktiveret indtil ruten er modtaget og parset
                                 Toast.makeText(getActivity(), "Route not ready!", Toast.LENGTH_LONG).show();
                             } else {
                                 poly = GMapsAktivitet.this.gMap.addPolyline(polyLineOptions);
@@ -416,6 +375,9 @@ public class GMapsAktivitet extends Fragment implements OnMapReadyCallback, View
             } else {
                 Toast.makeText(getActivity(), "You must choose where to go!", Toast.LENGTH_LONG).show(); // Safety-text, bør ikke rammes
             }
+        } else if (v==addLocation){
+            // TO DO - når der tilføjes et nyt POI på nuværende sted
         }
     }
+
 }
