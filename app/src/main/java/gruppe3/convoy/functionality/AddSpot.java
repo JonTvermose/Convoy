@@ -15,7 +15,7 @@ import gruppe3.convoy.Main;
 /**
  * Created by Jon on 08/01/2016.
  */
-public class AddSpot implements View.OnClickListener {
+public class AddSpot {
 
     public Boolean food=false, wc=false, bed=false, bath=false, fuel=false, adblue=false, roadTrain = false;
     public Location loc;
@@ -27,7 +27,7 @@ public class AddSpot implements View.OnClickListener {
             Geocoder geo = new Geocoder(context.getApplicationContext(), Locale.getDefault());
             List<Address> addresses = geo.getFromLocation(loc.getLatitude(), loc.getLongitude(), 1);
             if (addresses.isEmpty()) {
-                // TO DO
+                addressTxt = "No address found";
             }
             else {
                 if (addresses.size() > 0) {
@@ -40,13 +40,8 @@ public class AddSpot implements View.OnClickListener {
             addressTxt = "No address found";
             e.printStackTrace(); // getFromLocation() may sometimes fail
         }
-    }
-
-
-    @Override
-    public void onClick(View v) {
-
-
+        addressTxt = addressTxt.replace("null,", ""); // Fjerner stygge grimme null-ord med komma....
+        addressTxt = addressTxt.replace("null", ""); // Fjerner stygge grimme null-ord....
     }
 
     public String getAddressTxt(){

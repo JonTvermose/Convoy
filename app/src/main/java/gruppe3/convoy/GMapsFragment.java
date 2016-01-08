@@ -7,12 +7,14 @@ import android.location.Location;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.view.animation.BounceInterpolator;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
@@ -359,18 +361,18 @@ public class GMapsFragment extends Fragment implements OnMapReadyCallback, View.
 
     @Override
     public void onClick(View v) {
-        if(v==zoomLocation){
+        if (v == zoomLocation) {
             Log.d("Kort", "Der klikkes på Zoomknap");
-            if (gMap != null){
+            if (gMap != null) {
                 LatLng cPos = new LatLng(SingleTon.myLocation.getLocation().getLatitude(), SingleTon.myLocation.getLocation().getLongitude());
                 gMap.animateCamera(CameraUpdateFactory.newLatLngZoom(cPos, 12), 1000, null);
                 Log.d("Kort", "Der zoomes til: " + cPos.latitude + ", " + cPos.longitude);
             } else {
                 Log.d("Kort", "Der blev forsøgt zoomet til lokation, men gMap er null");
             }
-        } else if (v==goButton){
+        } else if (v == goButton) {
             Log.d("Kort", "Der klikkes på GO-knap");
-            if(spot!=null) {
+            if (spot != null) {
                 Intent intent = new Intent(android.content.Intent.ACTION_VIEW,
                         Uri.parse("http://maps.google.com/maps?&daddr="
                                 + spot.getPos().latitude + ","
@@ -380,10 +382,10 @@ public class GMapsFragment extends Fragment implements OnMapReadyCallback, View.
             } else {
                 Toast.makeText(getActivity(), "You must choose where to go!", Toast.LENGTH_LONG).show(); // Safety-text, bør ikke rammes
             }
-        } else if (v==addLocation){
+        } else if (v == addLocation) {
             Log.d("Kort", "Der klikkes på tilføj sted-knap");
             // Hvis der er klikket på knappen er addSpot = null og dermed skal nuværende lokation bruges
-            if(addSpot==null) {
+            if (addSpot == null) {
                 addSpot = new AddSpot(SingleTon.myLocation.getLocation(), getActivity());
             }
 
@@ -434,7 +436,7 @@ public class GMapsFragment extends Fragment implements OnMapReadyCallback, View.
             food.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if(!addSpot.food){
+                    if (!addSpot.food) {
                         addSpot.food = true;
                         food.setImageResource(R.drawable.food_t_check);
                     } else {
@@ -496,7 +498,7 @@ public class GMapsFragment extends Fragment implements OnMapReadyCallback, View.
                             title(addSpot.getAddressTxt()));
                     mark.setDraggable(false);
                     mark.setSnippet(Integer.toString(SingleTon.spots.size()));
-//                    gMap.addMarker(mark);
+                    GMapsFragment.this.dropPinEffect(mark);
 
                     // Tilføjer spot til den hentede liste af spots, så det har samme funktionalitet som alle andre spots
                     Spot newSpot = new Spot(addSpot.getAddressTxt(), addSpot.adblue, addSpot.food, addSpot.bath, addSpot.bed, addSpot.wc, addSpot.fuel, addSpot.roadTrain, latLng);
@@ -505,9 +507,38 @@ public class GMapsFragment extends Fragment implements OnMapReadyCallback, View.
                     addSpot = null; // Sikrer vi nulstiller data hvis der tilføjes flere spots i samme session.
                 }
             });
-
-
         }
     }
 
+    // Animerer en marker på Google Maps med en "drop-pin-effekt"
+    // Tyv stjålet fra https://guides.codepath.com/android/Google-Maps-API-v2-Usage#falling-pin-animation
+    private void dropPinEffect(final Marker marker) {
+        // Handler allows us to repeat a code block after a specified delay
+        final android.os.Handler handler = new android.os.Handler();
+        final long start = SystemClock.uptimeMillis();
+        final long duration = 1500;
+
+        // Use the bounce interpolator
+        final android.view.animation.Interpolator interpolator = new BounceInterpolator();
+
+        // Animate marker with a bounce updating its position every 15ms
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                long elapsed = SystemClock.uptimeMillis() - start;
+                // Calculate t for bounce based on elapsed time
+                float t = Math.max(
+                        1 - interpolator.getInterpolation((float) elapsed
+                                / duration), 0);
+                // Set the anchor
+                marker.setAnchor(0.5f, 1.0f + 14 * t);
+
+                if (t > 0.0) {
+                    // Post this event again 15ms from now.
+                    handler.postDelayed(this, 15);
+                }
+            }
+        });
+    }
 }
+
