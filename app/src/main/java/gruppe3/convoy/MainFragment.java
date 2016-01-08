@@ -1,6 +1,7 @@
 package gruppe3.convoy;
 
 
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -29,6 +30,7 @@ public class MainFragment extends Fragment {
     private PagerAdapter mPagerAdapter;
     public static Button search;
     private boolean session = false;
+    public static ProgressDialog progressDialog;
 
     public MainFragment() {
         // Required empty public constructor
@@ -60,6 +62,8 @@ public class MainFragment extends Fragment {
         search.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                progressDialog = ProgressDialog.show(getActivity(), "Building Map", "Finding matches to search criteria...", true);
+
                 session = true;
                 SingleTon.roadTrain = AdvancedFragment.roadTrain.isChecked();
                 SingleTon.timer = AdvancedFragment.timer.getValue();
@@ -112,6 +116,7 @@ public class MainFragment extends Fragment {
                     }
                     Log.d("Søgning", "Der blev fundet: " + SingleTon.searchedSpots.size() + " søgeresultater ud af: " + SingleTon.spots.size());
                 }
+                progressDialog.setMessage(SingleTon.searchedSpots.size() + " matches found.");
 
                 getFragmentManager()
                         .beginTransaction()

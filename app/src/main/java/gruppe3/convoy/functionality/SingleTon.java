@@ -16,6 +16,7 @@ import com.parse.ParseQuery;
 import java.util.ArrayList;
 import java.util.List;
 
+import gruppe3.convoy.Main;
 import gruppe3.convoy.MainFragment;
 
 /**
@@ -26,8 +27,6 @@ public class SingleTon extends Application {
     private static SingleTon ourInstance = new SingleTon();
     public static ArrayList<Spot> spots, searchedSpots;
     public static MyLocation myLocation;
-    public static LocationManager locationManager;
-    public static LocationListener locationListener;
     public static String dest = "";
     public static int timer,minutter;
     public static final String searchTxt1 = "Finding Location", searchTxt2 = "Fetching Data", searchTxt3 = "SEARCH";
@@ -75,19 +74,15 @@ public class SingleTon extends Application {
                         }
                         Log.d("Data", "Done with spots!");
                         Log.d("Data", "Size of Spots = "+spots.size());
+                        MainFragment.search.setText(SingleTon.searchTxt3);
+                        MainFragment.search.setTextSize(TypedValue.COMPLEX_UNIT_SP, 60);
+                        MainFragment.search.setEnabled(true);
+
                     } else {
                         Log.d("score", "Error: " + e.getMessage());
                     }
                 }
             });
         }
-
-        MainFragment.search.setText(SingleTon.searchTxt3);
-        MainFragment.search.setTextSize(TypedValue.COMPLEX_UNIT_SP, 60);
-        MainFragment.search.setEnabled(true);
-
     }
-
-
-
 }

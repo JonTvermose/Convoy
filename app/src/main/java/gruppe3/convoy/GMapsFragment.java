@@ -86,6 +86,7 @@ public class GMapsFragment extends Fragment implements OnMapReadyCallback, View.
     private void getMap(){
         try {
             if (gMap == null) {
+                MainFragment.progressDialog.setMessage("Retrieving Map...");
                 try {
                     SupportMapFragment m = ((SupportMapFragment) getChildFragmentManager().
                             findFragmentById(R.id.map));
@@ -95,7 +96,7 @@ public class GMapsFragment extends Fragment implements OnMapReadyCallback, View.
                     Log.d("Kort", "SupportMapFragment m er null, kunne ikke finde map");
                     Toast.makeText(getActivity(), "An error occurred, could not fetch map. Sorry", Toast.LENGTH_LONG).show();
                     e.printStackTrace();
-                    getActivity().finish(); // Appen afsluttes.
+                    getFragmentManager().popBackStack();
                 }
             } else{
                 Log.d("Kort", "Kort eksisterer allerede");
@@ -109,7 +110,7 @@ public class GMapsFragment extends Fragment implements OnMapReadyCallback, View.
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        Log.d("Kort", "GMapsAktivitet.onMapReady() er kaldt *****");
+        Log.d("Kort", "GMapsAktivitet.onMapReady() er kaldt");
         this.gMap = googleMap;
 
         // Gør det muligt at finde nuværende position og ændre maptype
@@ -314,7 +315,7 @@ public class GMapsFragment extends Fragment implements OnMapReadyCallback, View.
                         // Opdaterer afstand, tid og adresse/overskrift på popuppen.
                         String distAndTime = parser.getDist() + " | " + parser.getDur();
                         distAndTime = distAndTime.replace("hours", "h");
-                        if(distAndTime.contains("h")){
+                        if (distAndTime.contains("h")) {
                             distAndTime = distAndTime.replace("mins", "m");
                         }
                         distAndTime = distAndTime.replace(",", ".");
@@ -349,6 +350,7 @@ public class GMapsFragment extends Fragment implements OnMapReadyCallback, View.
                 }
             }
         });
+        MainFragment.progressDialog.dismiss();
     }
 
     /**
