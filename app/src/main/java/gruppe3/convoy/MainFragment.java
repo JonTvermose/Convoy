@@ -7,13 +7,17 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import java.util.ArrayList;
+
 import gruppe3.convoy.functionality.SingleTon;
+import gruppe3.convoy.functionality.Spot;
 
 
 /**
@@ -61,6 +65,51 @@ public class MainFragment extends Fragment {
                 SingleTon.timer = AdvancedFragment.timer.getValue();
                 SingleTon.minutter = AdvancedFragment.minutter.getValue();
                 SingleTon.dest = AdvancedFragment.dest.getText().toString();
+
+                // Laver en liste af spots der matcher søgekritierne, baseret på den totale liste af spots.
+                SingleTon.searchedSpots = new ArrayList<Spot>();
+                for(Spot searchedSpot : SingleTon.spots){
+                    boolean mark = true;
+                    if(SingleTon.adblue){
+                        if(!searchedSpot.isAdblue()){
+                            mark = false;
+                        }
+                    }
+                    if(SingleTon.food){
+                        if(!searchedSpot.isFood()){
+                            mark = false;
+                        }
+                    }
+                    if(SingleTon.wc){
+                        if(!searchedSpot.isWc()){
+                            mark = false;
+                        }
+                    }
+                    if(SingleTon.bed){
+                        if(!searchedSpot.isBed()){
+                            mark = false;
+                        }
+                    }
+                    if(SingleTon.bath){
+                        if(!searchedSpot.isBath()){
+                            mark = false;
+                        }
+                    }
+                    if(SingleTon.fuel){
+                        if(!searchedSpot.isFuel()){
+                            mark = false;
+                        }
+                    }
+                    if(SingleTon.roadTrain){
+                        if(!searchedSpot.isRoadtrain()){
+                            mark = false;
+                        }
+                    }
+                    if(mark){ // Hvis alle tjek er gået godt, så tilføjes spot til listen over de søgte spots
+                        SingleTon.searchedSpots.add(searchedSpot);
+                    }
+                }
+                Log.d("Søgning", "Der blev fundet: " + SingleTon.searchedSpots.size() + " søgeresultater ud af: " + SingleTon.spots.size());
 
                 getFragmentManager()
                         .beginTransaction()

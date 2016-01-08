@@ -44,6 +44,9 @@ import gruppe3.convoy.functionality.PathJSONParser;
 import gruppe3.convoy.functionality.SingleTon;
 import gruppe3.convoy.functionality.Spot;
 
+/*
+ Klassen er udviklet af Jon Tvermose Nielsen
+ */
 public class GMapsFragment extends Fragment implements OnMapReadyCallback, View.OnClickListener {
 
     private GoogleMap gMap;
@@ -58,18 +61,15 @@ public class GMapsFragment extends Fragment implements OnMapReadyCallback, View.
         super.onCreate(savedInstanceState);
         view = inflater.inflate(R.layout.fragment_gmap, container, false);
 
-        /**
-         * Knap til at zoome ind på nuværende lokation
-         */
+        //Knap til at zoome ind på nuværende lokation
         zoomLocation = (ImageView) view.findViewById(R.id.zoomLocation);
         zoomLocation.setOnClickListener(this);
 
+        // Knap til at tilføje lokation
         addLocation = (ImageView) view.findViewById(R.id.imageAddLoc);
         addLocation.setOnClickListener(this);
 
-        /*
-        Knap til at starte vejvisning til et valgt POI
-         */
+        //Knap til at starte vejvisning til et valgt POI
         goButton = (ImageView) view.findViewById(R.id.goButton);
         goButton.setVisibility(View.GONE); // Skjuler knappen indtil den kan bruges
         goButton.setOnClickListener(this);
@@ -78,16 +78,21 @@ public class GMapsFragment extends Fragment implements OnMapReadyCallback, View.
         return view;
     }
 
+    // Initierer at hente kortet (asynkront)
     private void getMap(){
         try {
             if (gMap == null) {
-                SupportMapFragment m = ((SupportMapFragment) getChildFragmentManager().
-                        findFragmentById(R.id.map));
-                Log.d("Kort", "Forsøger at hente nyt kort - asynkront");
-                if(m==null) {
+                try {
+                    SupportMapFragment m = ((SupportMapFragment) getChildFragmentManager().
+                            findFragmentById(R.id.map));
+                    Log.d("Kort", "Forsøger at hente nyt kort - asynkront");
+                    m.getMapAsync(this);
+                } catch (NullPointerException e){
                     Log.d("Kort", "SupportMapFragment m er null, kunne ikke finde map");
+                    Toast.makeText(getActivity(), "An error occurred, could not fetch map. Sorry", Toast.LENGTH_LONG).show();
+                    e.printStackTrace();
+                    getActivity().finish(); // Appen afsluttes.
                 }
-                m.getMapAsync(this);
             } else{
                 Log.d("Kort", "Kort eksisterer allerede");
                 onMapReady(gMap);
@@ -111,9 +116,9 @@ public class GMapsFragment extends Fragment implements OnMapReadyCallback, View.
         gMap.moveCamera(CameraUpdateFactory.newLatLngZoom(cPos, 12));
 
         // Tilføjer markers til Google Maps
-        if(SingleTon.spots!=null){
+        if(SingleTon.searchedSpots!=null){
             int id = 0;
-            for (Spot spot : SingleTon.spots) {
+            for (Spot spot : SingleTon.searchedSpots) {
                 Marker mark = gMap.addMarker(new MarkerOptions()
                         .position(spot.getPos())
                         .title(spot.getDesc()));
@@ -159,7 +164,7 @@ public class GMapsFragment extends Fragment implements OnMapReadyCallback, View.
                 }
 
                 try {
-                    spot = SingleTon.spots.get(Integer.valueOf(marker.getSnippet())); //getSpot(marker.getTitle());
+                    spot = SingleTon.searchedSpots.get(Integer.valueOf(marker.getSnippet()));
 
                     /* Henter rute til POI */
                     Location startLoc = SingleTon.myLocation.getLocation();
@@ -240,7 +245,7 @@ public class GMapsFragment extends Fragment implements OnMapReadyCallback, View.
                     // TO DO : Fejlhåndtering
                     // Hvad skal der ske hvis man klikker på en marker som vi ikke kan identificere?
                     Toast.makeText(getActivity(), "Could not find matching POI: " + marker.getTitle(), Toast.LENGTH_LONG).show();
-                    Log.d("Kort", "Kunne ikke finde det rigtige spot. SingleTon.spots størrelse: " + SingleTon.spots.size() + " , der søges efter spot nr: " + marker.getSnippet());
+                    Log.d("Kort", "Kunne ikke finde det rigtige spot. SingleTon.searchedSpots størrelse: " + SingleTon.searchedSpots.size() + " , der søges efter spot nr: " + marker.getSnippet());
                 }
 
                 return true;
@@ -497,11 +502,12 @@ public class GMapsFragment extends Fragment implements OnMapReadyCallback, View.
                             position(latLng).
                             title(addSpot.getAddressTxt()));
                     mark.setDraggable(false);
-                    mark.setSnippet(Integer.toString(SingleTon.spots.size()));
+                    mark.setSnippet(Integer.toString(SingleTon.searchedSpots.size()));
                     GMapsFragment.this.dropPinEffect(mark);
 
                     // Tilføjer spot til den hentede liste af spots, så det har samme funktionalitet som alle andre spots
                     Spot newSpot = new Spot(addSpot.getAddressTxt(), addSpot.adblue, addSpot.food, addSpot.bath, addSpot.bed, addSpot.wc, addSpot.fuel, addSpot.roadTrain, latLng);
+                    SingleTon.searchedSpots.add(newSpot);
                     SingleTon.spots.add(newSpot);
                     Toast.makeText(getActivity(), "Location added", Toast.LENGTH_SHORT).show(); // Muligvis på onSuccess fra parse.com?
                     addSpot = null; // Sikrer vi nulstiller data hvis der tilføjes flere spots i samme session.

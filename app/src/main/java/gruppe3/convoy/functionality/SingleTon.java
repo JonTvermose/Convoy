@@ -24,7 +24,7 @@ import gruppe3.convoy.MainFragment;
 public class SingleTon extends Application {
 
     private static SingleTon ourInstance = new SingleTon();
-    public static ArrayList<Spot> spots;
+    public static ArrayList<Spot> spots, searchedSpots;
     public static MyLocation myLocation;
     public static LocationManager locationManager;
     public static LocationListener locationListener;

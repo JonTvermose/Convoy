@@ -20,8 +20,8 @@ import java.util.Date;
 import gruppe3.convoy.GMapsFragment;
 import gruppe3.convoy.MainFragment;
 
-/**
- * Created by Jon on 25/11/2015.
+/*
+ Klassen er udviklet af Jon Tvermose Nielsen
  */
 public class MyLocation implements LocationListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener{
 
