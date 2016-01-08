@@ -52,7 +52,7 @@ public class GMapsFragment extends Fragment implements OnMapReadyCallback, View.
     private GoogleMap gMap;
     private Spot spot; // Det spot der er klikket på
     private View view;
-    private ImageView goButton, zoomLocation, addLocation;
+    private ImageView goButton, zoomLocation, addLocation, homeButton;
     private AddSpot addSpot;
 
     @Override
@@ -68,6 +68,10 @@ public class GMapsFragment extends Fragment implements OnMapReadyCallback, View.
         // Knap til at tilføje lokation
         addLocation = (ImageView) view.findViewById(R.id.imageAddLoc);
         addLocation.setOnClickListener(this);
+
+        // Knap til startsiden
+        homeButton = (ImageView) view.findViewById(R.id.imageHome);
+        homeButton.setOnClickListener(this);
 
         //Knap til at starte vejvisning til et valgt POI
         goButton = (ImageView) view.findViewById(R.id.goButton);
@@ -186,33 +190,45 @@ public class GMapsFragment extends Fragment implements OnMapReadyCallback, View.
                     // Sæt billederne afhængig af hvilken service der er tilgængelig på det pågældende spot
                     if (spot.isAdblue()) {
                         adblue.setImageResource(R.drawable.adblue_t_check);
+                        adblue.setSelected(false);
                     } else {
                         adblue.setImageResource(R.drawable.adblue_t);
+                        adblue.setSelected(true);
                     }
                     if (spot.isBath()) {
                         bath.setImageResource(R.drawable.bath_t_check);
+                        bath.setSelected(false);
                     } else {
                         bath.setImageResource(R.drawable.bath_t);
+                        bath.setSelected(true);
                     }
                     if (spot.isBed()) {
                         bed.setImageResource(R.drawable.bed_t_check);
+                        bed.setSelected(false);
                     } else {
                         bed.setImageResource(R.drawable.bed_t);
+                        bed.setSelected(true);
                     }
                     if (spot.isFood()) {
                         food.setImageResource(R.drawable.food_t_check);
+                        food.setSelected(false);
                     } else {
                         food.setImageResource(R.drawable.food_t);
+                        food.setSelected(true);
                     }
                     if (spot.isFuel()) {
                         fuel.setImageResource(R.drawable.fuel_t_check);
+                        fuel.setSelected(false);
                     } else {
                         fuel.setImageResource(R.drawable.fuel_t);
+                        fuel.setSelected(true);
                     }
                     if (spot.isWc()) {
                         wc.setImageResource(R.drawable.wc_t_check);
+                        wc.setSelected(false);
                     } else {
                         wc.setImageResource(R.drawable.wc_t);
+                        wc.setSelected(true);
                     }
 
                     // Clicklistener til "FIND ROUTE"-knappen
@@ -298,7 +314,9 @@ public class GMapsFragment extends Fragment implements OnMapReadyCallback, View.
                         // Opdaterer afstand, tid og adresse/overskrift på popuppen.
                         String distAndTime = parser.getDist() + " | " + parser.getDur();
                         distAndTime = distAndTime.replace("hours", "h");
-                        distAndTime = distAndTime.replace("mins", "m");
+                        if(distAndTime.contains("h")){
+                            distAndTime = distAndTime.replace("mins", "m");
+                        }
                         distAndTime = distAndTime.replace(",", ".");
                         distance.setText(distAndTime);
                         title.setText(parser.getEndAdress()); // TO DO - her mangler noget logik for hvis teksten bliver for lang eller "Unnamed road" er en del af den
@@ -387,6 +405,8 @@ public class GMapsFragment extends Fragment implements OnMapReadyCallback, View.
             } else {
                 Toast.makeText(getActivity(), "You must choose where to go!", Toast.LENGTH_LONG).show(); // Safety-text, bør ikke rammes
             }
+        } else if (v == homeButton){
+            getFragmentManager().popBackStack();
         } else if (v == addLocation) {
             Log.d("Kort", "Der klikkes på tilføj sted-knap");
             // Hvis der er klikket på knappen er addSpot = null og dermed skal nuværende lokation bruges
@@ -405,9 +425,11 @@ public class GMapsFragment extends Fragment implements OnMapReadyCallback, View.
                     if (!addSpot.adblue) {
                         addSpot.adblue = true;
                         adblue.setImageResource(R.drawable.adblue_t_check);
+                        adblue.setSelected(true);
                     } else {
                         addSpot.adblue = false;
                         adblue.setImageResource(R.drawable.adblue_t);
+                        adblue.setSelected(false);
                     }
                 }
             });
@@ -418,9 +440,11 @@ public class GMapsFragment extends Fragment implements OnMapReadyCallback, View.
                     if (!addSpot.bed) {
                         addSpot.bed = true;
                         bed.setImageResource(R.drawable.bed_t_check);
+                        bed.setSelected(true);
                     } else {
                         addSpot.bed = false;
                         bed.setImageResource(R.drawable.bed_t);
+                        bed.setSelected(false);
                     }
                 }
             });
@@ -431,9 +455,11 @@ public class GMapsFragment extends Fragment implements OnMapReadyCallback, View.
                     if (!addSpot.bath) {
                         addSpot.bath = true;
                         bath.setImageResource(R.drawable.bath_t_check);
+                        bath.setSelected(true);
                     } else {
                         addSpot.bath = false;
                         bath.setImageResource(R.drawable.bath_t);
+                        bath.setSelected(false);
                     }
                 }
             });
@@ -444,9 +470,11 @@ public class GMapsFragment extends Fragment implements OnMapReadyCallback, View.
                     if (!addSpot.food) {
                         addSpot.food = true;
                         food.setImageResource(R.drawable.food_t_check);
+                        food.setSelected(true);
                     } else {
                         addSpot.food = false;
                         food.setImageResource(R.drawable.food_t);
+                        food.setSelected(false);
                     }
                 }
             });
@@ -457,9 +485,11 @@ public class GMapsFragment extends Fragment implements OnMapReadyCallback, View.
                     if (!addSpot.fuel) {
                         addSpot.fuel = true;
                         fuel.setImageResource(R.drawable.fuel_t_check);
+                        fuel.setSelected(true);
                     } else {
                         addSpot.fuel = false;
                         fuel.setImageResource(R.drawable.fuel_t);
+                        fuel.setSelected(false);
                     }
                 }
             });
@@ -470,9 +500,11 @@ public class GMapsFragment extends Fragment implements OnMapReadyCallback, View.
                     if (!addSpot.wc) {
                         addSpot.wc = true;
                         wc.setImageResource(R.drawable.wc_t_check);
+                        wc.setSelected(true);
                     } else {
                         addSpot.wc = false;
                         wc.setImageResource(R.drawable.wc_t);
+                        wc.setSelected(false);
                     }
                 }
             });
@@ -502,6 +534,9 @@ public class GMapsFragment extends Fragment implements OnMapReadyCallback, View.
                             position(latLng).
                             title(addSpot.getAddressTxt()));
                     mark.setDraggable(false);
+                    if(SingleTon.searchedSpots==null){
+                        SingleTon.searchedSpots = new ArrayList<Spot>();
+                    }
                     mark.setSnippet(Integer.toString(SingleTon.searchedSpots.size()));
                     GMapsFragment.this.dropPinEffect(mark);
 
