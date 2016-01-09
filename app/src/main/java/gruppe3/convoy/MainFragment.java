@@ -69,7 +69,7 @@ public class MainFragment extends Fragment {
                 SingleTon.roadTrain = AdvancedFragment.roadTrain.isChecked();
                 SingleTon.timer = AdvancedFragment.timer.getValue();
                 SingleTon.minutter = AdvancedFragment.minutter.getValue();
-                SingleTon.dest = AdvancedFragment.dest.getText().toString();
+//                SingleTon.dest = AdvancedFragment.dest.getText().toString();
 
                 new AsyncTask<Void, Void, String>(){
                     @Override

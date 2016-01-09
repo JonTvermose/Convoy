@@ -27,10 +27,14 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.maps.android.clustering.Cluster;
+import com.google.maps.android.clustering.ClusterItem;
+import com.google.maps.android.clustering.ClusterManager;
 
 import org.json.JSONObject;
 
@@ -39,6 +43,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import gruppe3.convoy.functionality.AddSpot;
+import gruppe3.convoy.functionality.ClusterMaker;
 import gruppe3.convoy.functionality.HttpConnection;
 import gruppe3.convoy.functionality.PathJSONParser;
 import gruppe3.convoy.functionality.SingleTon;
@@ -54,6 +59,7 @@ public class GMapsFragment extends Fragment implements OnMapReadyCallback, View.
     private View view;
     private ImageView goButton, zoomLocation, addLocation, homeButton;
     private AddSpot addSpot;
+    private ClusterManager<ClusterMaker> mClusterManager;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -121,14 +127,15 @@ public class GMapsFragment extends Fragment implements OnMapReadyCallback, View.
         gMap.moveCamera(CameraUpdateFactory.newLatLngZoom(cPos, 12));
 
         // Tilføjer markers til Google Maps
+        mClusterManager = new ClusterManager<ClusterMaker>(getActivity(), gMap);
+        gMap.setOnMarkerClickListener(mClusterManager);
+        gMap.setOnCameraChangeListener(mClusterManager);
         if(SingleTon.searchedSpots!=null){
             int id = 0;
             for (Spot spot : SingleTon.searchedSpots) {
-                Marker mark = gMap.addMarker(new MarkerOptions()
-                        .position(spot.getPos())
-                        .title(spot.getDesc()));
-                mark.setDraggable(false);
+                ClusterMaker mark = new ClusterMaker(new LatLng(spot.getPos().latitude, spot.getPos().longitude));
                 mark.setSnippet(Integer.toString(id)); // Tilføj unikt ID til marker, svarende til indekset for det pågældende spot i listen over spots
+                mClusterManager.addItem(mark);
                 id++;
             }
             Log.d("Kort", "Tilføjet " + id + " markers(spots) til kortet");
@@ -149,15 +156,26 @@ public class GMapsFragment extends Fragment implements OnMapReadyCallback, View.
             }
         });
 
+        // ClickHandler til når der klikkes på en Cluster af markers. Der zoomes og kortet centreres ved cluster
+        mClusterManager.setOnClusterClickListener(new ClusterManager.OnClusterClickListener<ClusterMaker>() {
+            @Override
+            public boolean onClusterClick(Cluster<ClusterMaker> cluster) {
+                Log.d("Kort" , "Der er klikket på Cluster med pos: " + cluster.getPosition().latitude + ", " + cluster.getPosition().longitude);
+                Log.d("Kort" , "Zoomlevel er: " + gMap.getCameraPosition().zoom + ". Der zoomes ind til zoom +1");
+                gMap.animateCamera(CameraUpdateFactory.newLatLngZoom(cluster.getPosition(), gMap.getCameraPosition().zoom + 1));
+                return true;
+            }
+        });
+
         // Clicklistener til markers. Når man klikker på en marker åbnes en Dialog-boks
-        gMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+        mClusterManager.setOnClusterItemClickListener(new ClusterManager.OnClusterItemClickListener<ClusterMaker>() {
             Polyline poly = null;
             PolylineOptions polyLineOptions = null;
             TextView distance, title;
             Button route;
 
             @Override
-            public boolean onMarkerClick(Marker marker) {
+            public boolean onClusterItemClick(ClusterMaker marker) {
                 goButton.setVisibility(View.GONE); // Siker at GO-knappen forsvinder hvis man har trykket på et andet spot før dette
                 final Dialog dialog = new Dialog(getActivity());
                 dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -261,7 +279,7 @@ public class GMapsFragment extends Fragment implements OnMapReadyCallback, View.
                 } catch (Exception e) {
                     // TO DO : Fejlhåndtering
                     // Hvad skal der ske hvis man klikker på en marker som vi ikke kan identificere?
-                    Toast.makeText(getActivity(), "Could not find matching POI: " + marker.getTitle(), Toast.LENGTH_LONG).show();
+                    Toast.makeText(getActivity(), "Could not find id: " + marker.getSnippet(), Toast.LENGTH_LONG).show();
                     Log.d("Kort", "Kunne ikke finde det rigtige spot. SingleTon.searchedSpots størrelse: " + SingleTon.searchedSpots.size() + " , der søges efter spot nr: " + marker.getSnippet());
                 }
 
@@ -530,16 +548,21 @@ public class GMapsFragment extends Fragment implements OnMapReadyCallback, View.
                 public void onClick(View v) {
                     // TO DO - hent data fra addSpot og send det asynkront til parse.com
                     addDialog.hide();
-                    // Tilføjer spot til google map kortet
+                    // Tilføjer spot til google map kortet så vi kan animere det
                     LatLng latLng = new LatLng(addSpot.loc.getLatitude(), addSpot.loc.getLongitude());
                     Marker mark = gMap.addMarker(new MarkerOptions().
                             position(latLng).
                             title(addSpot.getAddressTxt()));
-                    mark.setDraggable(false);
+//                    mark.remove();
+
                     if(SingleTon.searchedSpots==null){
                         SingleTon.searchedSpots = new ArrayList<Spot>();
                     }
                     mark.setSnippet(Integer.toString(SingleTon.searchedSpots.size()));
+                    ClusterMaker clustMark = new ClusterMaker(latLng);
+                    clustMark.setSnippet(mark.getSnippet());
+                    mClusterManager.addItem(clustMark); // Tilføj marker til clustermanageren
+
                     GMapsFragment.this.dropPinEffect(mark);
 
                     // Tilføjer spot til den hentede liste af spots, så det har samme funktionalitet som alle andre spots
@@ -554,7 +577,7 @@ public class GMapsFragment extends Fragment implements OnMapReadyCallback, View.
     }
 
     // Animerer en marker på Google Maps med en "drop-pin-effekt"
-    // Tyv stjålet fra https://guides.codepath.com/android/Google-Maps-API-v2-Usage#falling-pin-animation
+    // Tyv stjålet fra https://guides.codepath.com/android/Google-Maps-API-v2-Usage#falling-pin-animation og udbygget
     private void dropPinEffect(final Marker marker) {
         // Handler allows us to repeat a code block after a specified delay
         final android.os.Handler handler = new android.os.Handler();
@@ -566,6 +589,7 @@ public class GMapsFragment extends Fragment implements OnMapReadyCallback, View.
 
         // Animate marker with a bounce updating its position every 15ms
         handler.post(new Runnable() {
+            private float alpha = 1;
             @Override
             public void run() {
                 long elapsed = SystemClock.uptimeMillis() - start;
@@ -579,6 +603,10 @@ public class GMapsFragment extends Fragment implements OnMapReadyCallback, View.
                 if (t > 0.0) {
                     // Post this event again 15ms from now.
                     handler.postDelayed(this, 15);
+                } else {
+                    marker.remove();
+                    mClusterManager.cluster();
+//                    gMap.animateCamera(CameraUpdateFactory.newLatLng(marker.getPosition()));
                 }
             }
         });
