@@ -32,8 +32,8 @@ public class AdvancedFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rod = inflater.inflate(R.layout.fragment_advanced, container, false);
-        dest = (EditText) rod.findViewById(R.id.destination_editText);
-        dest.setText(SingleTon.dest);
+//        dest = (EditText) rod.findViewById(R.id.destination_editText);
+//        dest.setText(SingleTon.dest);
 
         timer = (NumberPicker) rod.findViewById(R.id.timer_numberPicker);
         hours = new String[24];

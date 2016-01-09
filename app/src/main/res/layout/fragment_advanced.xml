@@ -35,15 +35,13 @@
                 android:fontFamily="sans-serif-medium"
                 android:padding="8dp" />
 
-            <EditText
-                android:layout_width="fill_parent"
+            <fragment
+                android:id="@+id/autocomplete"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/destination_editText"
-                android:textSize="16dp"
-                android:padding="10dp"
-                android:linksClickable="true"
-                android:hint="Type in destination city or address"
-                />
+                android:name="com.google.android.gms.location.places.ui.PlaceAutocompleteFragment"
+                tools:layout="@layout/fragment_auto_complete" />
+
 
         </LinearLayout>
 

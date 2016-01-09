@@ -2,6 +2,7 @@ package gruppe3.convoy;
 
 import android.Manifest;
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -97,6 +98,8 @@ public class Main extends FragmentActivity {
             }
         }
     }
+
+
 
     @Override
     protected void onStop(){
