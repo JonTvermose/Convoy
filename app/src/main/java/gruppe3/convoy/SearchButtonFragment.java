@@ -100,7 +100,7 @@ public class SearchButtonFragment extends Fragment {
 
                     @Override
                     protected void onPostExecute(String msg) {
-                        getParentFragment().getFragmentManager()
+                        getFragmentManager()
                                 .beginTransaction()
                                 .replace(R.id.MainFragment, new GMapsFragment())
                                 .setTransitionStyle(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
