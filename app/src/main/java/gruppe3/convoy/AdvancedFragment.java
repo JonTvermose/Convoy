@@ -32,8 +32,7 @@ public class AdvancedFragment extends Fragment implements PlaceSelectionListener
     public static Switch roadTrain;
     public static String[] hours,mins;
     static SupportPlaceAutocompleteFragment autocompleteFragment;
-    static boolean hasDest;
-    static LatLng destPos;
+
 
     public AdvancedFragment() {
         // Required empty public constructor
@@ -62,11 +61,11 @@ public class AdvancedFragment extends Fragment implements PlaceSelectionListener
                 Log.i("auto", "Name: " + place.getName());
                 Log.i("auto", "Address: " + place.getAddress());
                 Log.i("auto", "Pos: " + place.getLatLng());
-                AdvancedFragment.hasDest=true;
-                AdvancedFragment.destPos = new LatLng(place.getLatLng().latitude,place.getLatLng().longitude);
+                SingleTon.hasDest=true;
+                SingleTon.destPos = new LatLng(place.getLatLng().latitude,place.getLatLng().longitude);
 
-                Log.i("auto", "var hasDest: " + AdvancedFragment.hasDest);
-                Log.i("auto", "var destPos: " + AdvancedFragment.destPos.toString());
+                Log.i("auto", "var hasDest: " + SingleTon.hasDest);
+                Log.i("auto", "var destPos: " + SingleTon.destPos.toString());
                 autocompleteFragment.setText("TEST");
             }
 

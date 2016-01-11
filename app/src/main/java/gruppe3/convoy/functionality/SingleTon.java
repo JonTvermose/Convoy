@@ -34,6 +34,8 @@ public class SingleTon extends Application {
     public static int timer,minutter;
     public static final String searchTxt1 = "Finding Location", searchTxt2 = "Connecting to Database", searchTxt3 = "Connected. Fetching data", searchTxt4 = "Done!";
     public static Boolean food, wc, bed, bath, fuel, adblue, roadTrain = false, dataLoadDone = false;
+    public static boolean hasDest;
+    public static LatLng destPos;
 
     public static SingleTon getInstance() {
         return ourInstance;
