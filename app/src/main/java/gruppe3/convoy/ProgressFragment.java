@@ -29,9 +29,7 @@ public class ProgressFragment extends Fragment {
         View rod = inflater.inflate(R.layout.fragment_progress, container, false);
 
         progressBarTxt = (TextView) rod.findViewById(R.id.progressBarTxt);
-
         progressBar = (ProgressBar) rod.findViewById(R.id.progressBar);
-//        progressBar.setMax(300);
         progressBar.setProgress(0);
 
         return rod;

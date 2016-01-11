@@ -1,8 +1,6 @@
 package gruppe3.convoy;
 
 import android.Manifest;
-import android.app.ProgressDialog;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -14,7 +12,6 @@ import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.widget.Toast;
 
-import gruppe3.convoy.functionality.MyLocation;
 import gruppe3.convoy.functionality.SingleTon;
 
 
@@ -57,15 +54,10 @@ public class Main extends FragmentActivity {
             Log.d("Access", "ACCESS_FINE_LOCATION er ok");
             startApp();
         }
-
     }
 
     private void startApp(){
         Log.d("Stedbestemmelse","App starter");
-
-//        SingleTon.myLocation = new MyLocation();
-//        SingleTon.myLocation.startLocationService(this); // Starter stedbestemmelse
-
         setContentView(R.layout.activity_main);
         getSupportFragmentManager()
                 .beginTransaction()
@@ -101,13 +93,6 @@ public class Main extends FragmentActivity {
             }
         }
     }
-
-//    @Override
-//    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-//        super.onActivityResult(requestCode, resultCode, data);
-//        System.out.println("onActivityResult");
-//        AutoCompleteFragment.autocompleteFragment.onActivityResult(requestCode, resultCode, data);
-//    }
 
     @Override
     protected void onStop(){

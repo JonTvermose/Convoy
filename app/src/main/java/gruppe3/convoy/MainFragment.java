@@ -2,21 +2,15 @@ package gruppe3.convoy;
 
 
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Looper;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.AccelerateInterpolator;
-import android.view.animation.AlphaAnimation;
-import android.view.animation.Animation;
 
 import gruppe3.convoy.functionality.MyLocation;
 import gruppe3.convoy.functionality.SingleTon;
@@ -71,7 +65,6 @@ public class MainFragment extends Fragment {
                                 .beginTransaction()
                                 .setCustomAnimations(R.animator.fade_in, R.animator.fade_out)
                                 .replace(R.id.mainBottomFragment, new SearchButtonFragment())
-                                .addToBackStack(null)
                                 .commit();
                     } else {
                         h.postDelayed(this, 100);
