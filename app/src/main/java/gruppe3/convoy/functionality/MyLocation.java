@@ -19,6 +19,7 @@ import java.util.Date;
 
 import gruppe3.convoy.GMapsFragment;
 import gruppe3.convoy.MainFragment;
+import gruppe3.convoy.ProgressFragment;
 
 /*
  Klassen er udviklet af Jon Tvermose Nielsen
@@ -31,7 +32,8 @@ public class MyLocation implements LocationListener, GoogleApiClient.ConnectionC
     private static final long INTERVAL = 1000 * 10; // Update interval i ms
     private static final long FASTEST_INTERVAL = 1000 * 5; // Hurtigste update interval i ms
     private String mLastUpdateTime;
-    private boolean mRequestingLocationUpdates = false, POSUPDATED = false;
+    private boolean mRequestingLocationUpdates = false;
+    public static boolean POSUPDATED = false;
     private final String TAG = "STEDBESTEMMELSE";
 
     public MyLocation(){
@@ -54,6 +56,8 @@ public class MyLocation implements LocationListener, GoogleApiClient.ConnectionC
         mRequestingLocationUpdates = true;
         LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
         Log.d(TAG, "Stedbestemmelse startet");
+        ProgressFragment.progressBarTxt.setText(SingleTon.searchTxt1);
+        ProgressFragment.progressBar.setProgress(10);
     }
 
     @Override
@@ -67,8 +71,6 @@ public class MyLocation implements LocationListener, GoogleApiClient.ConnectionC
         mCurrentLocation = location;
         mLastUpdateTime = DateFormat.getTimeInstance().format(new Date());
         if(!POSUPDATED){
-//            MainFragment.search.setText(SingleTon.searchTxt2);
-//            MainFragment.search.setTextSize(TypedValue.COMPLEX_UNIT_SP, 30);
             POSUPDATED = true;
             SingleTon.fetchData();
         }

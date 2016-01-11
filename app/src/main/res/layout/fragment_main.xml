@@ -31,11 +31,11 @@
             android:layout_width="match_parent"
             android:layout_height="400dp" />
 
-        <fragment
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0px"
             android:layout_weight="1"
-            android:name="gruppe3.convoy.SearchButtonFragment"
+            android:orientation="horizontal"
             android:id="@+id/mainBottomFragment" />
 
 

@@ -1,8 +1,10 @@
 package gruppe3.convoy.functionality;
 
 import android.app.Application;
+import android.content.Context;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.os.Handler;
 import android.util.Log;
 import android.util.TypedValue;
 
@@ -18,6 +20,7 @@ import java.util.List;
 
 import gruppe3.convoy.Main;
 import gruppe3.convoy.MainFragment;
+import gruppe3.convoy.ProgressFragment;
 
 /**
  * Created by Jon on 06/01/2016.
@@ -29,8 +32,8 @@ public class SingleTon extends Application {
     public static MyLocation myLocation;
     public static String dest = "";
     public static int timer,minutter;
-    public static final String searchTxt1 = "Finding Location", searchTxt2 = "Fetching Data", searchTxt3 = "SEARCH";
-    public static Boolean food, wc, bed, bath, fuel, adblue, roadTrain = false;
+    public static final String searchTxt1 = "Finding Location", searchTxt2 = "Connecting to Database", searchTxt3 = "Connected. Fetching data", searchTxt4 = "Done!";
+    public static Boolean food, wc, bed, bath, fuel, adblue, roadTrain = false, dataLoadDone = false;
 
     public static SingleTon getInstance() {
         return ourInstance;
@@ -45,6 +48,7 @@ public class SingleTon extends Application {
     }
 
     public static void fetchData(){
+
         if(spots==null){
             Log.d("Data", "Spots er null");
             // Asynkront kald til DB
@@ -53,10 +57,14 @@ public class SingleTon extends Application {
             query2.setLimit(1000);
             query2.findInBackground(new FindCallback<ParseObject>() {
                 public void done(List<ParseObject> spotList, ParseException e) {
+                    double p = 50;
                     Log.d("Data", "e = "+e);
                     if (e == null) {
                         spots = new ArrayList<Spot>();
                         for (int i = 0; spotList.size() > i; i++) {
+                            Log.d("Data", "Progressbar: " + Double.toString(p));
+                            p = p + ((1.0)/spotList.size())*50.0;
+                            ProgressFragment.progressBar.setProgress((int) p);
 
                             LatLng pos = new LatLng(Double.valueOf(spotList.get(i).getString("posLat")), Double.valueOf(spotList.get(i).getString("posLng")));
                             spots.add(new Spot(
@@ -73,16 +81,17 @@ public class SingleTon extends Application {
 
                         }
                         Log.d("Data", "Done with spots!");
-                        Log.d("Data", "Size of Spots = "+spots.size());
-//                        MainFragment.search.setText(SingleTon.searchTxt3);
-//                        MainFragment.search.setTextSize(TypedValue.COMPLEX_UNIT_SP, 60);
-//                        MainFragment.search.setEnabled(true);
-
+                        Log.d("Data", "Size of Spots = " + spots.size());
+                        ProgressFragment.progressBarTxt.setText(SingleTon.searchTxt4);
+                        SingleTon.dataLoadDone = true;
                     } else {
                         Log.d("score", "Error: " + e.getMessage());
+                        ProgressFragment.progressBarTxt.setText(SingleTon.searchTxt3);
+                        ProgressFragment.progressBar.setProgress(50);
                     }
                 }
             });
         }
     }
+
 }

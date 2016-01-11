@@ -63,8 +63,8 @@ public class Main extends FragmentActivity {
     private void startApp(){
         Log.d("Stedbestemmelse","App starter");
 
-        SingleTon.myLocation = new MyLocation();
-        SingleTon.myLocation.startLocationService(this); // Starter stedbestemmelse
+//        SingleTon.myLocation = new MyLocation();
+//        SingleTon.myLocation.startLocationService(this); // Starter stedbestemmelse
 
         setContentView(R.layout.activity_main);
         getSupportFragmentManager()
@@ -125,6 +125,8 @@ public class Main extends FragmentActivity {
         SingleTon.bath = prefs.getBoolean("bath", false);
         SingleTon.fuel = prefs.getBoolean("fuel", false);
         SingleTon.adblue = prefs.getBoolean("adblue", false);
-        SingleTon.myLocation.onResume(); // Start opdatering fra GPS
+        if (SingleTon.myLocation != null){
+            SingleTon.myLocation.onResume(); // Start opdatering fra GPS
+        }
     }
 }
