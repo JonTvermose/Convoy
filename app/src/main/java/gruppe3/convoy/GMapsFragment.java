@@ -92,7 +92,7 @@ public class GMapsFragment extends Fragment implements OnMapReadyCallback, View.
     private void getMap(){
         try {
             if (gMap == null) {
-                MainFragment.progressDialog.setMessage("Retrieving Map...");
+//                MainFragment.progressDialog.setMessage("Retrieving Map...");
                 try {
                     SupportMapFragment m = ((SupportMapFragment) getChildFragmentManager().
                             findFragmentById(R.id.map));
@@ -110,6 +110,7 @@ public class GMapsFragment extends Fragment implements OnMapReadyCallback, View.
             }
         }
         catch (Exception e) {
+            Log.d("Kort", "Der skete en fejl. Se log stackTrace");
             e.printStackTrace();
         }
     }
@@ -160,8 +161,8 @@ public class GMapsFragment extends Fragment implements OnMapReadyCallback, View.
         mClusterManager.setOnClusterClickListener(new ClusterManager.OnClusterClickListener<ClusterMaker>() {
             @Override
             public boolean onClusterClick(Cluster<ClusterMaker> cluster) {
-                Log.d("Kort" , "Der er klikket på Cluster med pos: " + cluster.getPosition().latitude + ", " + cluster.getPosition().longitude);
-                Log.d("Kort" , "Zoomlevel er: " + gMap.getCameraPosition().zoom + ". Der zoomes ind til zoom +1");
+                Log.d("Kort", "Der er klikket på Cluster med pos: " + cluster.getPosition().latitude + ", " + cluster.getPosition().longitude);
+                Log.d("Kort", "Zoomlevel er: " + gMap.getCameraPosition().zoom + ". Der zoomes ind til zoom +1");
                 gMap.animateCamera(CameraUpdateFactory.newLatLngZoom(cluster.getPosition(), gMap.getCameraPosition().zoom + 1));
                 return true;
             }
@@ -368,7 +369,7 @@ public class GMapsFragment extends Fragment implements OnMapReadyCallback, View.
                 }
             }
         });
-        MainFragment.progressDialog.dismiss();
+//        MainFragment.progressDialog.dismiss();
     }
 
     /**

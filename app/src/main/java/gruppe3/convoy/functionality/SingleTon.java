@@ -74,9 +74,9 @@ public class SingleTon extends Application {
                         }
                         Log.d("Data", "Done with spots!");
                         Log.d("Data", "Size of Spots = "+spots.size());
-                        MainFragment.search.setText(SingleTon.searchTxt3);
-                        MainFragment.search.setTextSize(TypedValue.COMPLEX_UNIT_SP, 60);
-                        MainFragment.search.setEnabled(true);
+//                        MainFragment.search.setText(SingleTon.searchTxt3);
+//                        MainFragment.search.setTextSize(TypedValue.COMPLEX_UNIT_SP, 60);
+//                        MainFragment.search.setEnabled(true);
 
                     } else {
                         Log.d("score", "Error: " + e.getMessage());

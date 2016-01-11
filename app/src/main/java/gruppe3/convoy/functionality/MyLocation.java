@@ -67,8 +67,8 @@ public class MyLocation implements LocationListener, GoogleApiClient.ConnectionC
         mCurrentLocation = location;
         mLastUpdateTime = DateFormat.getTimeInstance().format(new Date());
         if(!POSUPDATED){
-            MainFragment.search.setText(SingleTon.searchTxt2);
-            MainFragment.search.setTextSize(TypedValue.COMPLEX_UNIT_SP, 30);
+//            MainFragment.search.setText(SingleTon.searchTxt2);
+//            MainFragment.search.setTextSize(TypedValue.COMPLEX_UNIT_SP, 30);
             POSUPDATED = true;
             SingleTon.fetchData();
         }

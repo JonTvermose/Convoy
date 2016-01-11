@@ -15,6 +15,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.LinearLayout;
 
 import java.util.ArrayList;
 
@@ -29,9 +30,8 @@ public class MainFragment extends Fragment {
 
     private ViewPager mPager;
     private PagerAdapter mPagerAdapter;
-    public static Button search;
     private boolean session = false;
-    public static ProgressDialog progressDialog;
+//    public static ProgressDialog progressDialog;
 
     public MainFragment() {
         // Required empty public constructor
@@ -52,90 +52,15 @@ public class MainFragment extends Fragment {
         TabLayout tabLayout = (TabLayout) rod.findViewById(R.id.sliding_tabs);
         tabLayout.setupWithViewPager(mPager);
 
-        // Search-knappen's onClickListener
-        search = (Button) rod.findViewById(R.id.searchButton);
-        if(!session){
-            search.setEnabled(false);
-            search.setText(SingleTon.searchTxt1);
-            search.setTextSize(TypedValue.COMPLEX_UNIT_SP, 30);
-        }
+//        LinearLayout bFrag = (LinearLayout) rod.findViewById(R.id.mainBottomFragment);
 
-        search.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                progressDialog = ProgressDialog.show(getActivity(), "Building Map", "Finding matches to search criteria...", true);
+        getFragmentManager()
+                .beginTransaction()
+                .add(R.id.mainBottomFragment, new SearchButtonFragment())
+                .setTransitionStyle(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+                .commit();
 
-                session = true;
-                SingleTon.roadTrain = AdvancedFragment.roadTrain.isChecked();
-                SingleTon.timer = AdvancedFragment.timer.getValue();
-                SingleTon.minutter = AdvancedFragment.minutter.getValue();
-//                SingleTon.dest = AdvancedFragment.dest.getText().toString();
 
-                new AsyncTask<Void, Void, String>(){
-                    @Override
-                    protected String doInBackground(Void... params) {
-                        if(SingleTon.spots != null) {
-                            // Laver en liste af spots der matcher søgekritierne, baseret på den totale liste af spots.
-                            SingleTon.searchedSpots = new ArrayList<Spot>();
-                            for (Spot searchedSpot : SingleTon.spots) {
-                                boolean mark = true;
-                                if (SingleTon.adblue) {
-                                    if (!searchedSpot.isAdblue()) {
-                                        mark = false;
-                                    }
-                                }
-                                if (SingleTon.food) {
-                                    if (!searchedSpot.isFood()) {
-                                        mark = false;
-                                    }
-                                }
-                                if (SingleTon.wc) {
-                                    if (!searchedSpot.isWc()) {
-                                        mark = false;
-                                    }
-                                }
-                                if (SingleTon.bed) {
-                                    if (!searchedSpot.isBed()) {
-                                        mark = false;
-                                    }
-                                }
-                                if (SingleTon.bath) {
-                                    if (!searchedSpot.isBath()) {
-                                        mark = false;
-                                    }
-                                }
-                                if (SingleTon.fuel) {
-                                    if (!searchedSpot.isFuel()) {
-                                        mark = false;
-                                    }
-                                }
-                                if (SingleTon.roadTrain) {
-                                    if (!searchedSpot.isRoadtrain()) {
-                                        mark = false;
-                                    }
-                                }
-                                if (mark) { // Hvis alle tjek er gået godt, så tilføjes spot til listen over de søgte spots
-                                    SingleTon.searchedSpots.add(searchedSpot);
-                                }
-                            }
-                            Log.d("Søgning", "Der blev fundet: " + SingleTon.searchedSpots.size() + " søgeresultater ud af: " + SingleTon.spots.size());
-                        }
-                        progressDialog.setMessage(SingleTon.searchedSpots.size() + " matches found.");
-                        return null;
-                    }
-
-                    @Override
-                    protected void onPostExecute(String msg) {
-                        getFragmentManager()
-                                .beginTransaction()
-                                .replace(R.id.MainFragment, new GMapsFragment())
-                                .setTransitionStyle(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
-                                .addToBackStack(null)
-                                .commit();
-                    }
-                }.execute();
-            }
-        });
         return rod;
     }
 }

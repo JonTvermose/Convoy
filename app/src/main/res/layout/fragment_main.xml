@@ -31,23 +31,12 @@
             android:layout_width="match_parent"
             android:layout_height="400dp" />
 
-
-        <Button
+        <fragment
             android:layout_width="match_parent"
             android:layout_height="0px"
             android:layout_weight="1"
-            android:padding="0dp"
-            android:layout_marginBottom="16dp"
-            android:layout_marginRight="16dp"
-            android:layout_marginLeft="16dp"
-            android:text="SEARCH"
-            android:fontFamily="sans-serif-medium"
-            android:id="@+id/searchButton"
-            android:layout_gravity="center_horizontal"
-            android:background="@drawable/knap_blaa_bg"
-            android:textSize="60sp"
-            android:layout_margin="10dp"
-            android:elevation="4dp"/>
+            android:name="gruppe3.convoy.SearchButtonFragment"
+            android:id="@+id/mainBottomFragment" />
 
 
     </LinearLayout>
