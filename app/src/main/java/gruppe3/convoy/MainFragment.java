@@ -1,27 +1,25 @@
 package gruppe3.convoy;
 
 
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
-import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.LinearLayout;
+import android.view.animation.AccelerateInterpolator;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
 
-import java.util.ArrayList;
-
+import gruppe3.convoy.functionality.MyLocation;
 import gruppe3.convoy.functionality.SingleTon;
-import gruppe3.convoy.functionality.Spot;
 
 
 /**
@@ -32,7 +30,6 @@ public class MainFragment extends Fragment {
     private ViewPager mPager;
     private PagerAdapter mPagerAdapter;
     private boolean session = false;
-//    public static ProgressDialog progressDialog;
 
     public MainFragment() {
         // Required empty public constructor
@@ -53,14 +50,42 @@ public class MainFragment extends Fragment {
         TabLayout tabLayout = (TabLayout) rod.findViewById(R.id.sliding_tabs);
         tabLayout.setupWithViewPager(mPager);
 
-//        LinearLayout bFrag = (LinearLayout) rod.findViewById(R.id.mainBottomFragment);
-
         getFragmentManager()
                 .beginTransaction()
-                .add(R.id.mainBottomFragment, new SearchButtonFragment())
-                .setTransitionStyle(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+                .add(R.id.mainBottomFragment, new ProgressFragment())
                 .commit();
 
+        SingleTon.myLocation = new MyLocation();
+        SingleTon.myLocation.startLocationService(getActivity()); // Starter stedbestemmelse
+
+        // Følgende styrer animationen for ProgressBar på startskærmen når der loades data
+        final Handler h = new Handler();
+        h.postDelayed(new Runnable() {
+            int p = 10;
+            @Override
+            public void run() {
+                if (MyLocation.POSUPDATED) {
+                    // Hvis positionen er opdateret: opdater progressbar og start datahentning
+                    if (SingleTon.dataLoadDone){
+                        getFragmentManager()
+                                .beginTransaction()
+                                .setCustomAnimations(R.animator.fade_in, R.animator.fade_out)
+                                .replace(R.id.mainBottomFragment, new SearchButtonFragment())
+                                .addToBackStack(null)
+                                .commit();
+                    } else {
+                        h.postDelayed(this, 100);
+                    }
+                } else {
+                    // Vent yderligere 100 ms indtil positionen er opdateret og opdater progressbar
+                    h.postDelayed(this, 100);
+                    p = p + 1;
+                    if (p <= 40) {
+                        ProgressFragment.progressBar.setProgress(p);
+                    }
+                }
+            }
+        }, 100);
 
         return rod;
     }
@@ -70,4 +95,5 @@ public class MainFragment extends Fragment {
         super.onActivityResult(requestCode, resultCode, data);
         AdvancedFragment.autocompleteFragment.onActivityResult(requestCode, resultCode, data);
     }
+
 }

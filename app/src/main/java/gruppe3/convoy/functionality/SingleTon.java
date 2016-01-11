@@ -32,10 +32,8 @@ public class SingleTon extends Application {
     public static MyLocation myLocation;
     public static String dest = "";
     public static int timer,minutter;
-    public static final String searchTxt1 = "Finding Location", searchTxt2 = "Connecting to Database", searchTxt3 = "Connected. Fetching data", searchTxt4 = "Done!";
-    public static Boolean food, wc, bed, bath, fuel, adblue, roadTrain = false, dataLoadDone = false;
-    public static boolean hasDest;
-    public static LatLng destPos;
+    public static final String searchTxt1 = "Finding Location", searchTxt2 = "Connecting to Database", searchTxt3 = "Connected. Fetching data";
+    public static Boolean food, wc, bed, bath, fuel, adblue, roadTrain = false, dataLoadDone = false, dataLoading = false;
 
     public static SingleTon getInstance() {
         return ourInstance;
@@ -50,6 +48,7 @@ public class SingleTon extends Application {
     }
 
     public static void fetchData(){
+        dataLoading=true;
 
         if(spots==null){
             Log.d("Data", "Spots er null");
@@ -84,7 +83,6 @@ public class SingleTon extends Application {
                         }
                         Log.d("Data", "Done with spots!");
                         Log.d("Data", "Size of Spots = " + spots.size());
-                        ProgressFragment.progressBarTxt.setText(SingleTon.searchTxt4);
                         SingleTon.dataLoadDone = true;
                     } else {
                         Log.d("score", "Error: " + e.getMessage());
