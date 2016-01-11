@@ -77,6 +77,9 @@ public class Main extends FragmentActivity {
     @Override
     public void onRequestPermissionsResult(int requestCode,
                                            String permissions[], int[] grantResults) {
+
+        System.out.println("requestCode: "+requestCode);
+
         switch (requestCode) {
             case MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION: {
                 // If request is cancelled, the result arrays are empty.
@@ -99,7 +102,12 @@ public class Main extends FragmentActivity {
         }
     }
 
-
+//    @Override
+//    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+//        super.onActivityResult(requestCode, resultCode, data);
+//        System.out.println("onActivityResult");
+//        AutoCompleteFragment.autocompleteFragment.onActivityResult(requestCode, resultCode, data);
+//    }
 
     @Override
     protected void onStop(){

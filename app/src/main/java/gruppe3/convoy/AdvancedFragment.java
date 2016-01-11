@@ -1,8 +1,10 @@
 package gruppe3.convoy;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,22 +12,33 @@ import android.widget.EditText;
 import android.widget.NumberPicker;
 import android.widget.Switch;
 
+import com.google.android.gms.common.api.Status;
+import com.google.android.gms.location.places.Place;
+import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
+import com.google.android.gms.location.places.ui.PlaceSelectionListener;
+import com.google.android.gms.location.places.ui.SupportPlaceAutocompleteFragment;
+import com.google.android.gms.maps.model.LatLng;
+
 import gruppe3.convoy.functionality.SingleTon;
 
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class AdvancedFragment extends Fragment {
+public class AdvancedFragment extends Fragment implements PlaceSelectionListener {
 
     public static EditText dest;
     public static NumberPicker timer,minutter;
     public static Switch roadTrain;
     public static String[] hours,mins;
+    static SupportPlaceAutocompleteFragment autocompleteFragment;
+    static boolean hasDest;
+    static LatLng destPos;
 
     public AdvancedFragment() {
         // Required empty public constructor
     }
+
 
 
     @Override
@@ -34,6 +47,40 @@ public class AdvancedFragment extends Fragment {
         View rod = inflater.inflate(R.layout.fragment_advanced, container, false);
 //        dest = (EditText) rod.findViewById(R.id.destination_editText);
 //        dest.setText(SingleTon.dest);
+
+
+        // Retrieve the PlaceAutocompleteFragment.
+        autocompleteFragment = (SupportPlaceAutocompleteFragment)
+                getChildFragmentManager().findFragmentById(R.id.autocomplete);
+
+
+        autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
+            @Override
+            public void onPlaceSelected(Place place) {
+                // TODO: Get info about the selected place.
+                Log.i("auto", "Id: " + place.getId());
+                Log.i("auto", "Name: " + place.getName());
+                Log.i("auto", "Address: " + place.getAddress());
+                Log.i("auto", "Pos: " + place.getLatLng());
+                AdvancedFragment.hasDest=true;
+                AdvancedFragment.destPos = new LatLng(place.getLatLng().latitude,place.getLatLng().longitude);
+
+                Log.i("auto", "var hasDest: " + AdvancedFragment.hasDest);
+                Log.i("auto", "var destPos: " + AdvancedFragment.destPos.toString());
+                autocompleteFragment.setText("TEST");
+            }
+
+            @Override
+            public void onError(Status status) {
+                // TODO: Handle the error.
+                Log.i("auto", "An error occurred: " + status);
+
+            }
+        });
+
+
+//        autocompleteFragment.setOnPlaceSelectedListener(this);
+
 
         timer = (NumberPicker) rod.findViewById(R.id.timer_numberPicker);
         hours = new String[24];
@@ -59,5 +106,19 @@ public class AdvancedFragment extends Fragment {
         roadTrain.setChecked(SingleTon.roadTrain);
         return rod;
     }
+
+
+    @Override
+    public void onPlaceSelected(Place place) {
+        // TODO: Get info about the selected place.
+        Log.i("auto", "Place: " + place.getName());
+    }
+
+    @Override
+    public void onError(Status status) {
+        // TODO: Handle the error.
+        Log.i("auto", "An error occurred: " + status);
+    }
+
 
 }

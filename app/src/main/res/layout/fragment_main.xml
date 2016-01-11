@@ -20,16 +20,20 @@
             android:background="@color/light_blue_600"
             android:elevation="2dp"
             app:tabMode="fixed"
+
             app:tabGravity="fill"
             app:tabIndicatorColor="@android:color/black"
             app:tabIndicatorHeight="5dp"
             app:tabTextAppearance="@style/MineCustomTabText" />
 
+
+
         <android.support.v4.view.ViewPager
             xmlns:android="http://schemas.android.com/apk/res/android"
             android:id="@+id/pager"
             android:layout_width="match_parent"
-            android:layout_height="400dp" />
+            android:layout_height="400dp"
+            />
 
         <LinearLayout
             android:layout_width="match_parent"

@@ -3,6 +3,8 @@ package gruppe3.convoy;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,11 +18,24 @@ import com.google.android.gms.location.places.ui.SupportPlaceAutocompleteFragmen
 
 public class AutoCompleteFragment extends SupportPlaceAutocompleteFragment {
 
-    SupportPlaceAutocompleteFragment autocompleteFragment;
+//    SupportPlaceAutocompleteFragment autocompleteFragment;
 
     public AutoCompleteFragment() {
         // Required empty public constructor
     }
+
+
+
+    SupportPlaceAutocompleteFragment autocompleteFragment = (SupportPlaceAutocompleteFragment)
+    getFragmentManager().findFragmentById(R.id.autocomplete);
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        autocompleteFragment.onActivityResult(requestCode, resultCode, data);
+    }
+
+
 
 
     @Override
@@ -28,10 +43,6 @@ public class AutoCompleteFragment extends SupportPlaceAutocompleteFragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View rod = inflater.inflate(R.layout.fragment_auto_complete, container, false);
-
-        autocompleteFragment = (SupportPlaceAutocompleteFragment)
-                getFragmentManager().findFragmentById(R.id.autocomplete);
-
 
         autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
 
@@ -46,16 +57,14 @@ public class AutoCompleteFragment extends SupportPlaceAutocompleteFragment {
                 // TODO: Handle the error.
                 Log.i("auto", "An error occurred: " + status);
             }
+
+
         });
 
 
         return rod;
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        autocompleteFragment.onActivityResult(requestCode, resultCode, data);
-    }
+
 
 }
