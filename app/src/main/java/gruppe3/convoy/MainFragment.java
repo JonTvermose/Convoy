@@ -61,6 +61,7 @@ public class MainFragment extends Fragment {
                 if (MyLocation.POSUPDATED) {
                     // Hvis positionen er opdateret: opdater progressbar og start datahentning
                     if (SingleTon.dataLoadDone){
+                        getChildFragmentManager().findFragmentById(R.id.pager).getChildFragmentManager().findFragmentById(R.id.autocomplete).getView().setVisibility(View.VISIBLE);
                         getFragmentManager()
                                 .beginTransaction()
                                 .setCustomAnimations(R.animator.fade_in, R.animator.fade_out)

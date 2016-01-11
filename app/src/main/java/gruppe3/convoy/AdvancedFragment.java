@@ -52,7 +52,7 @@ public class AdvancedFragment extends Fragment implements PlaceSelectionListener
         // Retrieve the PlaceAutocompleteFragment.
         autocompleteFragment = (SupportPlaceAutocompleteFragment)
                 getChildFragmentManager().findFragmentById(R.id.autocomplete);
-
+        autocompleteFragment.getView().setVisibility(View.INVISIBLE);
 
         autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
             @Override
@@ -62,8 +62,8 @@ public class AdvancedFragment extends Fragment implements PlaceSelectionListener
                 Log.i("auto", "Name: " + place.getName());
                 Log.i("auto", "Address: " + place.getAddress());
                 Log.i("auto", "Pos: " + place.getLatLng());
-                SingleTon.hasDest=true;
-                SingleTon.destPos = new LatLng(place.getLatLng().latitude,place.getLatLng().longitude);
+                SingleTon.hasDest = true;
+                SingleTon.destPos = new LatLng(place.getLatLng().latitude, place.getLatLng().longitude);
 
                 Log.i("auto", "var hasDest: " + SingleTon.hasDest);
                 Log.i("auto", "var destPos: " + SingleTon.destPos.toString());

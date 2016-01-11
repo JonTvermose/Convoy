@@ -132,15 +132,15 @@ public class GMapsFragment extends Fragment implements OnMapReadyCallback, View.
         if(SingleTon.hasDest){
             Location startLoc = SingleTon.myLocation.getLocation();
             Log.i("autoDest map", getMapsApiDirectionsUrl(startLoc, SingleTon.destPos));
-            gMap.moveCamera(CameraUpdateFactory.newLatLngZoom(SingleTon.destPos, 12));
             destMark = gMap.addMarker(new MarkerOptions().
                     position(SingleTon.destPos).
                     title(SingleTon.destAdress)
                     .icon(BitmapDescriptorFactory.defaultMarker(210f)));
             destMark.showInfoWindow();
+            gMap.animateCamera(CameraUpdateFactory.newLatLngZoom(SingleTon.destPos, 12));
         } else {
             LatLng cPos = new LatLng(SingleTon.myLocation.getLocation().getLatitude(), SingleTon.myLocation.getLocation().getLongitude());
-            gMap.moveCamera(CameraUpdateFactory.newLatLngZoom(cPos, 12));
+            gMap.animateCamera(CameraUpdateFactory.newLatLngZoom(cPos, 12));
         }
 
         // Tilføjer markers til Google Maps
