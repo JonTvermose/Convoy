@@ -26,6 +26,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
@@ -60,6 +61,7 @@ public class GMapsFragment extends Fragment implements OnMapReadyCallback, View.
     private ImageView goButton, zoomLocation, addLocation, homeButton;
     private AddSpot addSpot;
     private ClusterManager<ClusterMaker> mClusterManager;
+    private Marker destMark;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -130,14 +132,16 @@ public class GMapsFragment extends Fragment implements OnMapReadyCallback, View.
         if(SingleTon.hasDest){
             Location startLoc = SingleTon.myLocation.getLocation();
             Log.i("autoDest map", getMapsApiDirectionsUrl(startLoc, SingleTon.destPos));
-            gMap.moveCamera(CameraUpdateFactory.newLatLngZoom(SingleTon.destPos, 10f ));
-            Marker mark = gMap.addMarker(new MarkerOptions().
+            gMap.moveCamera(CameraUpdateFactory.newLatLngZoom(SingleTon.destPos, 12));
+            destMark = gMap.addMarker(new MarkerOptions().
                     position(SingleTon.destPos).
-                    title("Autocomplete Dest"));
+                    title(SingleTon.destAdress)
+                    .icon(BitmapDescriptorFactory.defaultMarker(210f)));
+            destMark.showInfoWindow();
+        } else {
+            LatLng cPos = new LatLng(SingleTon.myLocation.getLocation().getLatitude(), SingleTon.myLocation.getLocation().getLongitude());
+            gMap.moveCamera(CameraUpdateFactory.newLatLngZoom(cPos, 12));
         }
-
-        LatLng cPos = new LatLng(SingleTon.myLocation.getLocation().getLatitude(), SingleTon.myLocation.getLocation().getLongitude());
-        gMap.moveCamera(CameraUpdateFactory.newLatLngZoom(cPos, 12));
 
         // Tilføjer markers til Google Maps
         mClusterManager = new ClusterManager<ClusterMaker>(getActivity(), gMap);
