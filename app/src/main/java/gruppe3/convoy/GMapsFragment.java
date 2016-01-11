@@ -67,6 +67,9 @@ public class GMapsFragment extends Fragment implements OnMapReadyCallback, View.
         super.onCreate(savedInstanceState);
         view = inflater.inflate(R.layout.fragment_gmap, container, false);
 
+
+
+
         //Knap til at zoome ind på nuværende lokation
         zoomLocation = (ImageView) view.findViewById(R.id.zoomLocation);
         zoomLocation.setOnClickListener(this);
@@ -123,6 +126,15 @@ public class GMapsFragment extends Fragment implements OnMapReadyCallback, View.
         // Gør det muligt at finde nuværende position og ændre maptype
         gMap.setMyLocationEnabled(true);
         gMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+
+        if(SingleTon.hasDest){
+            Location startLoc = SingleTon.myLocation.getLocation();
+            Log.i("autoDest map", getMapsApiDirectionsUrl(startLoc, SingleTon.destPos));
+            gMap.moveCamera(CameraUpdateFactory.newLatLngZoom(SingleTon.destPos, 10f ));
+            Marker mark = gMap.addMarker(new MarkerOptions().
+                    position(SingleTon.destPos).
+                    title("Autocomplete Dest"));
+        }
 
         LatLng cPos = new LatLng(SingleTon.myLocation.getLocation().getLatitude(), SingleTon.myLocation.getLocation().getLongitude());
         gMap.moveCamera(CameraUpdateFactory.newLatLngZoom(cPos, 12));

@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.NumberPicker;
 import android.widget.Switch;
+import android.widget.TextView;
 
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.places.Place;
@@ -43,7 +44,7 @@ public class AdvancedFragment extends Fragment implements PlaceSelectionListener
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rod = inflater.inflate(R.layout.fragment_advanced, container, false);
+        final View rod = inflater.inflate(R.layout.fragment_advanced, container, false);
 //        dest = (EditText) rod.findViewById(R.id.destination_editText);
 //        dest.setText(SingleTon.dest);
 
@@ -66,7 +67,7 @@ public class AdvancedFragment extends Fragment implements PlaceSelectionListener
 
                 Log.i("auto", "var hasDest: " + SingleTon.hasDest);
                 Log.i("auto", "var destPos: " + SingleTon.destPos.toString());
-                autocompleteFragment.setText("TEST");
+                ((TextView) rod.findViewById(R.id.destHead)).setText(place.getAddress());
             }
 
             @Override
