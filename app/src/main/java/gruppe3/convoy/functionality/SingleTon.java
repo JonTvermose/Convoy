@@ -24,15 +24,13 @@ public class SingleTon extends Application {
     private static SingleTon ourInstance = new SingleTon();
     public static ArrayList<Spot> spots, searchedSpots;
     public static MyLocation myLocation;
-    public static String dest = "";
     public static int timer,minutter;
     public static final String searchTxt1 = "Finding Location", searchTxt2 = "Connecting to Database", searchTxt3 = "Connected. Fetching data";
     public static Boolean food, wc, bed, bath, fuel, adblue, roadTrain = false, dataLoadDone = false, dataLoading = false;
     public static boolean hasDest;
     public static LatLng destPos;
     public static String destAdress = "Your destination";
-    File spotsFile = new File(getFilesDir(), "Spots");
-
+    private File spotsFile;
 
     public static SingleTon getInstance() {
         return ourInstance;
@@ -52,20 +50,14 @@ public class SingleTon extends Application {
         if(spots==null){
             Log.d("Data", "Spots er null");
             // Asynkront kald til DB
-
             ParseQuery<ParseObject> query2 = ParseQuery.getQuery("Spots1");
             query2.setLimit(1000);
             query2.findInBackground(new FindCallback<ParseObject>() {
                 public void done(List<ParseObject> spotList, ParseException e) {
-                    double p = 50;
                     Log.d("Data", "e = "+e);
                     if (e == null) {
                         spots = new ArrayList<Spot>();
                         for (int i = 0; spotList.size() > i; i++) {
-                            Log.d("Data", "Progressbar: " + Double.toString(p));
-                            p = p + ((1.0)/spotList.size())*50.0;
-                            ProgressFragment.progressBar.setProgress((int) p);
-
                             LatLng pos = new LatLng(Double.valueOf(spotList.get(i).getString("posLat")), Double.valueOf(spotList.get(i).getString("posLng")));
                             spots.add(new Spot(
                                     spotList.get(i).getString("desc"),
@@ -86,8 +78,6 @@ public class SingleTon extends Application {
                         SingleTon.dataLoadDone = true;
                     } else {
                         Log.d("score", "Error: " + e.getMessage());
-                        ProgressFragment.progressBarTxt.setText(SingleTon.searchTxt3);
-                        ProgressFragment.progressBar.setProgress(50);
                     }
                 }
             });
@@ -103,6 +93,7 @@ public class SingleTon extends Application {
     }
 
     public void loadSpots(String filename) {
+        spotsFile = new File(getFilesDir(), "Spots");
         if (spotsFile.exists()) {
             try {
                 Serialisering.hent(filename);
