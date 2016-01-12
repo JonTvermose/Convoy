@@ -70,9 +70,6 @@ public class GMapsFragment extends Fragment implements OnMapReadyCallback, View.
         super.onCreate(savedInstanceState);
         view = inflater.inflate(R.layout.fragment_gmap, container, false);
 
-
-
-
         //Knap til at zoome ind på nuværende lokation
         zoomLocation = (ImageView) view.findViewById(R.id.zoomLocation);
         zoomLocation.setOnClickListener(this);
@@ -130,13 +127,14 @@ public class GMapsFragment extends Fragment implements OnMapReadyCallback, View.
         gMap.setMyLocationEnabled(true);
         gMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
 
+        // Hvis brugeren har indtastet en destination, tilføjes denne på kortet, og kameraet bevæges til positionen
         if(SingleTon.hasDest){
             Location startLoc = SingleTon.myLocation.getLocation();
-            Log.i("autoDest map", getMapsApiDirectionsUrl(startLoc, SingleTon.destPos));
+            Log.i("Kort", getMapsApiDirectionsUrl(startLoc, SingleTon.destPos));
             destMark = gMap.addMarker(new MarkerOptions().
                     position(SingleTon.destPos).
                     title(SingleTon.destAdress)
-                    .icon(BitmapDescriptorFactory.defaultMarker(210f)));
+                    .icon(BitmapDescriptorFactory.defaultMarker(210f))); // Destinationsmarkeren har en anden farve en normale markers
             destMark.showInfoWindow();
             gMap.animateCamera(CameraUpdateFactory.newLatLngZoom(SingleTon.destPos, 12));
         } else {
@@ -166,6 +164,7 @@ public class GMapsFragment extends Fragment implements OnMapReadyCallback, View.
         gMap.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
             @Override
             public void onMapLongClick(LatLng latLng) {
+                Log.d("Kort", "Der klikkes med et langt tryk på kortet: " + latLng.latitude + ", " + latLng.longitude);
                 Vibrator vibe = (Vibrator) getActivity().getSystemService(Context.VIBRATOR_SERVICE);
                 vibe.vibrate(50); // Vibrate for 500 milliseconds
                 Location loc = new Location("");
@@ -196,6 +195,7 @@ public class GMapsFragment extends Fragment implements OnMapReadyCallback, View.
 
             @Override
             public boolean onClusterItemClick(ClusterMaker marker) {
+                Log.d("Kort", "Der klikkes på en ClusterMarker: " + marker.getPosition().latitude + ", " + marker.getPosition().longitude);
                 goButton.setVisibility(View.GONE); // Siker at GO-knappen forsvinder hvis man har trykket på et andet spot før dette
                 final Dialog dialog = new Dialog(getActivity());
                 dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
