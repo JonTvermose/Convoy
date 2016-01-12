@@ -39,11 +39,6 @@ public class SearchButtonFragment extends Fragment {
         search.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                SingleTon.roadTrain = AdvancedFragment.roadTrain.isChecked();
-                SingleTon.timer = AdvancedFragment.timer.getValue();
-                SingleTon.minutter = AdvancedFragment.minutter.getValue();
-//                SingleTon.dest = AdvancedFragment.dest.getText().toString();
-
                 new AsyncTask<Void, Void, String>(){
                     @Override
                     protected String doInBackground(Void... params) {
