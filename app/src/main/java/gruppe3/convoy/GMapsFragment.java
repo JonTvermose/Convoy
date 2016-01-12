@@ -28,14 +28,13 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.maps.android.clustering.Cluster;
-import com.google.maps.android.clustering.ClusterItem;
 import com.google.maps.android.clustering.ClusterManager;
+import com.parse.ParseObject;
 
 import org.json.JSONObject;
 
@@ -563,31 +562,42 @@ public class GMapsFragment extends Fragment implements OnMapReadyCallback, View.
             createLocation.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    // TO DO - hent data fra addSpot og send det asynkront til parse.com
                     addDialog.hide();
                     // Tilføjer spot til google map kortet så vi kan animere det
                     LatLng latLng = new LatLng(addSpot.loc.getLatitude(), addSpot.loc.getLongitude());
                     Marker mark = gMap.addMarker(new MarkerOptions().
                             position(latLng).
                             title(addSpot.getAddressTxt()));
-//                    mark.remove();
 
                     if(SingleTon.searchedSpots==null){
                         SingleTon.searchedSpots = new ArrayList<Spot>();
                     }
-                    mark.setSnippet(Integer.toString(SingleTon.searchedSpots.size()));
+                    mark.setSnippet(Integer.toString(SingleTon.searchedSpots.size())); // Set snippet så vi kan fremsøge spot når der klikkes på det
                     ClusterMaker clustMark = new ClusterMaker(latLng);
                     clustMark.setSnippet(mark.getSnippet());
                     mClusterManager.addItem(clustMark); // Tilføj marker til clustermanageren
-
-                    GMapsFragment.this.dropPinEffect(mark);
+                    GMapsFragment.this.dropPinEffect(mark); // Start animationen
 
                     // Tilføjer spot til den hentede liste af spots, så det har samme funktionalitet som alle andre spots
                     Spot newSpot = new Spot(addSpot.getAddressTxt(), addSpot.adblue, addSpot.food, addSpot.bath, addSpot.bed, addSpot.wc, addSpot.fuel, addSpot.roadTrain, latLng);
                     SingleTon.searchedSpots.add(newSpot);
                     SingleTon.spots.add(newSpot);
-                    Toast.makeText(getActivity(), "Location added", Toast.LENGTH_SHORT).show(); // Muligvis på onSuccess fra parse.com?
                     addSpot = null; // Sikrer vi nulstiller data hvis der tilføjes flere spots i samme session.
+
+                    // Uploader data til Parse.com
+                    ParseObject parseSpot = new ParseObject("Spots1");
+                    parseSpot.put("adblue", newSpot.isAdblue());
+                    parseSpot.put("bath", newSpot.isBath());
+                    parseSpot.put("bed", newSpot.isBed());
+                    parseSpot.put("food", newSpot.isFood());
+                    parseSpot.put("fuel", newSpot.isFuel());
+                    parseSpot.put("roadtrain", newSpot.isRoadtrain());
+                    parseSpot.put("wc", newSpot.isWc());
+                    parseSpot.put("desc", newSpot.getDesc());
+                    parseSpot.put("posLat", Double.toString(newSpot.getPos().latitude));
+                    parseSpot.put("posLng", Double.toString(newSpot.getPos().longitude));
+                    parseSpot.saveInBackground();
+                    Toast.makeText(getActivity(), "Location added", Toast.LENGTH_SHORT).show();
                 }
             });
         }
