@@ -1,12 +1,7 @@
 package gruppe3.convoy.functionality;
 
 import android.app.Application;
-import android.content.Context;
-import android.location.LocationListener;
-import android.location.LocationManager;
-import android.os.Handler;
 import android.util.Log;
-import android.util.TypedValue;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.parse.FindCallback;
@@ -18,8 +13,6 @@ import com.parse.ParseQuery;
 import java.util.ArrayList;
 import java.util.List;
 
-import gruppe3.convoy.Main;
-import gruppe3.convoy.MainFragment;
 import gruppe3.convoy.ProgressFragment;
 
 /**
@@ -36,7 +29,7 @@ public class SingleTon extends Application {
     public static Boolean food, wc, bed, bath, fuel, adblue, roadTrain = false, dataLoadDone = false, dataLoading = false;
     public static boolean hasDest;
     public static LatLng destPos;
-    public static String destAdress = "Your destination";
+
 
     public static SingleTon getInstance() {
         return ourInstance;
@@ -61,10 +54,15 @@ public class SingleTon extends Application {
             query2.setLimit(1000);
             query2.findInBackground(new FindCallback<ParseObject>() {
                 public void done(List<ParseObject> spotList, ParseException e) {
+                    double p = 50;
                     Log.d("Data", "e = "+e);
                     if (e == null) {
                         spots = new ArrayList<Spot>();
                         for (int i = 0; spotList.size() > i; i++) {
+                            Log.d("Data", "Progressbar: " + Double.toString(p));
+                            p = p + ((1.0)/spotList.size())*50.0;
+                            ProgressFragment.progressBar.setProgress((int) p);
+
                             LatLng pos = new LatLng(Double.valueOf(spotList.get(i).getString("posLat")), Double.valueOf(spotList.get(i).getString("posLng")));
                             spots.add(new Spot(
                                     spotList.get(i).getString("desc"),
@@ -75,18 +73,39 @@ public class SingleTon extends Application {
                                     spotList.get(i).getBoolean("wc"),
                                     spotList.get(i).getBoolean("fuel"),
                                     spotList.get(i).getBoolean("roadtrain"),
+                                    spotList.get(i).getString("createdAt"),
                                     pos
                             ));
+
                         }
                         Log.d("Data", "Done with spots!");
                         Log.d("Data", "Size of Spots = " + spots.size());
                         SingleTon.dataLoadDone = true;
                     } else {
                         Log.d("score", "Error: " + e.getMessage());
+                        ProgressFragment.progressBarTxt.setText(SingleTon.searchTxt3);
+                        ProgressFragment.progressBar.setProgress(50);
                     }
                 }
             });
         }
+    }
+    public void saveSpots(ArrayList spots, String filename) {
+       try {
+          Serialisering.gem(spots, filename);
+
+       } catch(Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void loadSpots(String filename) {
+        try {
+            Serialisering.hent(filename);
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+
     }
 
 }

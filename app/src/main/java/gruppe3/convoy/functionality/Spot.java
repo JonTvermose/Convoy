@@ -3,12 +3,12 @@ package gruppe3.convoy.functionality;
 import com.google.android.gms.maps.model.LatLng;
 import com.parse.ParseObject;
 
-import gruppe3.convoy.Main;
+import java.io.Serializable;
 
 /**
  * Created by Jon on 25/11/2015.
  */
-public class Spot {
+public class Spot implements Serializable {
     private LatLng pos;
     private boolean adblue;
     private boolean food;
@@ -18,8 +18,11 @@ public class Spot {
     private boolean fuel;
     private boolean roadtrain;
     private String desc;
+//    private String objectId;
+    private String createdAt;
 
-    public Spot(String desc, boolean adblue, boolean food, boolean bath, boolean bed, boolean wc, boolean fuel, boolean roadtrain, LatLng pos){
+    public Spot(String desc, boolean adblue, boolean food, boolean bath, boolean bed, boolean wc, boolean fuel, boolean roadtrain, String createdAt, LatLng pos) {
+
         this.desc = desc;
         this.setAdblue(adblue);
         this.setFood(food);
@@ -28,8 +31,20 @@ public class Spot {
         this.setWc(wc);
         this.setFuel(fuel);
         this.setRoadtrain(roadtrain);
+//        this.objectId = objectId;
+        this.createdAt = createdAt;
         this.setPos(pos);
+
+
     }
+
+    public String getCreatedAt() { return createdAt; }
+
+    public void setCreatedAt(String createdAt) { this.createdAt = createdAt; }
+
+//    public void setObjectId(String objectId) { this.objectId = objectId; }
+
+//    public String getObjectId() { return objectId; }
 
     public String getDesc(){
         return desc;
@@ -107,6 +122,7 @@ public class Spot {
 
         ParseObject spotObject = new ParseObject("Spots");
 
+//        spotObject.put("objectId", objectId);
         spotObject.put("desc", desc);
         spotObject.put("adblue", adblue);
         spotObject.put("food", food);
@@ -117,6 +133,7 @@ public class Spot {
         spotObject.put("roadtrain", roadtrain);
         spotObject.put("posLat", pos.latitude);
         spotObject.put("posLng", pos.longitude);
+        spotObject.put("createdAt", createdAt);
 
         spotObject.saveInBackground();
     }
