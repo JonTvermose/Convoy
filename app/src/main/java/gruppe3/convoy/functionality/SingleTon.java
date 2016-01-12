@@ -15,6 +15,7 @@ import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,6 +37,8 @@ public class SingleTon extends Application {
     public static Boolean food, wc, bed, bath, fuel, adblue, roadTrain = false, dataLoadDone = false, dataLoading = false;
     public static boolean hasDest;
     public static LatLng destPos;
+    public String filename = "Spots";
+    File spotsFile = new File(getFilesDir()), filename)
 
     public static SingleTon getInstance() {
         return ourInstance;
@@ -79,7 +82,7 @@ public class SingleTon extends Application {
                                     spotList.get(i).getBoolean("wc"),
                                     spotList.get(i).getBoolean("fuel"),
                                     spotList.get(i).getBoolean("roadtrain"),
-                                    spotList.get(i).getCreatedAt("createdAt"),
+                                    spotList.get(i).getString("createdAt"),
                                     pos
                             ));
 
@@ -96,5 +99,14 @@ public class SingleTon extends Application {
             });
         }
     }
+    public void saveSpots(ArrayList spots) {
+        if (spotsFile.exists())
+    }
+
+    public void loadSpots() {
+
+    }
+
+    public void
 
 }
