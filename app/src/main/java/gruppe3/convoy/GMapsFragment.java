@@ -1,6 +1,7 @@
 package gruppe3.convoy;
 
 import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.location.Location;
@@ -8,6 +9,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.SystemClock;
+import android.os.Vibrator;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -164,6 +166,8 @@ public class GMapsFragment extends Fragment implements OnMapReadyCallback, View.
         gMap.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
             @Override
             public void onMapLongClick(LatLng latLng) {
+                Vibrator vibe = (Vibrator) getActivity().getSystemService(Context.VIBRATOR_SERVICE);
+                vibe.vibrate(50); // Vibrate for 500 milliseconds
                 Location loc = new Location("");
                 loc.setLatitude(latLng.latitude);
                 loc.setLongitude(latLng.longitude);
@@ -597,7 +601,7 @@ public class GMapsFragment extends Fragment implements OnMapReadyCallback, View.
                     parseSpot.put("posLat", Double.toString(newSpot.getPos().latitude));
                     parseSpot.put("posLng", Double.toString(newSpot.getPos().longitude));
                     parseSpot.saveInBackground();
-                    Toast.makeText(getActivity(), "Location added", Toast.LENGTH_SHORT).show();
+
                 }
             });
         }
@@ -631,9 +635,13 @@ public class GMapsFragment extends Fragment implements OnMapReadyCallback, View.
                     // Post this event again 15ms from now.
                     handler.postDelayed(this, 15);
                 } else {
+                    // Når animation er færdig
                     marker.remove();
                     mClusterManager.cluster();
 //                    gMap.animateCamera(CameraUpdateFactory.newLatLng(marker.getPosition()));
+                    Vibrator vibe = (Vibrator) getActivity().getSystemService(Context.VIBRATOR_SERVICE);
+                    vibe.vibrate(200); // Vibrate for 500 milliseconds
+                    Toast.makeText(getActivity(), "Location added", Toast.LENGTH_SHORT).show();
                 }
             }
         });
