@@ -30,6 +30,7 @@ public class SingleTon extends Application {
     public static Boolean food, wc, bed, bath, fuel, adblue, roadTrain = false, dataLoadDone = false, dataLoading = false;
     public static boolean hasDest;
     public static LatLng destPos;
+    public static String destAdress = "Your destination";
     File spotsFile = new File(getFilesDir(), "Spots");
 
 
