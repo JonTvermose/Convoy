@@ -54,7 +54,7 @@ import gruppe3.convoy.functionality.Spot;
 /*
  Klassen er udviklet af Jon Tvermose Nielsen
  */
-public class GMapsFragment extends Fragment implements OnMapReadyCallback, View.OnClickListener {
+public class GMapsFragment extends Fragment implements OnMapReadyCallback, View.OnClickListener, ClusterManager.OnClusterItemClickListener<ClusterMaker> {
 
     private GoogleMap gMap;
     private Spot spot; // Det spot der er klikket på
@@ -63,6 +63,10 @@ public class GMapsFragment extends Fragment implements OnMapReadyCallback, View.
     private AddSpot addSpot;
     private ClusterManager<ClusterMaker> mClusterManager;
     private Marker destMark;
+    private Polyline poly = null;
+    private PolylineOptions polyLineOptions = null;
+    private TextView distance, title;
+    private Button route;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -95,7 +99,6 @@ public class GMapsFragment extends Fragment implements OnMapReadyCallback, View.
     private void getMap(){
         try {
             if (gMap == null) {
-//                MainFragment.progressDialog.setMessage("Retrieving Map...");
                 try {
                     SupportMapFragment m = ((SupportMapFragment) getChildFragmentManager().
                             findFragmentById(R.id.map));
@@ -187,208 +190,7 @@ public class GMapsFragment extends Fragment implements OnMapReadyCallback, View.
         });
 
         // Clicklistener til markers. Når man klikker på en marker åbnes en Dialog-boks
-        mClusterManager.setOnClusterItemClickListener(new ClusterManager.OnClusterItemClickListener<ClusterMaker>() {
-            Polyline poly = null;
-            PolylineOptions polyLineOptions = null;
-            TextView distance, title;
-            Button route;
-
-            @Override
-            public boolean onClusterItemClick(ClusterMaker marker) {
-                Log.d("Kort", "Der klikkes på en ClusterMarker: " + marker.getPosition().latitude + ", " + marker.getPosition().longitude);
-                goButton.setVisibility(View.GONE); // Siker at GO-knappen forsvinder hvis man har trykket på et andet spot før dette
-                final Dialog dialog = new Dialog(getActivity());
-                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-                dialog.setContentView(R.layout.dialog_spot); // XML-layout til Dialog-boksen
-
-                // Fjern rute fra kort hvis der eksisterer et i forvejen
-                if (poly != null) {
-                    poly.remove();
-                }
-
-                try {
-                    spot = SingleTon.searchedSpots.get(Integer.valueOf(marker.getSnippet()));
-
-                    /* Henter rute til POI */
-                    Location startLoc = SingleTon.myLocation.getLocation();
-                    String url = GMapsFragment.this.getMapsApiDirectionsUrl(startLoc, GMapsFragment.this.spot.getPos());
-                    ReadTask downloadTask = new ReadTask();
-                    downloadTask.execute(url);
-
-                    title = (TextView) dialog.findViewById(R.id.title_TextView);
-                    title.setText("");
-
-                    ImageView adblue = (ImageView) dialog.findViewById(R.id.adblue_imageView);
-                    ImageView bed = (ImageView) dialog.findViewById(R.id.bed_imageView);
-                    ImageView bath = (ImageView) dialog.findViewById(R.id.bath_imageView);
-                    ImageView food = (ImageView) dialog.findViewById(R.id.food_imageView);
-                    ImageView fuel = (ImageView) dialog.findViewById(R.id.fuel_imageView);
-                    ImageView wc = (ImageView) dialog.findViewById(R.id.wc_imageView);
-                    distance = (TextView) dialog.findViewById(R.id.distance_textView);
-
-                    // Sæt billederne afhængig af hvilken service der er tilgængelig på det pågældende spot
-                    if (spot.isAdblue()) {
-                        adblue.setImageResource(R.drawable.adblue_t_check);
-                        adblue.setSelected(false);
-                    } else {
-                        adblue.setImageResource(R.drawable.adblue_t);
-                        adblue.setSelected(true);
-                    }
-                    if (spot.isBath()) {
-                        bath.setImageResource(R.drawable.bath_t_check);
-                        bath.setSelected(false);
-                    } else {
-                        bath.setImageResource(R.drawable.bath_t);
-                        bath.setSelected(true);
-                    }
-                    if (spot.isBed()) {
-                        bed.setImageResource(R.drawable.bed_t_check);
-                        bed.setSelected(false);
-                    } else {
-                        bed.setImageResource(R.drawable.bed_t);
-                        bed.setSelected(true);
-                    }
-                    if (spot.isFood()) {
-                        food.setImageResource(R.drawable.food_t_check);
-                        food.setSelected(false);
-                    } else {
-                        food.setImageResource(R.drawable.food_t);
-                        food.setSelected(true);
-                    }
-                    if (spot.isFuel()) {
-                        fuel.setImageResource(R.drawable.fuel_t_check);
-                        fuel.setSelected(false);
-                    } else {
-                        fuel.setImageResource(R.drawable.fuel_t);
-                        fuel.setSelected(true);
-                    }
-                    if (spot.isWc()) {
-                        wc.setImageResource(R.drawable.wc_t_check);
-                        wc.setSelected(false);
-                    } else {
-                        wc.setImageResource(R.drawable.wc_t);
-                        wc.setSelected(true);
-                    }
-
-                    // Clicklistener til "FIND ROUTE"-knappen
-                    route = (Button) dialog.findViewById(R.id.findRoute_button);
-                    route.setEnabled(false);
-                    route.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            Toast.makeText(getActivity(), "Drawing route.", Toast.LENGTH_SHORT).show();
-                            if (polyLineOptions == null) { // Kan fjernes så længe knappen er deaktiveret indtil ruten er modtaget og parset
-                                Toast.makeText(getActivity(), "Route not ready!", Toast.LENGTH_LONG).show();
-                            } else {
-                                poly = GMapsFragment.this.gMap.addPolyline(polyLineOptions);
-                                dialog.hide();
-                                goButton.setVisibility(View.VISIBLE); // Viser GO-knappen
-                            }
-                        }
-                    });
-
-                    // Clicklistener til "Luk"-knappen (man kan også bare klikke udenfor Dialog-boksen)
-                    ImageView close = (ImageView) dialog.findViewById(R.id.close_imageView);
-                    close.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            dialog.hide();
-                        }
-                    });
-                    dialog.show();
-                } catch (Exception e) {
-                    // TO DO : Fejlhåndtering
-                    // Hvad skal der ske hvis man klikker på en marker som vi ikke kan identificere?
-                    Toast.makeText(getActivity(), "Could not find id: " + marker.getSnippet(), Toast.LENGTH_LONG).show();
-                    Log.d("Kort", "Kunne ikke finde det rigtige spot. SingleTon.searchedSpots størrelse: " + SingleTon.searchedSpots.size() + " , der søges efter spot nr: " + marker.getSnippet());
-                }
-
-                return true;
-            }
-
-            class ReadTask extends AsyncTask<String, Void, String> {
-                @Override
-                protected String doInBackground(String... url) {
-                    String data = "";
-                    try {
-                        HttpConnection http = new HttpConnection();
-                        data = http.readUrl(url[0]);
-                    } catch (Exception e) {
-                        Log.d("Background Task", e.toString());
-                    }
-                    return data;
-                }
-
-                @Override
-                protected void onPostExecute(String result) {
-                    super.onPostExecute(result);
-                    new ParserTask().execute(result);
-                }
-
-                class ParserTask extends
-                        AsyncTask<String, Integer, List<List<HashMap<String, String>>>> {
-                    private PathJSONParser parser;
-
-                    @Override
-                    protected List<List<HashMap<String, String>>> doInBackground(
-                            String... jsonData) {
-
-                        JSONObject jObject;
-                        List<List<HashMap<String, String>>> routes = null;
-
-                        try {
-                            jObject = new JSONObject(jsonData[0]);
-                            parser = new PathJSONParser();
-                            routes = parser.parse(jObject);
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                        return routes;
-                    }
-
-                    @Override
-                    protected void onPostExecute(List<List<HashMap<String, String>>> routes) {
-                        ArrayList<LatLng> points = null;
-
-                        // Opdaterer afstand, tid og adresse/overskrift på popuppen.
-                        String distAndTime = parser.getDist() + " | " + parser.getDur();
-                        distAndTime = distAndTime.replace("hours", "h");
-                        if (distAndTime.contains("h")) {
-                            distAndTime = distAndTime.replace("mins", "m");
-                        }
-                        distAndTime = distAndTime.replace(",", ".");
-                        distance.setText(distAndTime);
-                        title.setText(parser.getEndAdress()); // TO DO - her mangler noget logik for hvis teksten bliver for lang eller "Unnamed road" er en del af den
-
-
-                        // traversing through routes
-                        for (int i = 0; i < routes.size(); i++) {
-                            points = new ArrayList<LatLng>();
-                            polyLineOptions = new PolylineOptions();
-
-                            List<HashMap<String, String>> path = routes.get(i);
-
-                            for (int j = 0; j < path.size(); j++) {
-                                HashMap<String, String> point = path.get(j);
-
-                                double lat = Double.parseDouble(point.get("lat"));
-                                double lng = Double.parseDouble(point.get("lng"));
-                                LatLng position = new LatLng(lat, lng);
-
-                                points.add(position);
-                            }
-
-                            polyLineOptions.addAll(points);
-                            polyLineOptions.width(6); // Tykkelse på stregerne
-                            polyLineOptions.color(Color.BLUE); // Farve på stregerne
-                        }
-
-                        route.setEnabled(true); // Gør "Find Route"-knappen tilgængelig
-                    }
-                }
-            }
-        });
-//        MainFragment.progressDialog.dismiss();
+        mClusterManager.setOnClusterItemClickListener(this);
     }
 
     /**
@@ -646,5 +448,198 @@ public class GMapsFragment extends Fragment implements OnMapReadyCallback, View.
             }
         });
     }
-}
 
+    @Override
+    public boolean onClusterItemClick(ClusterMaker marker) {
+        Log.d("Kort", "Der klikkes på en ClusterMarker: " + marker.getPosition().latitude + ", " + marker.getPosition().longitude);
+        goButton.setVisibility(View.GONE); // Siker at GO-knappen forsvinder hvis man har trykket på et andet spot før dette
+        final Dialog dialog = new Dialog(getActivity());
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.dialog_spot); // XML-layout til Dialog-boksen
+
+        // Fjern rute fra kort hvis der eksisterer et i forvejen
+        if (poly != null) {
+            poly.remove();
+        }
+
+        try {
+            spot = SingleTon.searchedSpots.get(Integer.valueOf(marker.getSnippet()));
+
+            /* Henter rute til POI */
+            Location startLoc = SingleTon.myLocation.getLocation();
+            String url = GMapsFragment.this.getMapsApiDirectionsUrl(startLoc, GMapsFragment.this.spot.getPos());
+            ReadTask downloadTask = new ReadTask();
+            downloadTask.execute(url);
+
+            title = (TextView) dialog.findViewById(R.id.title_TextView);
+            title.setText("");
+
+            ImageView adblue = (ImageView) dialog.findViewById(R.id.adblue_imageView);
+            ImageView bed = (ImageView) dialog.findViewById(R.id.bed_imageView);
+            ImageView bath = (ImageView) dialog.findViewById(R.id.bath_imageView);
+            ImageView food = (ImageView) dialog.findViewById(R.id.food_imageView);
+            ImageView fuel = (ImageView) dialog.findViewById(R.id.fuel_imageView);
+            ImageView wc = (ImageView) dialog.findViewById(R.id.wc_imageView);
+            distance = (TextView) dialog.findViewById(R.id.distance_textView);
+
+            // Sæt billederne afhængig af hvilken service der er tilgængelig på det pågældende spot
+            if (spot.isAdblue()) {
+                adblue.setImageResource(R.drawable.adblue_t_check);
+                adblue.setSelected(false);
+            } else {
+                adblue.setImageResource(R.drawable.adblue_t);
+                adblue.setSelected(true);
+            }
+            if (spot.isBath()) {
+                bath.setImageResource(R.drawable.bath_t_check);
+                bath.setSelected(false);
+            } else {
+                bath.setImageResource(R.drawable.bath_t);
+                bath.setSelected(true);
+            }
+            if (spot.isBed()) {
+                bed.setImageResource(R.drawable.bed_t_check);
+                bed.setSelected(false);
+            } else {
+                bed.setImageResource(R.drawable.bed_t);
+                bed.setSelected(true);
+            }
+            if (spot.isFood()) {
+                food.setImageResource(R.drawable.food_t_check);
+                food.setSelected(false);
+            } else {
+                food.setImageResource(R.drawable.food_t);
+                food.setSelected(true);
+            }
+            if (spot.isFuel()) {
+                fuel.setImageResource(R.drawable.fuel_t_check);
+                fuel.setSelected(false);
+            } else {
+                fuel.setImageResource(R.drawable.fuel_t);
+                fuel.setSelected(true);
+            }
+            if (spot.isWc()) {
+                wc.setImageResource(R.drawable.wc_t_check);
+                wc.setSelected(false);
+            } else {
+                wc.setImageResource(R.drawable.wc_t);
+                wc.setSelected(true);
+            }
+
+            // Clicklistener til "FIND ROUTE"-knappen
+            route = (Button) dialog.findViewById(R.id.findRoute_button);
+            route.setEnabled(false);
+            route.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Toast.makeText(getActivity(), "Drawing route.", Toast.LENGTH_SHORT).show();
+                    if (polyLineOptions == null) { // Kan fjernes så længe knappen er deaktiveret indtil ruten er modtaget og parset
+                        Toast.makeText(getActivity(), "Route not ready!", Toast.LENGTH_LONG).show();
+                    } else {
+                        poly = GMapsFragment.this.gMap.addPolyline(polyLineOptions);
+                        dialog.hide();
+                        goButton.setVisibility(View.VISIBLE); // Viser GO-knappen
+                    }
+                }
+            });
+
+            // Clicklistener til "Luk"-knappen (man kan også bare klikke udenfor Dialog-boksen)
+            ImageView close = (ImageView) dialog.findViewById(R.id.close_imageView);
+            close.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    dialog.hide();
+                }
+            });
+            dialog.show();
+        } catch (Exception e) {
+            // TO DO : Fejlhåndtering
+            // Hvad skal der ske hvis man klikker på en marker som vi ikke kan identificere?
+            Toast.makeText(getActivity(), "Could not find id: " + marker.getSnippet(), Toast.LENGTH_LONG).show();
+            Log.d("Kort", "Kunne ikke finde det rigtige spot. SingleTon.searchedSpots størrelse: " + SingleTon.searchedSpots.size() + " , der søges efter spot nr: " + marker.getSnippet());
+        }
+
+        return true;
+    }
+
+    class ReadTask extends AsyncTask<String, Void, String> {
+        @Override
+        protected String doInBackground(String... url) {
+            String data = "";
+            try {
+                HttpConnection http = new HttpConnection();
+                data = http.readUrl(url[0]);
+            } catch (Exception e) {
+                Log.d("Background Task", e.toString());
+            }
+            return data;
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            new ParserTask().execute(result);
+        }
+    }
+
+    class ParserTask extends
+            AsyncTask<String, Integer, List<List<HashMap<String, String>>>> {
+        private PathJSONParser parser;
+
+        @Override
+        protected List<List<HashMap<String, String>>> doInBackground(
+                String... jsonData) {
+
+            JSONObject jObject;
+            List<List<HashMap<String, String>>> routes = null;
+
+            try {
+                jObject = new JSONObject(jsonData[0]);
+                parser = new PathJSONParser();
+                routes = parser.parse(jObject);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return routes;
+        }
+
+        @Override
+        protected void onPostExecute(List<List<HashMap<String, String>>> routes) {
+            ArrayList<LatLng> points = null;
+
+            // Opdaterer afstand, tid og adresse/overskrift på popuppen.
+            String distAndTime = parser.getDist() + " | " + parser.getDur();
+            distAndTime = distAndTime.replace("hours", "h");
+            if (distAndTime.contains("h")) {
+                distAndTime = distAndTime.replace("mins", "m");
+            }
+            distAndTime = distAndTime.replace(",", ".");
+            distance.setText(distAndTime);
+            title.setText(parser.getEndAdress()); // TO DO - her mangler noget logik for hvis teksten bliver for lang eller "Unnamed road" er en del af den
+
+            // traversing through routes
+            for (int i = 0; i < routes.size(); i++) {
+                points = new ArrayList<LatLng>();
+                polyLineOptions = new PolylineOptions();
+
+                List<HashMap<String, String>> path = routes.get(i);
+
+                for (int j = 0; j < path.size(); j++) {
+                    HashMap<String, String> point = path.get(j);
+
+                    double lat = Double.parseDouble(point.get("lat"));
+                    double lng = Double.parseDouble(point.get("lng"));
+                    LatLng position = new LatLng(lat, lng);
+
+                    points.add(position);
+                }
+
+                polyLineOptions.addAll(points);
+                polyLineOptions.width(6); // Tykkelse på stregerne
+                polyLineOptions.color(Color.BLUE); // Farve på stregerne
+            }
+
+            route.setEnabled(true); // Gør "Find Route"-knappen tilgængelig
+        }
+    }
+}
