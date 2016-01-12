@@ -10,6 +10,7 @@ import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,6 +30,7 @@ public class SingleTon extends Application {
     public static Boolean food, wc, bed, bath, fuel, adblue, roadTrain = false, dataLoadDone = false, dataLoading = false;
     public static boolean hasDest;
     public static LatLng destPos;
+    File spotsFile = new File(getFilesDir(), "Spots");
 
 
     public static SingleTon getInstance() {
@@ -100,11 +102,16 @@ public class SingleTon extends Application {
     }
 
     public void loadSpots(String filename) {
-        try {
-            Serialisering.hent(filename);
-        } catch(Exception e) {
-            e.printStackTrace();
+        if (spotsFile.exists()) {
+            try {
+                Serialisering.hent(filename);
+                ParseQuery<ParseObject> query2 = ParseQuery.getQuery("Spots1");
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
+
 
     }
 
