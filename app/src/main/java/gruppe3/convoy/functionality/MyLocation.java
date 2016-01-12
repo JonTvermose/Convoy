@@ -44,7 +44,7 @@ public class MyLocation implements LocationListener, GoogleApiClient.ConnectionC
         Log.d(TAG, "**** MyLocation.onConnected()");
         mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
         if(mLastLocation==null){
-            // TO DO - hvis der ikke kan findes en sidst kendt lokation
+            mLastLocation = new Location("");// TO DO - hvis der ikke kan findes en sidst kendt lokation
             mLastLocation.setLatitude(55);
             mLastLocation.setLongitude(12);
         }
