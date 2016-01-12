@@ -1,12 +1,7 @@
 package gruppe3.convoy.functionality;
 
 import android.app.Application;
-import android.content.Context;
-import android.location.LocationListener;
-import android.location.LocationManager;
-import android.os.Handler;
 import android.util.Log;
-import android.util.TypedValue;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.parse.FindCallback;
@@ -15,12 +10,9 @@ import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import gruppe3.convoy.Main;
-import gruppe3.convoy.MainFragment;
 import gruppe3.convoy.ProgressFragment;
 
 /**
@@ -37,8 +29,7 @@ public class SingleTon extends Application {
     public static Boolean food, wc, bed, bath, fuel, adblue, roadTrain = false, dataLoadDone = false, dataLoading = false;
     public static boolean hasDest;
     public static LatLng destPos;
-    public String filename = "Spots";
-    File spotsFile = new File(getFilesDir()), filename)
+
 
     public static SingleTon getInstance() {
         return ourInstance;
