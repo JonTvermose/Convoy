@@ -55,12 +55,20 @@ public class MainFragment extends Fragment {
         // Følgende styrer animationen for ProgressBar på startskærmen når der loades data
         final Handler h = new Handler();
         h.postDelayed(new Runnable() {
-            int p = 10;
+            int p = 10; // Tælles løbende op til 50
+            int d = 50; // Når location er opdateret sættes progress til 50%
             @Override
             public void run() {
                 if (MyLocation.POSUPDATED) {
                     // Hvis positionen er opdateret: opdater progressbar og start datahentning
+                    if (d<90){
+                        ProgressFragment.progressBarTxt.setText(SingleTon.searchTxt2);
+                        ProgressFragment.progressBar.setProgress(d);
+                        d++;
+                        d++;
+                    }
                     if (SingleTon.dataLoadDone){
+                        ProgressFragment.progressBar.setProgress(100);
                         getChildFragmentManager().findFragmentById(R.id.pager).getChildFragmentManager().findFragmentById(R.id.autocomplete).getView().setVisibility(View.VISIBLE);
                         getFragmentManager()
                                 .beginTransaction()
@@ -73,8 +81,8 @@ public class MainFragment extends Fragment {
                 } else {
                     // Vent yderligere 100 ms indtil positionen er opdateret og opdater progressbar
                     h.postDelayed(this, 100);
-                    p = p + 1;
-                    if (p <= 40) {
+                    p++;
+                    if (p <= 50) {
                         ProgressFragment.progressBar.setProgress(p);
                     }
                 }

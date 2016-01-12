@@ -61,15 +61,10 @@ public class SingleTon extends Application {
             query2.setLimit(1000);
             query2.findInBackground(new FindCallback<ParseObject>() {
                 public void done(List<ParseObject> spotList, ParseException e) {
-                    double p = 50;
                     Log.d("Data", "e = "+e);
                     if (e == null) {
                         spots = new ArrayList<Spot>();
                         for (int i = 0; spotList.size() > i; i++) {
-                            Log.d("Data", "Progressbar: " + Double.toString(p));
-                            p = p + ((1.0)/spotList.size())*50.0;
-                            ProgressFragment.progressBar.setProgress((int) p);
-
                             LatLng pos = new LatLng(Double.valueOf(spotList.get(i).getString("posLat")), Double.valueOf(spotList.get(i).getString("posLng")));
                             spots.add(new Spot(
                                     spotList.get(i).getString("desc"),
@@ -82,15 +77,12 @@ public class SingleTon extends Application {
                                     spotList.get(i).getBoolean("roadtrain"),
                                     pos
                             ));
-
                         }
                         Log.d("Data", "Done with spots!");
                         Log.d("Data", "Size of Spots = " + spots.size());
                         SingleTon.dataLoadDone = true;
                     } else {
                         Log.d("score", "Error: " + e.getMessage());
-                        ProgressFragment.progressBarTxt.setText(SingleTon.searchTxt3);
-                        ProgressFragment.progressBar.setProgress(50);
                     }
                 }
             });

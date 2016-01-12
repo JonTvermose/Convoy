@@ -9,6 +9,8 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import gruppe3.convoy.functionality.SingleTon;
+
 
 /**
  * A simple {@link Fragment} subclass.
@@ -30,7 +32,8 @@ public class ProgressFragment extends Fragment {
 
         progressBarTxt = (TextView) rod.findViewById(R.id.progressBarTxt);
         progressBar = (ProgressBar) rod.findViewById(R.id.progressBar);
-        progressBar.setProgress(0);
+        progressBarTxt.setText(SingleTon.searchTxt1);
+        progressBar.setProgress(10);
 
         return rod;
     }
