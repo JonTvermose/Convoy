@@ -99,14 +99,22 @@ public class SingleTon extends Application {
             });
         }
     }
-    public void saveSpots(ArrayList spots) {
-        if (spotsFile.exists())
+    public void saveSpots(ArrayList spots, String filename) {
+       try {
+          Serialisering.gem(spots, filename);
+
+       } catch(Exception e) {
+            e.printStackTrace();
+        }
     }
 
-    public void loadSpots() {
+    public void loadSpots(String filename) {
+        try {
+            Serialisering.hent(filename);
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
 
     }
-
-    public void
 
 }
