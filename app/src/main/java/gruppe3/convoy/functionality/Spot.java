@@ -34,8 +34,21 @@ public class Spot implements Serializable {
 //        this.objectId = objectId;
         this.createdAt = createdAt;
         this.setPos(pos);
+    }
 
+    public Spot(String desc, boolean adblue, boolean food, boolean bath, boolean bed, boolean wc, boolean fuel, boolean roadtrain,  LatLng pos) {
 
+        this.desc = desc;
+        this.setAdblue(adblue);
+        this.setFood(food);
+        this.setBath(bath);
+        this.setBed(bed);
+        this.setWc(wc);
+        this.setFuel(fuel);
+        this.setRoadtrain(roadtrain);
+//        this.objectId = objectId;
+        this.createdAt = createdAt;
+        this.setPos(pos);
     }
 
     public String getCreatedAt() { return createdAt; }
