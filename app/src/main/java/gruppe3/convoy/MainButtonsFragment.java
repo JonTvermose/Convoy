@@ -31,9 +31,9 @@ public class MainButtonsFragment extends Fragment {
                              Bundle savedInstanceState) {
         View knapper;
         if(SingleTon.nightMode){
-            knapper = inflater.inflate(R.layout.fragment_main_buttons, container, false);
-        } else {
             knapper = inflater.inflate(R.layout.fragment_main_buttons_night, container, false);
+        } else {
+            knapper = inflater.inflate(R.layout.fragment_main_buttons, container, false);
         }
 
         food = (ImageView) knapper.findViewById(R.id.imageFood);
