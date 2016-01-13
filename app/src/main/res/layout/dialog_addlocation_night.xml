@@ -31,6 +31,17 @@
             android:layout_marginTop="16dp"
             android:textStyle="bold" />
 
+        <ImageView
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:id="@+id/close_addLocation"
+            android:layout_alignTop="@+id/title_TextView"
+            android:layout_alignRight="@+id/linearLayout1"
+            android:layout_alignEnd="@+id/linearLayout1"
+            android:src="@drawable/ic_close_white_48dp"
+            android:layout_marginTop="16dp"
+            />
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

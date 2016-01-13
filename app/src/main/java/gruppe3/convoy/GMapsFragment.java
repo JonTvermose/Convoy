@@ -73,7 +73,7 @@ public class GMapsFragment extends Fragment implements OnMapReadyCallback, View.
                              Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (SingleTon.nightMode){
-            view = inflater.inflate(R.layout.fragment_gmap, container, false);
+            view = inflater.inflate(R.layout.fragment_gmap_night, container, false);
         } else {
             view = inflater.inflate(R.layout.fragment_gmap, container, false);
         }
@@ -260,6 +260,7 @@ public class GMapsFragment extends Fragment implements OnMapReadyCallback, View.
                 addSpot = new AddSpot(SingleTon.myLocation.getLocation(), getActivity());
             }
 
+            // Dialogboks til at tilføje et lokation
             final Dialog addDialog = new Dialog(getActivity());
             addDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
             if(SingleTon.nightMode){
@@ -267,6 +268,14 @@ public class GMapsFragment extends Fragment implements OnMapReadyCallback, View.
             } else {
                 addDialog.setContentView(R.layout.dialog_addlocation); // XML-layout til Dialog-boksen
             }
+
+            final ImageView close = (ImageView) addDialog.findViewById(R.id.close_addLocation);
+            close.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    addDialog.hide();
+                }
+            });
 
             final ImageView adblue = (ImageView) addDialog.findViewById(R.id.adblue_img);
             adblue.setOnClickListener(new View.OnClickListener() {

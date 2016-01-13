@@ -57,6 +57,16 @@
             android:layout_marginBottom="8dp"
             android:textStyle="bold" />
 
+        <ImageView
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:id="@+id/close_addLocation"
+            android:src="@drawable/ic_clear_black_48dp"
+            android:layout_alignTop="@+id/title_TextView"
+            android:layout_alignRight="@+id/linearLayout1"
+            android:layout_alignEnd="@+id/linearLayout1"
+            android:layout_marginTop="16dp"/>
+
         <LinearLayout
             android:orientation="horizontal"
             android:layout_width="match_parent"

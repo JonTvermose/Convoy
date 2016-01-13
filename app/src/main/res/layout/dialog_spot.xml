@@ -31,13 +31,10 @@
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:id="@+id/close_imageView"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
             android:src="@drawable/ic_clear_black_48dp"
-            android:layout_marginRight="16dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginBottom="16dp"/>
+            android:layout_alignTop="@+id/title_TextView"
+            android:layout_alignRight="@+id/linearLayout1"
+            android:layout_alignEnd="@+id/linearLayout1" />
 
         <LinearLayout
             android:orientation="horizontal"
