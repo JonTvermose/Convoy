@@ -1,6 +1,7 @@
 package gruppe3.convoy;
 
 
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -12,6 +13,7 @@ import android.widget.LinearLayout;
 import android.widget.NumberPicker;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.places.Place;
@@ -25,7 +27,7 @@ import gruppe3.convoy.functionality.SingleTon;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class AdvancedFragment extends Fragment implements NumberPicker.OnValueChangeListener, CompoundButton.OnCheckedChangeListener {
+public class AdvancedFragment extends Fragment implements NumberPicker.OnValueChangeListener, CompoundButton.OnCheckedChangeListener, View.OnClickListener {
 
     private NumberPicker timer,minutter;
     private Switch roadTrain;
@@ -43,10 +45,10 @@ public class AdvancedFragment extends Fragment implements NumberPicker.OnValueCh
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         rod = inflater.inflate(R.layout.fragment_advanced, container, false);
+
         autocompleteFragment = (SupportPlaceAutocompleteFragment)
                 getChildFragmentManager().findFragmentById(R.id.autocomplete);
-        autocompleteFragment.getView().setVisibility(View.INVISIBLE);
-
+        autocompleteFragment.getView().setVisibility(View.INVISIBLE); // Skal først være tilgængelig når startup er færdig
         autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
             @Override
             public void onPlaceSelected(Place place) {
@@ -63,10 +65,7 @@ public class AdvancedFragment extends Fragment implements NumberPicker.OnValueCh
                 Log.i("Advanced", "var destPos: " + SingleTon.destPos.toString());
                 ((TextView) rod.findViewById(R.id.destHead)).setText(place.getAddress());
 
-                // "Aktiver" scroll-hjulet med antal tid tilbage
-                line.setAlpha(1);
-                timer.setEnabled(true);
-                minutter.setEnabled(true);
+                enableNumberPicker(); // Aktiver numberpicker
             }
 
             @Override
@@ -85,7 +84,6 @@ public class AdvancedFragment extends Fragment implements NumberPicker.OnValueCh
         timer.setWrapSelectorWheel(true);
         timer.setDisplayedValues(hours);
         timer.setValue(SingleTon.timer);
-        timer.setEnabled(false); // Låser funktionen indtil der er indtastet en gyldig destination
         timer.setOnValueChangedListener(this);
 
         minutter = (NumberPicker) rod.findViewById(R.id.minutter_numberPicker);
@@ -97,18 +95,20 @@ public class AdvancedFragment extends Fragment implements NumberPicker.OnValueCh
         minutter.setWrapSelectorWheel(true);
         minutter.setDisplayedValues(mins);
         minutter.setValue(SingleTon.minutter);
-        minutter.setEnabled(false); // Låser funktionen indtil der er indtastet en gyldig destination
         minutter.setOnValueChangedListener(this);
 
         line = (LinearLayout) rod.findViewById(R.id.linje2);
-        line.setAlpha(0.5f);
+        disableNumberPicker(); // Låser numberPicker indtil der er indtastet en gyldig destination
+        line.setOnClickListener(this);
 
         roadTrain = (Switch) rod.findViewById(R.id.roadTrain_switch);
         roadTrain.setChecked(SingleTon.roadTrain);
         roadTrain.setOnCheckedChangeListener(this);
+
         return rod;
     }
 
+    // Skriver værdien af numberpicker til SingleTon
     @Override
     public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
         if(picker==minutter){
@@ -124,5 +124,35 @@ public class AdvancedFragment extends Fragment implements NumberPicker.OnValueCh
         public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
         Log.d("Advanced", "RoadTrain er sat til: " + isChecked);
         SingleTon.roadTrain = isChecked;
+    }
+
+    // Aktiver scroll-hjulet med antal tid tilbage
+    private void enableNumberPicker(){
+        line.setAlpha(1);
+        timer.setEnabled(true);
+        minutter.setEnabled(true);
+        line.setBackgroundResource(R.drawable.knap_blaa_bg3); // Fjerner onClick effekt
+    }
+
+    // Deaktiver scroll-hjulet med antal tid tilbage
+    private void disableNumberPicker(){
+        line.setAlpha(0.5f);
+        timer.setEnabled(false);
+        minutter.setEnabled(false);
+        line.setBackgroundResource(R.drawable.knap_blaa_bg2); // Tilføjer onClick effekt
+    }
+
+    @Override
+    public void onClick(View v) {
+        Log.d("Advanced", "Der klikkes");
+        // Viser en toast når der klikkes på numberpickeren og der ikke er en destination
+        if(v==line){
+            Log.d("Advanced" , "Der klikkes på linearLayout");
+            if(minutter.isEnabled()){
+                // do nothing
+            } else {
+                Toast.makeText(getActivity(), "Destination required", Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 }
