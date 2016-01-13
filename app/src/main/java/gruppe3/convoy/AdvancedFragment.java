@@ -99,6 +99,7 @@ public class AdvancedFragment extends Fragment implements NumberPicker.OnValueCh
         minutter.setOnValueChangedListener(this);
 
         line = (LinearLayout) rod.findViewById(R.id.linje2);
+
         disableNumberPicker(); // Låser numberPicker indtil der er indtastet en gyldig destination
         line.setOnClickListener(this);
 
@@ -148,7 +149,7 @@ public class AdvancedFragment extends Fragment implements NumberPicker.OnValueCh
         minutter.setEnabled(false);
         if(SingleTon.nightMode){
             line.setBackgroundResource(R.drawable.knap_night_bg2); // Fjerner onClick effekt
-        } {
+        } else {
             line.setBackgroundResource(R.drawable.knap_blaa_bg2); // Tilføjer onClick effekt
         }
     }
