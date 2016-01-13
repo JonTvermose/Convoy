@@ -4,6 +4,10 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.ActivityCompat;
@@ -17,10 +21,13 @@ import gruppe3.convoy.functionality.Serialisering;
 import gruppe3.convoy.functionality.SingleTon;
 
 
-public class Main extends FragmentActivity {
+public class Main extends FragmentActivity implements SensorEventListener {
 
     public static final String PREF_FILE_NAME = "ConvoyPrefs";
     private final int MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
+    private long lastShaken;
+
+    public static SensorManager sensorManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +60,7 @@ public class Main extends FragmentActivity {
         } else {
             // Hvis vi har tilladelse i orden startes maps bare
             Log.d("Access", "ACCESS_FINE_LOCATION er ok");
+
             startApp();
         }
     }
@@ -96,7 +104,9 @@ public class Main extends FragmentActivity {
 
     @Override
     protected void onStop(){
+        Log.d("Debug" , "Main.onStop() er kaldt. Appen er ikke aktiv");
         SingleTon.myLocation.stopLocationUpdates(); // Stopper opdateringen fra GPS/Network
+        sensorManager.unregisterListener(this); // Stopper sensor lytning
         SharedPreferences.Editor prefs = PreferenceManager.getDefaultSharedPreferences(this).edit();
         prefs.putBoolean("saveData", SingleTon.saveData).apply();
         if(SingleTon.saveData){
@@ -113,8 +123,45 @@ public class Main extends FragmentActivity {
     }
 
     @Override
-    protected void onStart(){
-        super.onStart();
+    protected void onResume(){
+        Log.d("Debug", "Main.onResume() er kaldt. Appen er aktiv!");
+        super.onResume();
+        SingleTon.myLocation.startLocationService(this);
+        sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
+        Sensor accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        if (accelerometer!= null){
+            sensorManager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_NORMAL);
+            lastShaken = System.currentTimeMillis();
+            Log.d("Sensor","Starter sensorlytter");
+        }
+    }
 
+    @Override
+    public void onSensorChanged(SensorEvent e) {
+        double g=9.80665; // normal tyngdeaccelerationen
+        double sum=Math.abs(e.values[0])+Math.abs(e.values[1])+Math.abs(e.values[2]);
+        long cTime = System.currentTimeMillis();
+        if (sum>3*g && cTime - lastShaken > 2000) {
+            lastShaken = cTime;
+            if (SingleTon.nightMode){
+                SingleTon.nightMode = false;
+            } else {
+                SingleTon.nightMode = true;
+            }
+
+            // Genskaber appen i den nye mode
+            Log.d("Sensor", "Skifter day/night mode! " + SingleTon.nightMode);
+            SingleTon.switchMode = true;
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .setCustomAnimations(R.animator.fade_in, R.animator.fade_out)
+                    .replace(R.id.MainFragment, new MainFragment())
+                    .addToBackStack(null)
+                    .commit();
+        }
+    }
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int accuracy) {
     }
 }

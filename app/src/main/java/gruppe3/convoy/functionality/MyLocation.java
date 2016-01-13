@@ -53,9 +53,11 @@ public class MyLocation implements LocationListener, GoogleApiClient.ConnectionC
     }
 
     protected void startLocationUpdates() {
-        mRequestingLocationUpdates = true;
-        LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
-        Log.d(TAG, "Stedbestemmelse startet");
+        if(mGoogleApiClient.isConnected()){
+            mRequestingLocationUpdates = true;
+            LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
+            Log.d(TAG, "Stedbestemmelse startet");
+        }
     }
 
     @Override
