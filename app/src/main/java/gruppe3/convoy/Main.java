@@ -28,7 +28,6 @@ public class Main extends FragmentActivity {
                 != PackageManager.PERMISSION_GRANTED) {
             // Hvis vi ikke har permissions skal vi bede om permission
             Log.d("Access", "Mangler adgang til ACCESS_FINE_LOCATION");
-
             // Should we show an explanation?
             if (ActivityCompat.shouldShowRequestPermissionRationale(this,
                     Manifest.permission.ACCESS_FINE_LOCATION)) {
@@ -36,11 +35,10 @@ public class Main extends FragmentActivity {
                 // Show an expanation to the user *asynchronously* -- don't block
                 // this thread waiting for the user's response! After the user
                 // sees the explanation, try again to request the permission.
+                Toast.makeText(this, "Convoy requires access to Location services to function.", Toast.LENGTH_LONG);
 
             } else {
-
                 // No explanation needed, we can request the permission.
-
                 ActivityCompat.requestPermissions(this,
                         new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
                         MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
@@ -57,7 +55,6 @@ public class Main extends FragmentActivity {
     }
 
     private void startApp(){
-        Log.d("Stedbestemmelse","App starter");
         setContentView(R.layout.activity_main);
         getSupportFragmentManager()
                 .beginTransaction()
@@ -80,7 +77,7 @@ public class Main extends FragmentActivity {
                     startApp(); // Appen fortsætter
                 } else {
                     // TODO - permission denied, boo! Disable the
-                    Toast.makeText(this, "This app requires access to GPS", Toast.LENGTH_LONG).show();
+                    Toast.makeText(this, "This app requires access to GPS.", Toast.LENGTH_LONG).show();
                     Log.d("Stedbestemmelse", "Brugeren gav ikke adgang til GPS. App afsluttes.");
                     this.finish();
                 }
@@ -88,7 +85,7 @@ public class Main extends FragmentActivity {
             }
             default: {
                 // TODO - der er sket en fejl
-                Toast.makeText(this, "An error occurred. Sorry...", Toast.LENGTH_LONG).show();
+                Toast.makeText(this, "An error occurred. Sorry... :(", Toast.LENGTH_LONG).show();
                 Log.d("Stedbestemmelse", "Main.onRequestPermissionsResult fejlede. RequestKode var: " + requestCode);
             }
         }

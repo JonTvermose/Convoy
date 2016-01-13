@@ -8,6 +8,7 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -51,6 +52,7 @@ public class MainFragment extends Fragment {
 
         SingleTon.myLocation = new MyLocation();
         SingleTon.myLocation.startLocationService(getActivity()); // Starter stedbestemmelse
+        Log.d("Stedbestemmelse", "App starter");
 
         // Følgende styrer animationen for ProgressBar på startskærmen når der loades data
         final Handler h = new Handler();
