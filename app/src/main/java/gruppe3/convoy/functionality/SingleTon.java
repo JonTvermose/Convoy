@@ -2,6 +2,8 @@ package gruppe3.convoy.functionality;
 
 import android.app.Application;
 import android.content.SharedPreferences;
+import android.hardware.Sensor;
+import android.hardware.SensorManager;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
@@ -33,6 +35,8 @@ public class SingleTon extends Application {
     public static LatLng destPos;
     public static String destAdress = "Your destination";
     private File spotsFile;
+    public static Sensor accelerometer;
+    public static SensorManager sensorManager;
 
     public static SingleTon getInstance() {
         return ourInstance;

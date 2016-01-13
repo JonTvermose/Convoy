@@ -100,7 +100,7 @@ public class SearchButtonFragment extends Fragment {
 
                     @Override
                     protected void onPostExecute(String msg) {
-                        Main.sensorManager.unregisterListener((SensorEventListener) getActivity()); // Vi afslutter sensorlytter når vi er i mapmode
+                        SingleTon.sensorManager.unregisterListener((SensorEventListener) getActivity()); // Vi afslutter sensorlytter når vi er i mapmode
                         getFragmentManager()
                                 .beginTransaction()
                                 .replace(R.id.MainFragment, new GMapsFragment())

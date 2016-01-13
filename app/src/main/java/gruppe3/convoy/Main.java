@@ -25,9 +25,7 @@ public class Main extends FragmentActivity implements SensorEventListener {
 
     public static final String PREF_FILE_NAME = "ConvoyPrefs";
     private final int MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
-    private long lastShaken;
-
-    public static SensorManager sensorManager;
+    private long lastShaken = System.currentTimeMillis();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +58,8 @@ public class Main extends FragmentActivity implements SensorEventListener {
         } else {
             // Hvis vi har tilladelse i orden startes maps bare
             Log.d("Access", "ACCESS_FINE_LOCATION er ok");
+            SingleTon.sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
+            SingleTon.accelerometer = SingleTon.sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
 
             startApp();
         }
@@ -106,7 +106,7 @@ public class Main extends FragmentActivity implements SensorEventListener {
     protected void onStop(){
         Log.d("Debug" , "Main.onStop() er kaldt. Appen er ikke aktiv");
         SingleTon.myLocation.stopLocationUpdates(); // Stopper opdateringen fra GPS/Network
-        sensorManager.unregisterListener(this); // Stopper sensor lytning
+        SingleTon.sensorManager.unregisterListener(this); // Stopper sensor lytning
         SharedPreferences.Editor prefs = PreferenceManager.getDefaultSharedPreferences(this).edit();
         prefs.putBoolean("saveData", SingleTon.saveData).apply();
         if(SingleTon.saveData){
@@ -127,11 +127,10 @@ public class Main extends FragmentActivity implements SensorEventListener {
         Log.d("Debug", "Main.onResume() er kaldt. Appen er aktiv!");
         super.onResume();
         SingleTon.myLocation.startLocationService(this);
-        sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
-        Sensor accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-        if (accelerometer!= null){
-            sensorManager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_NORMAL);
-            lastShaken = System.currentTimeMillis();
+        lastShaken = System.currentTimeMillis();
+        // Start først sensorlytter hvis vi ikke er igang med at loade data
+        if (SingleTon.accelerometer!= null && SingleTon.dataLoadDone){
+            SingleTon.sensorManager.registerListener(this, SingleTon.accelerometer, SensorManager.SENSOR_DELAY_NORMAL);
             Log.d("Sensor","Starter sensorlytter");
         }
     }
