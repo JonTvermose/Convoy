@@ -28,7 +28,12 @@ public class ProgressFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View rod = inflater.inflate(R.layout.fragment_progress, container, false);
+        View rod;
+        if(SingleTon.nightMode){
+            rod = inflater.inflate(R.layout.fragment_progress_night, container, false);
+        } else {
+            rod = inflater.inflate(R.layout.fragment_progress, container, false);
+        }
 
         progressBarTxt = (TextView) rod.findViewById(R.id.progressBarTxt);
         progressBar = (ProgressBar) rod.findViewById(R.id.progressBar);

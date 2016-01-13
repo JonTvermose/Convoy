@@ -31,7 +31,7 @@ public class SettingsFragment extends Fragment implements CompoundButton.OnCheck
         // Inflate the layout for this fragment
         View rod;
         if(SingleTon.nightMode){
-            rod = inflater.inflate(R.layout.fragment_settings, container, false);
+            rod = inflater.inflate(R.layout.fragment_settings_night, container, false);
         } else {
             rod = inflater.inflate(R.layout.fragment_settings, container, false);
         }

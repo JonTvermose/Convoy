@@ -1,6 +1,8 @@
 package gruppe3.convoy.functionality;
 
 import android.app.Application;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.util.Log;
 
 import com.google.android.gms.maps.model.LatLng;
@@ -26,7 +28,7 @@ public class SingleTon extends Application {
     public static MyLocation myLocation;
     public static int timer,minutter;
     public static final String searchTxt1 = "Finding Location", searchTxt2 = "Connecting to Database", searchTxt3 = "Connected. Fetching data";
-    public static Boolean food, wc, bed, bath, fuel, adblue, roadTrain = false, dataLoadDone = false, dataLoading = false, nightMode = true, saveData;
+    public static Boolean food, wc, bed, bath, fuel, adblue, roadTrain = false, dataLoadDone = false, dataLoading = false, nightMode, saveData;
     public static boolean hasDest;
     public static LatLng destPos;
     public static String destAdress = "Your destination";
@@ -42,6 +44,33 @@ public class SingleTon extends Application {
         Log.d("Data", "SingleTon OnCreate");
         Parse.initialize(this);
         Log.d("Data", "Parse initialiseret");
+
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        Log.d("Debug", "Preference Manager er startet");
+        SingleTon.saveData = prefs.getBoolean("saveData", true);
+        if(SingleTon.saveData){
+            SingleTon.nightMode = prefs.getBoolean("nightMode", false);
+            SingleTon.food = prefs.getBoolean("food", false);
+            SingleTon.wc = prefs.getBoolean("wc", false);
+            SingleTon.bed = prefs.getBoolean("bed", false);
+            SingleTon.bath = prefs.getBoolean("bath", false);
+            SingleTon.fuel = prefs.getBoolean("fuel", false);
+            SingleTon.adblue = prefs.getBoolean("adblue", false);
+            SingleTon.roadTrain = prefs.getBoolean("roadTrain", false);
+        } else {
+            SingleTon.nightMode = false;
+            SingleTon.food = false;
+            SingleTon.wc = false;
+            SingleTon.bath = false;
+            SingleTon.bed = false;
+            SingleTon.fuel = false;
+            SingleTon.adblue = false;
+            SingleTon.roadTrain = false;
+        }
+        if (SingleTon.myLocation != null){
+            SingleTon.myLocation.onResume(); // Start opdatering fra GPS
+        }
+
     }
 
     public static void fetchData(){

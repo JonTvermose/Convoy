@@ -133,7 +133,12 @@ public class AdvancedFragment extends Fragment implements NumberPicker.OnValueCh
         line.setAlpha(1);
         timer.setEnabled(true);
         minutter.setEnabled(true);
-        line.setBackgroundResource(R.drawable.knap_blaa_bg3); // Fjerner onClick effekt
+        if(SingleTon.nightMode){
+            line.setBackgroundResource(R.drawable.knap_night_bg3); // Fjerner onClick effekt
+        } else {
+            line.setBackgroundResource(R.drawable.knap_blaa_bg3); // Fjerner onClick effekt
+        }
+
     }
 
     // Deaktiver scroll-hjulet med antal tid tilbage
@@ -141,7 +146,11 @@ public class AdvancedFragment extends Fragment implements NumberPicker.OnValueCh
         line.setAlpha(0.5f);
         timer.setEnabled(false);
         minutter.setEnabled(false);
-        line.setBackgroundResource(R.drawable.knap_blaa_bg2); // Tilføjer onClick effekt
+        if(SingleTon.nightMode){
+            line.setBackgroundResource(R.drawable.knap_night_bg2); // Fjerner onClick effekt
+        } {
+            line.setBackgroundResource(R.drawable.knap_blaa_bg2); // Tilføjer onClick effekt
+        }
     }
 
     @Override

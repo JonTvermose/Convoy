@@ -112,30 +112,6 @@ public class Main extends FragmentActivity {
     @Override
     protected void onStart(){
         super.onStart();
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        Log.d("Debug", "Preference Manager er startet");
-        SingleTon.saveData = prefs.getBoolean("saveData", true);
-        if(SingleTon.saveData){
-            SingleTon.nightMode = prefs.getBoolean("nightMode", false);
-            SingleTon.food = prefs.getBoolean("food", false);
-            SingleTon.wc = prefs.getBoolean("wc", false);
-            SingleTon.bed = prefs.getBoolean("bed", false);
-            SingleTon.bath = prefs.getBoolean("bath", false);
-            SingleTon.fuel = prefs.getBoolean("fuel", false);
-            SingleTon.adblue = prefs.getBoolean("adblue", false);
-            SingleTon.roadTrain = prefs.getBoolean("roadTrain", false);
-        } else {
-            SingleTon.nightMode = false;
-            SingleTon.food = false;
-            SingleTon.wc = false;
-            SingleTon.bath = false;
-            SingleTon.bed = false;
-            SingleTon.fuel = false;
-            SingleTon.adblue = false;
-            SingleTon.roadTrain = false;
-        }
-        if (SingleTon.myLocation != null){
-            SingleTon.myLocation.onResume(); // Start opdatering fra GPS
-        }
+
     }
 }
