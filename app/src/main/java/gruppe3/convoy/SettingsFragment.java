@@ -3,6 +3,7 @@ package gruppe3.convoy;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -63,6 +64,15 @@ public class SettingsFragment extends Fragment implements CompoundButton.OnCheck
             // TO DO : Reload siden/appen med nyt farveskema
             Log.d("Advanced", "NightMode er sat til: " + isChecked);
             SingleTon.nightMode = isChecked;
+
+            // Genskaber appen i den nye mode
+            SingleTon.switchMode=true;
+            getActivity().getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.MainFragment, new MainFragment())
+                    .setTransitionStyle(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+                    .addToBackStack(null)
+                    .commit();
         }
     }
 }
