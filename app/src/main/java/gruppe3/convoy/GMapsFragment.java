@@ -3,10 +3,8 @@ package gruppe3.convoy;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.location.Location;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.os.Vibrator;
@@ -38,16 +36,11 @@ import com.google.maps.android.clustering.Cluster;
 import com.google.maps.android.clustering.ClusterManager;
 import com.parse.ParseObject;
 
-import org.json.JSONObject;
-
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 
 import gruppe3.convoy.functionality.AddSpot;
 import gruppe3.convoy.functionality.ClusterMaker;
-import gruppe3.convoy.functionality.HttpConnection;
-import gruppe3.convoy.functionality.PathJSONParser;
+import gruppe3.convoy.functionality.ReadTask;
 import gruppe3.convoy.functionality.SingleTon;
 import gruppe3.convoy.functionality.Spot;
 
@@ -58,20 +51,19 @@ public class GMapsFragment extends Fragment implements OnMapReadyCallback, View.
 
     private GoogleMap gMap;
     private Spot spot; // Det spot der er klikket på
-    private View view;
     private ImageView goButton, zoomLocation, addLocation, homeButton;
-    private AddSpot addSpot;
+    private AddSpot addSpot; // Det spot der tilføjes
     private ClusterManager<ClusterMaker> mClusterManager;
     private Marker destMark;
-    private Polyline poly = null;
-    private PolylineOptions polyLineOptions = null;
-    private TextView distance, title;
-    private Button route;
+
+    public static Polyline poly = null;
+    public static PolylineOptions polyLineOptions = null;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        View view;
         if (SingleTon.nightMode){
             view = inflater.inflate(R.layout.fragment_gmap_night, container, false);
         } else {
@@ -129,7 +121,7 @@ public class GMapsFragment extends Fragment implements OnMapReadyCallback, View.
     public void onMapReady(GoogleMap googleMap) {
         Log.d("Kort", "GMapsAktivitet.onMapReady() er kaldt");
         this.gMap = googleMap;
-        //System.out.println(SingleTon.spotsarray);
+
         // Gør det muligt at finde nuværende position og ændre maptype
         gMap.setMyLocationEnabled(true);
         gMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
@@ -244,8 +236,8 @@ public class GMapsFragment extends Fragment implements OnMapReadyCallback, View.
             if (spot != null) {
                 Intent intent = new Intent(android.content.Intent.ACTION_VIEW,
                         Uri.parse("http://maps.google.com/maps?&daddr="
-                                + Double.valueOf(spot.getLat()) + ","
-                                + Double.valueOf(spot.getLng())));
+                                + spot.getLat() + ","
+                                + spot.getLng()));
                 intent.setClassName("com.google.android.apps.maps", "com.google.android.maps.MapsActivity");
                 startActivity(intent);
             } else {
@@ -420,7 +412,6 @@ public class GMapsFragment extends Fragment implements OnMapReadyCallback, View.
                     parseSpot.put("posLat", newSpot.getLat());
                     parseSpot.put("posLng", newSpot.getLng());
                     parseSpot.saveInBackground();
-
                 }
             });
         }
@@ -470,6 +461,7 @@ public class GMapsFragment extends Fragment implements OnMapReadyCallback, View.
     public boolean onClusterItemClick(ClusterMaker marker) {
         Log.d("Kort", "Der klikkes på en ClusterMarker: " + marker.getPosition().latitude + ", " + marker.getPosition().longitude);
         goButton.setVisibility(View.GONE); // Siker at GO-knappen forsvinder hvis man har trykket på et andet spot før dette
+
         final Dialog dialog = new Dialog(getActivity());
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         if (SingleTon.nightMode) {
@@ -488,12 +480,9 @@ public class GMapsFragment extends Fragment implements OnMapReadyCallback, View.
 
             /* Henter rute til POI */
             Location startLoc = SingleTon.myLocation.getLocation();
-            String url = GMapsFragment.this.getMapsApiDirectionsUrl(startLoc, new LatLng(Double.valueOf(spot.getLat()),Double.valueOf(spot.getLng())));
-            ReadTask downloadTask = new ReadTask();
+            String url = GMapsFragment.this.getMapsApiDirectionsUrl(startLoc,  new LatLng(Double.valueOf(spot.getLat()),Double.valueOf(spot.getLng())));
+            ReadTask downloadTask = new ReadTask(dialog);
             downloadTask.execute(url);
-
-            title = (TextView) dialog.findViewById(R.id.title_TextView);
-            title.setText("");
 
             ImageView adblue = (ImageView) dialog.findViewById(R.id.adblue_imageView);
             ImageView bed = (ImageView) dialog.findViewById(R.id.bed_imageView);
@@ -501,7 +490,6 @@ public class GMapsFragment extends Fragment implements OnMapReadyCallback, View.
             ImageView food = (ImageView) dialog.findViewById(R.id.food_imageView);
             ImageView fuel = (ImageView) dialog.findViewById(R.id.fuel_imageView);
             ImageView wc = (ImageView) dialog.findViewById(R.id.wc_imageView);
-            distance = (TextView) dialog.findViewById(R.id.distance_textView);
 
             // Sæt billederne afhængig af hvilken service der er tilgængelig på det pågældende spot
             if (spot.isAdblue()) {
@@ -548,7 +536,7 @@ public class GMapsFragment extends Fragment implements OnMapReadyCallback, View.
             }
 
             // Clicklistener til "FIND ROUTE"-knappen
-            route = (Button) dialog.findViewById(R.id.findRoute_button);
+            Button route = (Button) dialog.findViewById(R.id.findRoute_button);
             route.setEnabled(false);
             route.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -572,6 +560,7 @@ public class GMapsFragment extends Fragment implements OnMapReadyCallback, View.
                     dialog.hide();
                 }
             });
+
             dialog.show();
         } catch (Exception e) {
             // TO DO : Fejlhåndtering
@@ -581,86 +570,5 @@ public class GMapsFragment extends Fragment implements OnMapReadyCallback, View.
         }
 
         return true;
-    }
-
-    class ReadTask extends AsyncTask<String, Void, String> {
-        @Override
-        protected String doInBackground(String... url) {
-            String data = "";
-            try {
-                HttpConnection http = new HttpConnection();
-                data = http.readUrl(url[0]);
-            } catch (Exception e) {
-                Log.d("Background Task", e.toString());
-            }
-            return data;
-        }
-
-        @Override
-        protected void onPostExecute(String result) {
-            super.onPostExecute(result);
-            new ParserTask().execute(result);
-        }
-    }
-
-    class ParserTask extends
-            AsyncTask<String, Integer, List<List<HashMap<String, String>>>> {
-        private PathJSONParser parser;
-
-        @Override
-        protected List<List<HashMap<String, String>>> doInBackground(
-                String... jsonData) {
-
-            JSONObject jObject;
-            List<List<HashMap<String, String>>> routes = null;
-
-            try {
-                jObject = new JSONObject(jsonData[0]);
-                parser = new PathJSONParser();
-                routes = parser.parse(jObject);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            return routes;
-        }
-
-        @Override
-        protected void onPostExecute(List<List<HashMap<String, String>>> routes) {
-            ArrayList<LatLng> points = null;
-
-            // Opdaterer afstand, tid og adresse/overskrift på popuppen.
-            String distAndTime = parser.getDist() + " | " + parser.getDur();
-            distAndTime = distAndTime.replace("hours", "h");
-            if (distAndTime.contains("h")) {
-                distAndTime = distAndTime.replace("mins", "m");
-            }
-            distAndTime = distAndTime.replace(",", ".");
-            distance.setText(distAndTime);
-            title.setText(parser.getEndAdress()); // TO DO - her mangler noget logik for hvis teksten bliver for lang eller "Unnamed road" er en del af den
-
-            // traversing through routes
-            for (int i = 0; i < routes.size(); i++) {
-                points = new ArrayList<LatLng>();
-                polyLineOptions = new PolylineOptions();
-
-                List<HashMap<String, String>> path = routes.get(i);
-
-                for (int j = 0; j < path.size(); j++) {
-                    HashMap<String, String> point = path.get(j);
-
-                    double lat = Double.parseDouble(point.get("lat"));
-                    double lng = Double.parseDouble(point.get("lng"));
-                    LatLng position = new LatLng(lat, lng);
-
-                    points.add(position);
-                }
-
-                polyLineOptions.addAll(points);
-                polyLineOptions.width(6); // Tykkelse på stregerne
-                polyLineOptions.color(Color.BLUE); // Farve på stregerne
-            }
-
-            route.setEnabled(true); // Gør "Find Route"-knappen tilgængelig
-        }
     }
 }
