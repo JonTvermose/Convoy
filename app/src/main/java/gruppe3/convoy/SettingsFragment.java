@@ -83,8 +83,8 @@ public class SettingsFragment extends Fragment implements CompoundButton.OnCheck
             SingleTon.switchMode=true;
             getActivity().getSupportFragmentManager()
                     .beginTransaction()
+                    .setCustomAnimations(R.animator.fade_in, R.animator.fade_out)
                     .replace(R.id.MainFragment, new MainFragment())
-                    .setTransitionStyle(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
                     .addToBackStack(null)
                     .commit();
         }
