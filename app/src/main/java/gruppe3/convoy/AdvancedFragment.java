@@ -1,17 +1,15 @@
 package gruppe3.convoy;
 
 
-import android.content.res.Resources;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.NumberPicker;
-import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -27,10 +25,9 @@ import gruppe3.convoy.functionality.SingleTon;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class AdvancedFragment extends Fragment implements NumberPicker.OnValueChangeListener, CompoundButton.OnCheckedChangeListener, View.OnClickListener {
+public class AdvancedFragment extends Fragment implements NumberPicker.OnValueChangeListener, View.OnClickListener {
 
     private NumberPicker timer,minutter;
-    private Switch roadTrain;
     private String[] hours,mins;
     private View rod;
     private LinearLayout line;
@@ -101,10 +98,17 @@ public class AdvancedFragment extends Fragment implements NumberPicker.OnValueCh
         disableNumberPicker(); // Låser numberPicker indtil der er indtastet en gyldig destination
         line.setOnClickListener(this);
 
-//        roadTrain = (Switch) rod.findViewById(R.id.roadTrain_switch);
-//        roadTrain.setChecked(SingleTon.roadTrain);
-//        roadTrain.setOnCheckedChangeListener(this);
-
+        final Handler h = new Handler();
+        h.postDelayed(new Runnable(){
+            @Override
+            public void run() {
+                if(SingleTon.dataLoadDone){
+                    autocompleteFragment.getView().setVisibility(View.VISIBLE);
+                }else {
+                    h.postDelayed(this, 100);
+                }
+            }
+        }, 100);
         return rod;
     }
 
@@ -118,12 +122,6 @@ public class AdvancedFragment extends Fragment implements NumberPicker.OnValueCh
             SingleTon.timer = Integer.valueOf(hours[newVal]);
             Log.d("Advanced", "Timer er sat til: " + hours[newVal]);
         }
-    }
-
-    @Override
-        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-        Log.d("Advanced", "RoadTrain er sat til: " + isChecked);
-        SingleTon.roadTrain = isChecked;
     }
 
     // Aktiver scroll-hjulet med antal tid tilbage

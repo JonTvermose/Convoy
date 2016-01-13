@@ -71,7 +71,6 @@ public class MainFragment extends Fragment {
                     }
                     if (SingleTon.dataLoadDone){
                         ProgressFragment.progressBar.setProgress(100);
-                        getChildFragmentManager().findFragmentById(R.id.pager).getChildFragmentManager().findFragmentById(R.id.autocomplete).getView().setVisibility(View.VISIBLE);
                         getFragmentManager()
                                 .beginTransaction()
                                 .setCustomAnimations(R.animator.fade_in, R.animator.fade_out)

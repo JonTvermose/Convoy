@@ -67,7 +67,7 @@ public class Main extends FragmentActivity {
     public void onRequestPermissionsResult(int requestCode,
                                            String permissions[], int[] grantResults) {
 
-        System.out.println("requestCode: "+requestCode);
+        System.out.println("requestCode: " + requestCode);
 
         switch (requestCode) {
             case MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION: {
@@ -95,12 +95,17 @@ public class Main extends FragmentActivity {
     protected void onStop(){
         SingleTon.myLocation.stopLocationUpdates(); // Stopper opdateringen fra GPS/Network
         SharedPreferences.Editor prefs = PreferenceManager.getDefaultSharedPreferences(this).edit();
-        prefs.putBoolean("food", SingleTon.food).apply();
-        prefs.putBoolean("wc", SingleTon.wc).apply();
-        prefs.putBoolean("bed", SingleTon.bed).apply();
-        prefs.putBoolean("bath", SingleTon.bath).apply();
-        prefs.putBoolean("fuel", SingleTon.fuel).apply();
-        prefs.putBoolean("adblue", SingleTon.adblue).apply();
+        prefs.putBoolean("saveData", SingleTon.saveData).apply();
+        if(SingleTon.saveData){
+            prefs.putBoolean("nightMode", SingleTon.nightMode).apply();
+            prefs.putBoolean("food", SingleTon.food).apply();
+            prefs.putBoolean("wc", SingleTon.wc).apply();
+            prefs.putBoolean("bed", SingleTon.bed).apply();
+            prefs.putBoolean("bath", SingleTon.bath).apply();
+            prefs.putBoolean("fuel", SingleTon.fuel).apply();
+            prefs.putBoolean("adblue", SingleTon.adblue).apply();
+            prefs.putBoolean("roadTrain", SingleTon.roadTrain).apply();
+        }
         super.onStop();
     }
 
@@ -108,13 +113,27 @@ public class Main extends FragmentActivity {
     protected void onStart(){
         super.onStart();
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        Log.d("Error", "Preference Manager er startet");
-        SingleTon.food = prefs.getBoolean("food", false);
-        SingleTon.wc = prefs.getBoolean("wc", false);
-        SingleTon.bed = prefs.getBoolean("bed", false);
-        SingleTon.bath = prefs.getBoolean("bath", false);
-        SingleTon.fuel = prefs.getBoolean("fuel", false);
-        SingleTon.adblue = prefs.getBoolean("adblue", false);
+        Log.d("Debug", "Preference Manager er startet");
+        SingleTon.saveData = prefs.getBoolean("saveData", true);
+        if(SingleTon.saveData){
+            SingleTon.nightMode = prefs.getBoolean("nightMode", false);
+            SingleTon.food = prefs.getBoolean("food", false);
+            SingleTon.wc = prefs.getBoolean("wc", false);
+            SingleTon.bed = prefs.getBoolean("bed", false);
+            SingleTon.bath = prefs.getBoolean("bath", false);
+            SingleTon.fuel = prefs.getBoolean("fuel", false);
+            SingleTon.adblue = prefs.getBoolean("adblue", false);
+            SingleTon.roadTrain = prefs.getBoolean("roadTrain", false);
+        } else {
+            SingleTon.nightMode = false;
+            SingleTon.food = false;
+            SingleTon.wc = false;
+            SingleTon.bath = false;
+            SingleTon.bed = false;
+            SingleTon.fuel = false;
+            SingleTon.adblue = false;
+            SingleTon.roadTrain = false;
+        }
         if (SingleTon.myLocation != null){
             SingleTon.myLocation.onResume(); // Start opdatering fra GPS
         }
