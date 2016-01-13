@@ -5,6 +5,10 @@
   <color name="pressed_color">#0288d1</color>
   <color name="primary_color">#03A9F4</color>
 
+  <color name="accent_color_night">#90A4AE</color>
+  <color name="pressed_color_night">#607D8B</color>
+  <color name="primary_color_night">#263238</color>
+
   <color name="red_50">#FFEBEE</color>
   <color name="red_100">#FFCDD2</color>
   <color name="red_200">#EF9A9A</color>

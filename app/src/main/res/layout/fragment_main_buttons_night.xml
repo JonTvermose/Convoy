@@ -1,0 +1,144 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent" tools:context="gruppe3.convoy.MainButtonsFragment">
+
+    <!-- TODO: Update blank fragment layout -->
+    <TableLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+        android:background="@color/primary_color_night">
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginLeft="0dp"
+            android:layout_marginRight="0dp"
+            android:layout_marginBottom="0dp"
+            android:layout_marginTop="0dp">
+
+
+            <ImageView
+                android:layout_width="0px"
+                android:layout_weight="1"
+                android:layout_height="110dp"
+                android:id="@+id/imageFood"
+                android:layout_column="0"
+                android:src="@drawable/food_t"
+                android:scaleType="fitCenter"
+                android:padding="0dp"
+                android:background="@drawable/knap_night_bg"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="8dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="8dp"
+                android:elevation="@dimen/elevation_buttons"
+                />
+
+            <ImageView
+                android:layout_width="0px"
+                android:layout_weight="1"
+                android:layout_height="110dp"
+                android:id="@+id/imageWc"
+                android:layout_column="1"
+                android:src="@drawable/wc_t"
+                android:scaleType="fitCenter"
+                android:padding="0dp"
+                android:background="@drawable/knap_night_bg"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="8dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="16dp"
+                android:elevation="@dimen/elevation_buttons"
+                />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:layout_marginLeft="0dp"
+            android:layout_marginRight="0dp">
+
+            <ImageView
+                android:layout_width="0px"
+                android:layout_weight="1"
+                android:layout_height="110dp"
+                android:id="@+id/imageBed"
+                android:layout_column="0"
+                android:src="@drawable/bed_t"
+                android:scaleType="fitCenter"
+                android:padding="0dp"
+                android:background="@drawable/knap_night_bg"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="8dp"
+                android:elevation="@dimen/elevation_buttons"
+                />
+
+            <ImageView
+                android:layout_width="0px"
+                android:layout_weight="1"
+                android:layout_height="110dp"
+                android:id="@+id/imageBath"
+                android:layout_column="1"
+                android:src="@drawable/bath_t"
+                android:scaleType="fitCenter"
+                android:padding="0dp"
+                android:background="@drawable/knap_night_bg"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="16dp"
+                android:elevation="@dimen/elevation_buttons"
+                />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:layout_marginLeft="0dp"
+            android:layout_marginTop="0dp"
+            android:layout_marginRight="0dp"
+            android:layout_marginBottom="0dp">
+
+            <ImageView
+                android:layout_width="0px"
+                android:layout_weight="1"
+                android:layout_height="110dp"
+                android:id="@+id/imageFuel"
+                android:layout_column="0"
+                android:src="@drawable/fuel_t"
+                android:scaleType="fitCenter"
+                android:padding="0dp"
+                android:background="@drawable/knap_night_bg"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="16dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="8dp"
+                android:elevation="@dimen/elevation_buttons"
+                />
+
+
+            <ImageView
+                android:layout_width="0px"
+                android:layout_weight="1"
+                android:layout_height="110dp"
+                android:id="@+id/imageAdblue"
+                android:layout_column="1"
+                android:src="@drawable/adblue_t"
+                android:scaleType="fitCenter"
+                android:padding="0dp"
+                android:background="@drawable/knap_night_bg"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="16dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="16dp"
+                android:elevation="@dimen/elevation_buttons"
+                />
+        </TableRow>
+    </TableLayout>
+
+</FrameLayout>

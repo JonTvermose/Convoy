@@ -26,6 +26,7 @@
         android:layout_marginLeft="24dp"
         android:layout_marginRight="24dp"
         android:progress="00"
-        android:layout_below="@+id/progressBarTxt"/>
+        android:layout_below="@+id/progressBarTxt"
+        />
 
 </RelativeLayout>
