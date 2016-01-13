@@ -129,7 +129,7 @@ public class GMapsFragment extends Fragment implements OnMapReadyCallback, View.
     public void onMapReady(GoogleMap googleMap) {
         Log.d("Kort", "GMapsAktivitet.onMapReady() er kaldt");
         this.gMap = googleMap;
-
+        //System.out.println(SingleTon.spotsarray);
         // Gør det muligt at finde nuværende position og ændre maptype
         gMap.setMyLocationEnabled(true);
         gMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
@@ -156,7 +156,7 @@ public class GMapsFragment extends Fragment implements OnMapReadyCallback, View.
         if(SingleTon.searchedSpots!=null){
             int id = 0;
             for (Spot spot : SingleTon.searchedSpots) {
-                ClusterMaker mark = new ClusterMaker(new LatLng(spot.getPos().latitude, spot.getPos().longitude));
+                ClusterMaker mark = new ClusterMaker(new LatLng(Double.valueOf(spot.getLat()), Double.valueOf(spot.getLng())));
                 mark.setSnippet(Integer.toString(id)); // Tilføj unikt ID til marker, svarende til indekset for det pågældende spot i listen over spots
                 mClusterManager.addItem(mark);
                 id++;
@@ -244,8 +244,8 @@ public class GMapsFragment extends Fragment implements OnMapReadyCallback, View.
             if (spot != null) {
                 Intent intent = new Intent(android.content.Intent.ACTION_VIEW,
                         Uri.parse("http://maps.google.com/maps?&daddr="
-                                + spot.getPos().latitude + ","
-                                + spot.getPos().longitude));
+                                + Double.valueOf(spot.getLat()) + ","
+                                + Double.valueOf(spot.getLng())));
                 intent.setClassName("com.google.android.apps.maps", "com.google.android.maps.MapsActivity");
                 startActivity(intent);
             } else {
@@ -402,7 +402,7 @@ public class GMapsFragment extends Fragment implements OnMapReadyCallback, View.
                     GMapsFragment.this.dropPinEffect(mark); // Start animationen
 
                     // Tilføjer spot til den hentede liste af spots, så det har samme funktionalitet som alle andre spots
-                    Spot newSpot = new Spot(addSpot.getAddressTxt(), addSpot.adblue, addSpot.food, addSpot.bath, addSpot.bed, addSpot.wc, addSpot.fuel, addSpot.roadTrain, latLng);
+                    Spot newSpot = new Spot(addSpot.getAddressTxt(), addSpot.adblue, addSpot.food, addSpot.bath, addSpot.bed, addSpot.wc, addSpot.fuel, addSpot.roadTrain, String.valueOf(latLng.latitude),String.valueOf(latLng.longitude));
                     SingleTon.searchedSpots.add(newSpot);
                     SingleTon.spots.add(newSpot);
                     addSpot = null; // Sikrer vi nulstiller data hvis der tilføjes flere spots i samme session.
@@ -417,8 +417,8 @@ public class GMapsFragment extends Fragment implements OnMapReadyCallback, View.
                     parseSpot.put("roadtrain", newSpot.isRoadtrain());
                     parseSpot.put("wc", newSpot.isWc());
                     parseSpot.put("desc", newSpot.getDesc());
-                    parseSpot.put("posLat", Double.toString(newSpot.getPos().latitude));
-                    parseSpot.put("posLng", Double.toString(newSpot.getPos().longitude));
+                    parseSpot.put("posLat", newSpot.getLat());
+                    parseSpot.put("posLng", newSpot.getLng());
                     parseSpot.saveInBackground();
 
                 }
@@ -488,7 +488,7 @@ public class GMapsFragment extends Fragment implements OnMapReadyCallback, View.
 
             /* Henter rute til POI */
             Location startLoc = SingleTon.myLocation.getLocation();
-            String url = GMapsFragment.this.getMapsApiDirectionsUrl(startLoc, GMapsFragment.this.spot.getPos());
+            String url = GMapsFragment.this.getMapsApiDirectionsUrl(startLoc, new LatLng(Double.valueOf(spot.getLat()),Double.valueOf(spot.getLng())));
             ReadTask downloadTask = new ReadTask();
             downloadTask.execute(url);
 

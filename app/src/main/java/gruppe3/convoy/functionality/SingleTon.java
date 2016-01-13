@@ -88,7 +88,7 @@ public class SingleTon extends Application {
                     if (e == null) {
                         spots = new ArrayList<Spot>();
                         for (int i = 0; spotList.size() > i; i++) {
-                            LatLng pos = new LatLng(Double.valueOf(spotList.get(i).getString("posLat")), Double.valueOf(spotList.get(i).getString("posLng")));
+                            //LatLng pos = new LatLng(Double.valueOf(spotList.get(i).getString("posLat")), Double.valueOf(spotList.get(i).getString("posLng")));
                             spots.add(new Spot(
                                     spotList.get(i).getString("desc"),
                                     spotList.get(i).getBoolean("adblue"),
@@ -99,7 +99,8 @@ public class SingleTon extends Application {
                                     spotList.get(i).getBoolean("fuel"),
                                     spotList.get(i).getBoolean("roadtrain"),
                                     spotList.get(i).getString("createdAt"),
-                                    pos
+                                    spotList.get(i).getString("posLat"),
+                                    spotList.get(i).getString("posLng")
                             ));
 
                         }
