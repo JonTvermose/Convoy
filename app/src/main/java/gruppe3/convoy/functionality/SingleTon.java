@@ -45,6 +45,7 @@ public class SingleTon extends Application {
         Parse.initialize(this);
         Log.d("Data", "Parse initialiseret");
 
+
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         Log.d("Debug", "Preference Manager er startet");
         SingleTon.saveData = prefs.getBoolean("saveData", true);

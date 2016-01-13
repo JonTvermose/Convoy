@@ -2,6 +2,7 @@ package gruppe3.convoy;
 
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
@@ -48,6 +49,19 @@ public class SettingsFragment extends Fragment implements CompoundButton.OnCheck
         nightMode = (Switch) rod.findViewById(R.id.nightmode_switch);
         nightMode.setChecked(SingleTon.nightMode);
         nightMode.setOnCheckedChangeListener(this);
+        nightMode.setEnabled(false);
+
+        final Handler h = new Handler();
+        h.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (SingleTon.dataLoadDone) {
+                    nightMode.setEnabled(true);
+                } else {
+                    h.postDelayed(this, 100);
+                }
+            }
+        }, 100);
 
         return rod;
     }
