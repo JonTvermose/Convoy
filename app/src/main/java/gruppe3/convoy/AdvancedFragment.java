@@ -41,7 +41,11 @@ public class AdvancedFragment extends Fragment implements NumberPicker.OnValueCh
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        rod = inflater.inflate(R.layout.fragment_advanced, container, false);
+        if(SingleTon.nightMode){
+            rod = inflater.inflate(R.layout.fragment_advanced_night, container, false);
+        } else {
+            rod = inflater.inflate(R.layout.fragment_advanced, container, false);
+        }
 
         autocompleteFragment = (SupportPlaceAutocompleteFragment)
                 getChildFragmentManager().findFragmentById(R.id.autocomplete);

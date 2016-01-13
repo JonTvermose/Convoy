@@ -72,7 +72,11 @@ public class GMapsFragment extends Fragment implements OnMapReadyCallback, View.
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        view = inflater.inflate(R.layout.fragment_gmap, container, false);
+        if (SingleTon.nightMode){
+            view = inflater.inflate(R.layout.fragment_gmap, container, false);
+        } else {
+            view = inflater.inflate(R.layout.fragment_gmap, container, false);
+        }
 
         //Knap til at zoome ind på nuværende lokation
         zoomLocation = (ImageView) view.findViewById(R.id.zoomLocation);
@@ -258,7 +262,11 @@ public class GMapsFragment extends Fragment implements OnMapReadyCallback, View.
 
             final Dialog addDialog = new Dialog(getActivity());
             addDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-            addDialog.setContentView(R.layout.dialog_addlocation); // XML-layout til Dialog-boksen
+            if(SingleTon.nightMode){
+                addDialog.setContentView(R.layout.dialog_addlocation_night);
+            } else {
+                addDialog.setContentView(R.layout.dialog_addlocation); // XML-layout til Dialog-boksen
+            }
 
             final ImageView adblue = (ImageView) addDialog.findViewById(R.id.adblue_img);
             adblue.setOnClickListener(new View.OnClickListener() {
@@ -455,7 +463,11 @@ public class GMapsFragment extends Fragment implements OnMapReadyCallback, View.
         goButton.setVisibility(View.GONE); // Siker at GO-knappen forsvinder hvis man har trykket på et andet spot før dette
         final Dialog dialog = new Dialog(getActivity());
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.setContentView(R.layout.dialog_spot); // XML-layout til Dialog-boksen
+        if (SingleTon.nightMode) {
+            dialog.setContentView(R.layout.dialog_spot_night);
+        } else {
+            dialog.setContentView(R.layout.dialog_spot); // XML-layout til Dialog-boksen
+        }
 
         // Fjern rute fra kort hvis der eksisterer et i forvejen
         if (poly != null) {

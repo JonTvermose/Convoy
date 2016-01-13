@@ -33,8 +33,13 @@ public class MainFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        View rod;
+        if(SingleTon.nightMode){
+            rod = inflater.inflate(R.layout.fragment_main_night, container, false);
+        } else {
+            rod = inflater.inflate(R.layout.fragment_main, container, false);
+        }
         // Inflate the layout for this fragment
-        View rod = inflater.inflate(R.layout.fragment_main, container, false);
 
         // Instantiate a ViewPager and a PagerAdapter.
         mPager = (ViewPager) rod.findViewById(R.id.pager);

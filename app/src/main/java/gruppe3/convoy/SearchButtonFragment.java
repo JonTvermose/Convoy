@@ -32,7 +32,12 @@ public class SearchButtonFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View rod = inflater.inflate(R.layout.fragment_search_button, container, false);
+        View rod;
+        if (SingleTon.nightMode){
+            rod = inflater.inflate(R.layout.fragment_search_button_night, container, false);
+        } else {
+            rod = inflater.inflate(R.layout.fragment_search_button, container, false);
+        }
 
         Button search = (Button) rod.findViewById(R.id.searchButton);
         Log.d("debug", "Search knap oprettet");

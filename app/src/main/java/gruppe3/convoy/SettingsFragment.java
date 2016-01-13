@@ -32,7 +32,12 @@ public class SettingsFragment extends Fragment implements CompoundButton.OnCheck
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View rod = inflater.inflate(R.layout.fragment_settings, container, false);
+        View rod;
+        if(SingleTon.nightMode){
+            rod = inflater.inflate(R.layout.fragment_settings, container, false);
+        } else {
+            rod = inflater.inflate(R.layout.fragment_settings, container, false);
+        }
 
         roadTrain = (Switch) rod.findViewById(R.id.roadTrain_switch);
         roadTrain.setChecked(SingleTon.roadTrain);

@@ -41,7 +41,7 @@
             android:layout_height="0px"
             android:layout_weight="1"
             android:orientation="horizontal"
-            android:id="@+id/mainBottomFragmentNight" />
+            android:id="@+id/mainBottomFragment" />
 
 
     </LinearLayout>
