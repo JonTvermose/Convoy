@@ -27,7 +27,7 @@
             android:layout_width="match_parent"
             android:layout_height="56dp"
             android:elevation="2dp"
-            android:background="@color/light_blue_600"
+            android:background="@color/blue_grey_600"
             >
 
         <ImageView
@@ -36,7 +36,7 @@
             android:id="@+id/imageHome"
             android:layout_row="0"
             android:layout_column="0"
-            android:background="@drawable/toolbar_buttons"
+            android:background="@drawable/toolbar_buttons_night"
             android:src="@drawable/ic_home_black_48dp"
             android:padding="8dp"
             android:layout_marginRight="20dp"
@@ -63,7 +63,7 @@
             android:id="@+id/imageAddLoc"
             android:layout_row="0"
             android:layout_column="4"
-            android:background="@drawable/toolbar_buttons"
+            android:background="@drawable/toolbar_buttons_night"
             android:src="@drawable/ic_add_location_black_48dp"
             android:padding="8dp"
             android:layout_marginLeft="20dp"
@@ -88,7 +88,7 @@
             android:id="@+id/goButton"
             android:layout_row="29"
             android:layout_column="19"
-            android:background="@drawable/route_icon_blue"
+            android:background="@drawable/route_icon_night"
             android:layout_marginRight="16dp"
             android:layout_marginBottom="24dp"
             android:elevation="4dp"
