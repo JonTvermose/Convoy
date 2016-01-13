@@ -101,9 +101,9 @@ public class AdvancedFragment extends Fragment implements NumberPicker.OnValueCh
         disableNumberPicker(); // Låser numberPicker indtil der er indtastet en gyldig destination
         line.setOnClickListener(this);
 
-        roadTrain = (Switch) rod.findViewById(R.id.roadTrain_switch);
-        roadTrain.setChecked(SingleTon.roadTrain);
-        roadTrain.setOnCheckedChangeListener(this);
+//        roadTrain = (Switch) rod.findViewById(R.id.roadTrain_switch);
+//        roadTrain.setChecked(SingleTon.roadTrain);
+//        roadTrain.setOnCheckedChangeListener(this);
 
         return rod;
     }

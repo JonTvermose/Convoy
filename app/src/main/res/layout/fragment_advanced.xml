@@ -103,43 +103,6 @@
 
         </LinearLayout>
 
-        <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/knap_blaa_bg"
-            android:layout_marginTop="8dp"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
-            android:layout_marginBottom="8dp"
-            android:layout_below="@+id/linje2"
-            android:id="@+id/linje3"
-            android:elevation="@dimen/elevation_cards"
-            android:padding="8dp"
-
-            >
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="Road train > 25m"
-                android:textSize="20dp"
-                android:fontFamily="sans-serif-medium"
-                android:id="@+id/textView2" />
-            <Switch
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/roadTrain_switch"
-                android:layout_below="@+id/linje3"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp"
-                android:enabled="true"
-
-                />
-
-
-        </LinearLayout>
-
     </RelativeLayout>
 
 

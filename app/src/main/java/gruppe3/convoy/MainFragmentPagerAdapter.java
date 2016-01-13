@@ -10,11 +10,11 @@ import android.support.v4.app.FragmentPagerAdapter;
  */
 
 public class MainFragmentPagerAdapter extends FragmentPagerAdapter {
-    final int PAGE_COUNT = 2;
-    private String tabTitles[] = new String[] { "Preferences", "Destination settings"};
+    final int PAGE_COUNT = 3;
+    private String tabTitles[] = new String[] { "Preferences", "Destination settings", "Settings"};
     private Context context;
-    private Fragment mainButton = new MainButtonsFragment(),advanced = new AdvancedFragment();
-    private Fragment[] pageTitles = new Fragment[]{mainButton,advanced};
+    private Fragment mainButton = new MainButtonsFragment(),advanced = new AdvancedFragment(),settings = new SettingsFragment() ;
+    private Fragment[] pageTitles = new Fragment[]{mainButton,advanced, settings};
 
 
     public MainFragmentPagerAdapter(FragmentManager fm, Context context) {
