@@ -11,14 +11,17 @@ import android.support.v4.app.FragmentPagerAdapter;
 
 public class MainFragmentPagerAdapter extends FragmentPagerAdapter {
     final int PAGE_COUNT = 2;
-    private String tabTitles[] = new String[] { "Choice", "Advanced"};
+    private String tabTitles[] = new String[] { "Preferences", "Destination settings"};
     private Context context;
     private Fragment mainButton = new MainButtonsFragment(),advanced = new AdvancedFragment();
     private Fragment[] pageTitles = new Fragment[]{mainButton,advanced};
 
+
     public MainFragmentPagerAdapter(FragmentManager fm, Context context) {
         super(fm);
         this.context = context;
+
+
     }
 
     @Override
