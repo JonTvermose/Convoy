@@ -27,6 +27,14 @@
             </intent-filter>
         </activity>
 
+        <activity android:name=".GMapsFragment"
+            android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
         <meta-data
             android:name="com.parse.APPLICATION_ID"
             android:value="YYSElHDSVWLSystPdP0ghkc3ffmXQ1Kg2Md80OP8" />

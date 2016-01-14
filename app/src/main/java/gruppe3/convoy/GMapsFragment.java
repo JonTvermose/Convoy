@@ -8,11 +8,9 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.os.Vibrator;
-import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.Window;
 import android.view.animation.BounceInterpolator;
 import android.widget.Button;
@@ -36,13 +34,10 @@ import com.google.maps.android.clustering.Cluster;
 import com.google.maps.android.clustering.ClusterManager;
 import com.parse.ParseObject;
 
-import java.io.IOException;
 import java.util.ArrayList;
 
 import gruppe3.convoy.functionality.AddSpot;
 import gruppe3.convoy.functionality.ClusterMaker;
-import gruppe3.convoy.functionality.HttpConnection;
-import gruppe3.convoy.functionality.ParserTask;
 import gruppe3.convoy.functionality.ReadTask;
 import gruppe3.convoy.functionality.SingleTon;
 import gruppe3.convoy.functionality.Spot;
@@ -50,7 +45,7 @@ import gruppe3.convoy.functionality.Spot;
 /*
  Klassen er udviklet af Jon Tvermose Nielsen
  */
-public class GMapsFragment extends Fragment implements OnMapReadyCallback, View.OnClickListener, ClusterManager.OnClusterItemClickListener<ClusterMaker> {
+public class GMapsFragment extends AppCompatActivity implements OnMapReadyCallback, View.OnClickListener, ClusterManager.OnClusterItemClickListener<ClusterMaker> {
 
     public static GoogleMap gMap;
     private Spot spot; // Det spot der er klikket på
@@ -63,35 +58,33 @@ public class GMapsFragment extends Fragment implements OnMapReadyCallback, View.
     public static PolylineOptions polyLineOptions = null;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        View view;
+
         if (SingleTon.nightMode){
-            view = inflater.inflate(R.layout.fragment_gmap_night, container, false);
+            setContentView(R.layout.fragment_gmap_night);
         } else {
-            view = inflater.inflate(R.layout.fragment_gmap, container, false);
+            setContentView(R.layout.fragment_gmap);
         }
 
         //Knap til at zoome ind på nuværende lokation
-        zoomLocation = (ImageView) view.findViewById(R.id.zoomLocation);
+        zoomLocation = (ImageView) findViewById(R.id.zoomLocation);
         zoomLocation.setOnClickListener(this);
 
         // Knap til at tilføje lokation
-        addLocation = (ImageView) view.findViewById(R.id.imageAddLoc);
+        addLocation = (ImageView) findViewById(R.id.imageAddLoc);
         addLocation.setOnClickListener(this);
 
         // Knap til startsiden
-        homeButton = (ImageView) view.findViewById(R.id.imageHome);
+        homeButton = (ImageView) findViewById(R.id.imageHome);
         homeButton.setOnClickListener(this);
 
         //Knap til at starte vejvisning til et valgt POI
-        goButton = (ImageView) view.findViewById(R.id.goButton);
+        goButton = (ImageView) findViewById(R.id.goButton);
         goButton.setVisibility(View.GONE); // Skjuler knappen indtil den kan bruges
         goButton.setOnClickListener(this);
 
         getMap();
-        return view;
     }
 
     // Initierer at hente kortet (asynkront)
@@ -99,15 +92,15 @@ public class GMapsFragment extends Fragment implements OnMapReadyCallback, View.
         try {
             if (gMap == null) {
                 try {
-                    SupportMapFragment m = ((SupportMapFragment) getChildFragmentManager().
+                    SupportMapFragment m = ((SupportMapFragment) getSupportFragmentManager().
                             findFragmentById(R.id.map));
                     Log.d("Kort", "Forsøger at hente nyt kort - asynkront");
                     m.getMapAsync(this);
                 } catch (NullPointerException e){
                     Log.d("Kort", "SupportMapFragment m er null, kunne ikke finde map");
-                    Toast.makeText(getActivity(), "An error occurred, could not fetch map. Sorry", Toast.LENGTH_LONG).show();
+                    Toast.makeText(this, "An error occurred, could not fetch map. Sorry", Toast.LENGTH_LONG).show();
                     e.printStackTrace();
-                    getFragmentManager().popBackStack();
+                    finish();
                 }
             } else{
                 Log.d("Kort", "Kort eksisterer allerede");
@@ -154,7 +147,7 @@ public class GMapsFragment extends Fragment implements OnMapReadyCallback, View.
         }
 
         // Tilføjer markers til Google Maps
-        mClusterManager = new ClusterManager<ClusterMaker>(getActivity(), gMap);
+        mClusterManager = new ClusterManager<ClusterMaker>(this, gMap);
         gMap.setOnMarkerClickListener(mClusterManager);
         gMap.setOnCameraChangeListener(mClusterManager);
         if(SingleTon.searchedSpots!=null){
@@ -167,7 +160,7 @@ public class GMapsFragment extends Fragment implements OnMapReadyCallback, View.
             }
             Log.d("Kort", "Tilføjet " + id + " markers(spots) til kortet");
         } else {
-            Toast.makeText(getActivity(), "No destinations was found. Try to widen your search.", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "No destinations was found. Try to widen your search.", Toast.LENGTH_LONG).show();
             Log.d("Error", "Der er ingen spots at vise på kortet");
         }
 
@@ -176,12 +169,12 @@ public class GMapsFragment extends Fragment implements OnMapReadyCallback, View.
             @Override
             public void onMapLongClick(LatLng latLng) {
                 Log.d("Kort", "Der klikkes med et langt tryk på kortet: " + latLng.latitude + ", " + latLng.longitude);
-                Vibrator vibe = (Vibrator) getActivity().getSystemService(Context.VIBRATOR_SERVICE);
+                Vibrator vibe = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
                 vibe.vibrate(50); // Vibrate for 500 milliseconds
                 Location loc = new Location("");
                 loc.setLatitude(latLng.latitude);
                 loc.setLongitude(latLng.longitude);
-                addSpot = new AddSpot(loc, getActivity());
+                addSpot = new AddSpot(loc, GMapsFragment.this);
                 GMapsFragment.this.onClick(addLocation); // Genbruger onClick-metoden
             }
         });
@@ -254,19 +247,19 @@ public class GMapsFragment extends Fragment implements OnMapReadyCallback, View.
                 intent.setClassName("com.google.android.apps.maps", "com.google.android.maps.MapsActivity");
                 startActivity(intent);
             } else {
-                Toast.makeText(getActivity(), "You must choose where to go!", Toast.LENGTH_LONG).show(); // Safety-text, bør ikke rammes
+                Toast.makeText(this, "You must choose where to go!", Toast.LENGTH_LONG).show(); // Safety-text, bør ikke rammes
             }
         } else if (v == homeButton){
-            getFragmentManager().popBackStack();
+            finish();
         } else if (v == addLocation) {
             Log.d("Kort", "Der klikkes på tilføj sted-knap");
             // Hvis der er klikket på knappen er addSpot = null og dermed skal nuværende lokation bruges
             if (addSpot == null) {
-                addSpot = new AddSpot(SingleTon.myLocation.getLocation(), getActivity());
+                addSpot = new AddSpot(SingleTon.myLocation.getLocation(), this);
             }
 
             // Dialogboks til at tilføje et lokation
-            final Dialog addDialog = new Dialog(getActivity());
+            final Dialog addDialog = new Dialog(this);
             addDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
             if(SingleTon.nightMode){
                 addDialog.setContentView(R.layout.dialog_addlocation_night);
@@ -462,9 +455,9 @@ public class GMapsFragment extends Fragment implements OnMapReadyCallback, View.
                     marker.remove();
                     mClusterManager.cluster();
 //                    gMap.animateCamera(CameraUpdateFactory.newLatLng(marker.getPosition()));
-                    Vibrator vibe = (Vibrator) getActivity().getSystemService(Context.VIBRATOR_SERVICE);
+                    Vibrator vibe = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
                     vibe.vibrate(200); // Vibrate for 500 milliseconds
-                    Toast.makeText(getActivity(), "Location added", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(GMapsFragment.this, "Location added", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -475,7 +468,7 @@ public class GMapsFragment extends Fragment implements OnMapReadyCallback, View.
         Log.d("Kort", "Der klikkes på en ClusterMarker: " + marker.getPosition().latitude + ", " + marker.getPosition().longitude);
         goButton.setVisibility(View.GONE); // Siker at GO-knappen forsvinder hvis man har trykket på et andet spot før dette
 
-        final Dialog dialog = new Dialog(getActivity());
+        final Dialog dialog = new Dialog(this);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         if (SingleTon.nightMode) {
             dialog.setContentView(R.layout.dialog_spot_night);
@@ -554,9 +547,9 @@ public class GMapsFragment extends Fragment implements OnMapReadyCallback, View.
             route.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Toast.makeText(getActivity(), "Drawing route.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(GMapsFragment.this, "Drawing route.", Toast.LENGTH_SHORT).show();
                     if (polyLineOptions == null) { // Kan fjernes så længe knappen er deaktiveret indtil ruten er modtaget og parset
-                        Toast.makeText(getActivity(), "Route not ready!", Toast.LENGTH_LONG).show();
+                        Toast.makeText(GMapsFragment.this, "Route not ready!", Toast.LENGTH_LONG).show();
                     } else {
                         poly = GMapsFragment.this.gMap.addPolyline(polyLineOptions);
                         dialog.hide();
@@ -578,10 +571,18 @@ public class GMapsFragment extends Fragment implements OnMapReadyCallback, View.
         } catch (Exception e) {
             // TO DO : Fejlhåndtering
             // Hvad skal der ske hvis man klikker på en marker som vi ikke kan identificere?
-            Toast.makeText(getActivity(), "Could not find id: " + marker.getSnippet(), Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Could not find id: " + marker.getSnippet(), Toast.LENGTH_LONG).show();
             Log.d("Kort", "Kunne ikke finde det rigtige spot. SingleTon.searchedSpots størrelse: " + SingleTon.searchedSpots.size() + " , der søges efter spot nr: " + marker.getSnippet());
         }
 
         return true;
+    }
+
+    @Override
+    protected void onStop(){
+        super.onStop();
+        gMap = null;
+        poly = null;
+        polyLineOptions = null;
     }
 }

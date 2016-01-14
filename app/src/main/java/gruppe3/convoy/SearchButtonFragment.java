@@ -1,6 +1,7 @@
 package gruppe3.convoy;
 
 
+import android.content.Intent;
 import android.hardware.SensorEventListener;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -101,12 +102,14 @@ public class SearchButtonFragment extends Fragment {
                     @Override
                     protected void onPostExecute(String msg) {
                         SingleTon.sensorManager.unregisterListener((SensorEventListener) getActivity()); // Vi afslutter sensorlytter når vi er i mapmode
-                        getFragmentManager()
-                                .beginTransaction()
-                                .replace(R.id.MainFragment, new GMapsFragment())
-                                .setTransitionStyle(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
-                                .addToBackStack(null)
-                                .commit();
+                        Intent i = new Intent(getActivity(), GMapsFragment.class);
+                        getActivity().startActivity(i);
+//                        getFragmentManager()
+//                                .beginTransaction()
+//                                .replace(R.id.MainFragment, new GMapsFragment())
+//                                .setTransitionStyle(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+//                                .addToBackStack(null)
+//                                .commit();
                     }
                 }.execute();
             }

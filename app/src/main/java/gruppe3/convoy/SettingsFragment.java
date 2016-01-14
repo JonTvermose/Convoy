@@ -110,6 +110,7 @@ public class SettingsFragment extends Fragment implements CompoundButton.OnCheck
             Log.d("Advanced", "NightMode er sat til: " + isChecked);
             SingleTon.nightMode = isChecked;
 
+            getActivity().getSupportFragmentManager().popBackStack();
             // Genskaber appen i den nye mode
             SingleTon.switchMode=true;
             getActivity().getSupportFragmentManager()
