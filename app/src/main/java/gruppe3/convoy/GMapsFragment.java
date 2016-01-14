@@ -36,10 +36,13 @@ import com.google.maps.android.clustering.Cluster;
 import com.google.maps.android.clustering.ClusterManager;
 import com.parse.ParseObject;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 import gruppe3.convoy.functionality.AddSpot;
 import gruppe3.convoy.functionality.ClusterMaker;
+import gruppe3.convoy.functionality.HttpConnection;
+import gruppe3.convoy.functionality.ParserTask;
 import gruppe3.convoy.functionality.ReadTask;
 import gruppe3.convoy.functionality.SingleTon;
 import gruppe3.convoy.functionality.Spot;
@@ -49,7 +52,7 @@ import gruppe3.convoy.functionality.Spot;
  */
 public class GMapsFragment extends Fragment implements OnMapReadyCallback, View.OnClickListener, ClusterManager.OnClusterItemClickListener<ClusterMaker> {
 
-    private GoogleMap gMap;
+    public static GoogleMap gMap;
     private Spot spot; // Det spot der er klikket på
     private ImageView goButton, zoomLocation, addLocation, homeButton;
     private AddSpot addSpot; // Det spot der tilføjes
@@ -135,7 +138,16 @@ public class GMapsFragment extends Fragment implements OnMapReadyCallback, View.
                     title(SingleTon.destAdress)
                     .icon(BitmapDescriptorFactory.defaultMarker(210f))); // Destinationsmarkeren har en anden farve en normale markers
             destMark.showInfoWindow();
-            gMap.animateCamera(CameraUpdateFactory.newLatLngZoom(SingleTon.destPos, 12));
+            if(SingleTon.minutter==0 && SingleTon.timer==0){
+                // Der udføres en "normal" destinationssøgning
+                gMap.animateCamera(CameraUpdateFactory.newLatLngZoom(SingleTon.destPos, 12));
+            } else {
+                Log.d("Kort" , "Der udføres hviletidssøgning");
+                // Der udføres en hviletidssøgning
+                ReadTask reader = new ReadTask();
+                reader.execute(getMapsApiDirectionsUrl(startLoc, SingleTon.destPos));
+
+            }
         } else {
             LatLng cPos = new LatLng(SingleTon.myLocation.getLocation().getLatitude(), SingleTon.myLocation.getLocation().getLongitude());
             gMap.animateCamera(CameraUpdateFactory.newLatLngZoom(cPos, 12));
@@ -213,7 +225,7 @@ public class GMapsFragment extends Fragment implements OnMapReadyCallback, View.
         String output = "json";
         String url = "https://maps.googleapis.com/maps/api/directions/" + output + "?" + params;
 
-        Log.d("Rute", "Påbegynder at finde rute");
+        Log.d("Rute", "Bygger url til google api");
         Log.d("Rute", "Fra: " + start.getLatitude() + "," + start.getLongitude());
         Log.d("Rute", "Til: " + dest.latitude + "," + dest.longitude);
         Log.d("Rute", "Url: " + url);

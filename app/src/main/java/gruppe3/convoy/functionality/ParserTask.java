@@ -3,10 +3,14 @@ package gruppe3.convoy.functionality;
 import android.app.Dialog;
 import android.graphics.Color;
 import android.os.AsyncTask;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 
 import org.json.JSONObject;
@@ -23,12 +27,15 @@ import gruppe3.convoy.R;
  */
 public class ParserTask extends
         AsyncTask<String, Integer, List<List<HashMap<String, String>>>> {
+
     private PathJSONParser parser;
     private Dialog dialog;
 
     public ParserTask(Dialog dialog) {
         this.dialog = dialog;
     }
+
+    public ParserTask(){}
 
     @Override
     protected List<List<HashMap<String, String>>> doInBackground(
@@ -39,7 +46,11 @@ public class ParserTask extends
 
         try {
             jObject = new JSONObject(jsonData[0]);
-            parser = new PathJSONParser();
+            if(dialog!=null){
+                parser = new PathJSONParser(false);
+            } else {
+                parser = new PathJSONParser(true);
+            }
             routes = parser.parse(jObject);
         } catch (Exception e) {
             e.printStackTrace();
@@ -58,10 +69,15 @@ public class ParserTask extends
             distAndTime = distAndTime.replace("mins", "m");
         }
         distAndTime = distAndTime.replace(",", ".");
-        TextView distance = (TextView) dialog.findViewById(R.id.distance_textView);
-        distance.setText(distAndTime);
-        TextView title = (TextView) dialog.findViewById(R.id.title_TextView);
-        title.setText(parser.getEndAdress()); // TO DO - her mangler noget logik for hvis teksten bliver for lang eller "Unnamed road" er en del af den
+        if (dialog!=null){
+            TextView distance = (TextView) dialog.findViewById(R.id.distance_textView);
+            distance.setText(distAndTime);
+            TextView title = (TextView) dialog.findViewById(R.id.title_TextView);
+            title.setText(parser.getEndAdress()); // TO DO - her mangler noget logik for hvis teksten bliver for lang eller "Unnamed road" er en del af den
+            Button route = (Button) dialog.findViewById(R.id.findRoute_button);
+            route.setEnabled(true); // Gør "Find Route"-knappen tilgængelig
+        }
+
 
         // traversing through routes
         for (int i = 0; i < routes.size(); i++) {
@@ -83,9 +99,15 @@ public class ParserTask extends
             GMapsFragment.polyLineOptions.addAll(points);
             GMapsFragment.polyLineOptions.width(6); // Tykkelse på stregerne
             GMapsFragment.polyLineOptions.color(Color.BLUE); // Farve på stregerne
+            }
+        if (dialog==null){
+            Log.d("Hviletid", "Tilføjer hviletidsmarker og zoomer map.");
+            GMapsFragment.gMap.addMarker(new MarkerOptions().
+                    position(SingleTon.destPos).
+                    title("Your position in " + SingleTon.timer + " hours and " + SingleTon.minutter + " minutes.")
+                    .icon(BitmapDescriptorFactory.defaultMarker(210f))).showInfoWindow(); // Destinationsmarkeren har en anden farve en normale markers
+            GMapsFragment.gMap.animateCamera(CameraUpdateFactory.newLatLngZoom(SingleTon.destPos, 12));
+            GMapsFragment.poly = GMapsFragment.gMap.addPolyline(GMapsFragment.polyLineOptions);
         }
-
-        Button route = (Button) dialog.findViewById(R.id.findRoute_button);
-        route.setEnabled(true); // Gør "Find Route"-knappen tilgængelig
     }
 }

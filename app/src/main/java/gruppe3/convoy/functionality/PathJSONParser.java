@@ -24,6 +24,14 @@ import com.google.android.gms.maps.model.LatLng;
 public class PathJSONParser {
 
     private String dist, dur, startAdress, endAdress;
+    private int seconds, time = 0;
+    private boolean restMode = false, found = false;
+
+    public PathJSONParser(boolean restMode){
+        this.restMode = restMode;
+        seconds = SingleTon.timer * 60 * 60 + SingleTon.minutter * 60;
+    }
+
 
     public List<List<HashMap<String, String>>> parse(JSONObject jObject) {
         List<List<HashMap<String, String>>> routes = new ArrayList<List<HashMap<String, String>>>();
@@ -54,19 +62,35 @@ public class PathJSONParser {
 
                     /** Traversing all steps */
                     for (int k = 0; k < jSteps.length(); k++) {
-                        String polyline = "";
-                        polyline = (String) ((JSONObject) ((JSONObject) jSteps
-                                .get(k)).get("polyline")).get("points");
-                        List<LatLng> list = decodePoly(polyline);
+                        time = time + (int) ((JSONObject) ((JSONObject) jSteps.get(k)).get("duration")).get("value");
+                        Log.d("Hviletid" , "Time er: " + time + ", seconds er: " + seconds);
+                        // Hviletidssøgning
+                        if (time >= seconds && restMode){
+                            if (!found){
+                                double lat = (double) ((JSONObject) ((JSONObject) jSteps.get(k-1)).get("end_location")).get("lat");
+                                double lng = (double) ((JSONObject) ((JSONObject) jSteps.get(k-1)).get("end_location")).get("lng");
+                                LatLng rest = new LatLng(lat, lng);
+                                SingleTon.destPos = rest;
+                                // Hvis den beregnede tid er større end hviletiden stopper vi ruten der.
+                                Log.d("Hviletid" , "Ruten er færdigberegnet!");
+                                Log.d("Hviletid" , "Destinationen er: " + SingleTon.destPos.latitude + ", " + SingleTon.destPos.longitude);
+                                found = true;
+                            }
+                        } else {
+                            String polyline = "";
+                            polyline = (String) ((JSONObject) ((JSONObject) jSteps
+                                    .get(k)).get("polyline")).get("points");
+                            List<LatLng> list = decodePoly(polyline);
 
-                        /** Traversing all points */
-                        for (int l = 0; l < list.size(); l++) {
-                            HashMap<String, String> hm = new HashMap<String, String>();
-                            hm.put("lat",
-                                    Double.toString(((LatLng) list.get(l)).latitude));
-                            hm.put("lng",
-                                    Double.toString(((LatLng) list.get(l)).longitude));
-                            path.add(hm);
+                            /** Traversing all points */
+                            for (int l = 0; l < list.size(); l++) {
+                                HashMap<String, String> hm = new HashMap<String, String>();
+                                hm.put("lat",
+                                        Double.toString(((LatLng) list.get(l)).latitude));
+                                hm.put("lng",
+                                        Double.toString(((LatLng) list.get(l)).longitude));
+                                path.add(hm);
+                            }
                         }
                     }
                     routes.add(path);
