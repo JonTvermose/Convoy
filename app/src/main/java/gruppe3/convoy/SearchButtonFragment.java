@@ -41,6 +41,7 @@ public class SearchButtonFragment extends Fragment {
             rod = inflater.inflate(R.layout.fragment_search_button, container, false);
         }
 
+
         Button search = (Button) rod.findViewById(R.id.searchButton);
         Log.d("debug", "Search knap oprettet");
         search.setOnClickListener(new View.OnClickListener() {

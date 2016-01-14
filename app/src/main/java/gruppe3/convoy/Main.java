@@ -18,6 +18,7 @@ import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.widget.Toast;
 
+import gruppe3.convoy.functionality.BoundService;
 import gruppe3.convoy.functionality.Serialisering;
 import gruppe3.convoy.functionality.SingleTon;
 
@@ -32,6 +33,10 @@ public class Main extends FragmentActivity implements SensorEventListener {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+
+
+
 
         if (ContextCompat.checkSelfPermission(this,
                 Manifest.permission.ACCESS_FINE_LOCATION)
@@ -109,6 +114,7 @@ public class Main extends FragmentActivity implements SensorEventListener {
         Log.d("Debug" , "Main.onStop() er kaldt. Appen er ikke aktiv");
         SingleTon.myLocation.stopLocationUpdates(); // Stopper opdateringen fra GPS/Network
         SingleTon.sensorManager.unregisterListener(this); // Stopper sensor lytning
+//        unbindService(SingleTon.mConnection);
         SharedPreferences.Editor prefs = PreferenceManager.getDefaultSharedPreferences(this).edit();
         prefs.putBoolean("saveData", SingleTon.saveData).apply();
         if(SingleTon.saveData){

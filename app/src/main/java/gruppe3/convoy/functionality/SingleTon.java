@@ -1,9 +1,16 @@
 package gruppe3.convoy.functionality;
 
 import android.app.Application;
+import android.app.Service;
+import android.content.ComponentName;
+import android.content.Context;
+import android.content.Intent;
+import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
+import android.os.Handler;
+import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
@@ -34,8 +41,14 @@ public class SingleTon extends Application {
     public static String destAdress = "Your destination";
     public static Sensor accelerometer;
     public static SensorManager sensorManager;
+    BoundService.LocalBinder mBinder;
+    public static BoundService mService;
+    public static ServiceConnection mConnection;
+    public static boolean mBound = false;
+    static ArrayList<Spot> spotOut;
     public static double speedSetting;
     private File spotsFile;
+
 
     public static SingleTon getInstance() {
         return ourInstance;
@@ -47,6 +60,10 @@ public class SingleTon extends Application {
         Log.d("Data", "SingleTon OnCreate");
         Parse.initialize(this);
         Log.d("Data", "Parse initialiseret");
+
+        startBinding();
+        Intent intent = new Intent(this, BoundService.class);
+        bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
 
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         Log.d("Debug", "Preference Manager er startet");
@@ -111,6 +128,7 @@ public class SingleTon extends Application {
                         }
                         Log.d("Data", "Done with spots!");
                         Log.d("Data", "Size of Spots = " + spots.size());
+
                         SingleTon.dataLoadDone = true;
                     } else {
                         Log.d("score", "Error: " + e.getMessage());
@@ -119,27 +137,104 @@ public class SingleTon extends Application {
             });
         }
     }
-    public void saveSpots(ArrayList spots, String filename) {
-       try {
-          Serialisering.gem(spots, filename);
 
-       } catch(Exception e) {
-            e.printStackTrace();
-        }
+//    public void saveSpots(ArrayList<Spot> spots, String filename) {
+//       try {
+//          Serialisering.gem(spots, filename);
+//
+//       } catch(Exception e) {
+//            e.printStackTrace();
+//        }
+//    }
+//
+//    public void loadSpots(String filename) {
+//        spotsFile = new File(getFilesDir(), "Spots");
+//        if (spotsFile.exists()) {
+//            try {
+//                ArrayList<Spot> spots = (ArrayList<Spot>) Serialisering.hent(filename);
+//                System.out.println(spots.get(spots.size()-1).getCreatedAt());
+//
+//                ParseQuery<ParseObject> query2 = ParseQuery.getQuery("Spots1");
+//
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
+//        }
+//
+//
+//    }
+
+
+
+    public void startBinding(){
+        /** Defines callbacks for service binding, passed to bindService() */
+        mConnection = new ServiceConnection() {
+
+            @Override
+            public void onServiceConnected(ComponentName className,
+                                           IBinder service) {
+                // We've bound to LocalService, cast the IBinder and get LocalService instance
+                mBinder = (BoundService.LocalBinder) service;
+
+                mService = mBinder.getService();
+                System.out.println("mService"+mService);
+                mBound = true;
+                System.out.println("mBound"+mBound);
+            }
+
+            @Override
+            public void onServiceDisconnected(ComponentName arg0) {
+                mBound = false;
+            }
+        };
     }
 
-    public void loadSpots(String filename) {
-        spotsFile = new File(getFilesDir(), "Spots");
-        if (spotsFile.exists()) {
-            try {
-                Serialisering.hent(filename);
-                ParseQuery<ParseObject> query2 = ParseQuery.getQuery("Spots1");
+    public void dropBinding(){
+        unbindService(mConnection);
+    }
 
-            } catch (Exception e) {
-                e.printStackTrace();
+    public static ArrayList hentSpotsLocal(final String name){
+
+        final Handler h = new Handler();
+        h.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (SingleTon.mBound) {
+                    System.out.println("if sætning");
+                    SingleTon.spotOut = (ArrayList<Spot>) mService.hent(name);
+
+                } else {
+                    h.postDelayed(this, 100);
+                }
             }
-        }
+        }, 100);
+        return spotOut;
+    }
 
+    public static void gemSpotsLocal(final String name){
+        final ArrayList<Spot> spots = new ArrayList();
+        spots.add(new Spot("boundTest", true, true, true, true, true, true, true, "createdAt", "posLat", "posLng"));
+
+        final Handler h = new Handler();
+        h.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (SingleTon.mBound) {
+                    System.out.println("if sætning");
+                    mService.gem(spots, name);
+                } else {
+                    h.postDelayed(this, 100);
+                }
+            }
+        }, 100);
+    }
+
+
+    public void hentSpotsDb(){
+
+    }
+
+    public void gemSpotsDb(){
 
     }
 

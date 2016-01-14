@@ -43,6 +43,9 @@ public class MainFragment extends Fragment {
         }
         // Inflate the layout for this fragment
 
+
+
+
         // Instantiate a ViewPager and a PagerAdapter.
         mPager = (ViewPager) rod.findViewById(R.id.pager);
         mPagerAdapter = new MainFragmentPagerAdapter(getChildFragmentManager(), getActivity());
