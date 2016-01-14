@@ -10,9 +10,11 @@ import android.util.Log;
 public class ReadTask extends AsyncTask<String, Void, String> {
 
     private Dialog dialog;
+
     public ReadTask(Dialog dialog) {
         this.dialog = dialog;
     }
+    public ReadTask(){    };
 
     @Override
     protected String doInBackground(String... url) {
@@ -32,7 +34,8 @@ public class ReadTask extends AsyncTask<String, Void, String> {
             super.onPostExecute(result);
             new ParserTask(dialog).execute(result);
         } else {
-            // TO DO - klassen kan benyttes til andre ting
+            super.onPostExecute(result); // TO DO - klassen kan benyttes til andre ting
+            new ParserTask().execute(result);
         }
     }
 }
