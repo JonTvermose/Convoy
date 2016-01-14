@@ -15,45 +15,33 @@
         >
 
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="310dp"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="Address:"
-            android:textColor="@color/white"
-            android:id="@+id/loc_TitleText"
+            android:text="Testtekst, ballerup, danmark"
+            android:id="@+id/loc_addressTxt"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true"
             android:fontFamily="sans-serif-medium"
             android:textSize="20dp"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
-            android:layout_marginTop="16dp"
-            android:textStyle="bold" />
+            android:textColor="@color/white"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="20dp"
+            android:layout_toLeftOf="@+id/close_addLocation"
+            android:layout_toStartOf="@+id/close_addLocation"/>
 
         <ImageView
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:id="@+id/close_addLocation"
-            android:layout_alignTop="@+id/title_TextView"
+            android:src="@drawable/ic_close_white_48dp"
+            android:layout_alignTop="@+id/loc_addressTxt"
             android:layout_alignRight="@+id/linearLayout1"
             android:layout_alignEnd="@+id/linearLayout1"
-            android:src="@drawable/ic_close_white_48dp"
-            android:layout_marginTop="16dp"
-            />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="Testtekst, ballerup, danmark"
-            android:textColor="@color/white"
-            android:id="@+id/loc_addressTxt"
-            android:fontFamily="sans-serif-medium"
-            android:textSize="20dp"
-            android:layout_below="@+id/loc_TitleText"
             android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"/>
+            />
 
         <TextView
             android:layout_width="wrap_content"
@@ -69,7 +57,7 @@
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
             android:layout_marginBottom="8dp"
-            android:textStyle="bold" />
+             />
 
         <LinearLayout
             android:orientation="horizontal"
