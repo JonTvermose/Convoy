@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
+import android.widget.SeekBar;
 import android.widget.Switch;
 
 import gruppe3.convoy.functionality.SingleTon;
@@ -20,9 +21,10 @@ import gruppe3.convoy.functionality.SingleTon;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class SettingsFragment extends Fragment implements CompoundButton.OnCheckedChangeListener {
+public class SettingsFragment extends Fragment implements CompoundButton.OnCheckedChangeListener, SeekBar.OnSeekBarChangeListener {
 
     private Switch roadTrain, saveData, nightMode, powerSaving;
+    private SeekBar speedBar;
 
     public SettingsFragment() {
         // Required empty public constructor
@@ -58,6 +60,10 @@ public class SettingsFragment extends Fragment implements CompoundButton.OnCheck
         powerSaving.setOnCheckedChangeListener(this);
         powerSaving.setEnabled(false);
 
+        speedBar = (SeekBar) rod.findViewById(R.id.speedBar_seekbar);
+        speedBar.setProgress(convertSpeed(SingleTon.speedSetting));
+        speedBar.setOnSeekBarChangeListener(this);
+
         final Handler h = new Handler();
         h.postDelayed(new Runnable() {
             @Override
@@ -72,6 +78,20 @@ public class SettingsFragment extends Fragment implements CompoundButton.OnCheck
         }, 100);
 
         return rod;
+    }
+
+    // Konverterer tal fra 1.0 til 1.5 til 100-0
+    private int convertSpeed(double setting){
+        double retur = 100 - (setting-1)*200;
+        Log.d("Setting" , "SpeedBar sat til: " + (int) retur);
+        return (int) retur;
+    }
+
+    // Konverterer tal fra 0 til 100 til 1.5-1.0
+    private double convertSpeed(int speed){
+        double retur = 1.5 - speed * 0.005;
+        Log.d("Setting" , "SingleTon.speedSetting sat til: " + retur);
+        return retur;
     }
 
     @Override
@@ -113,5 +133,22 @@ public class SettingsFragment extends Fragment implements CompoundButton.OnCheck
             SingleTon.myLocation.stopLocationUpdates();
             SingleTon.myLocation.startLocationService(getActivity());
         }
+    }
+
+    @Override
+    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+        if (seekBar == speedBar){
+            SingleTon.speedSetting = convertSpeed(progress);
+        }
+    }
+
+    @Override
+    public void onStartTrackingTouch(SeekBar seekBar) {
+
+    }
+
+    @Override
+    public void onStopTrackingTouch(SeekBar seekBar) {
+
     }
 }

@@ -138,6 +138,36 @@
                 />
         </LinearLayout>
 
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/knap_night_bg"
+            android:layout_marginTop="8dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginBottom="8dp"
+            android:layout_below="@+id/linje4"
+            android:id="@+id/linje5"
+            android:elevation="@dimen/elevation_cards"
+            android:padding="8dp">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="Your average speed"
+                android:textSize="20dp"
+                android:fontFamily="sans-serif-medium"
+                android:id="@+id/textView6" />
+
+            <SeekBar
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/speedBar_seekbar"
+                android:layout_gravity="center_horizontal" />
+
+        </LinearLayout>
+
     </RelativeLayout>
 
 </FrameLayout>
