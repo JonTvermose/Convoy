@@ -11,17 +11,20 @@ import android.support.v4.app.FragmentPagerAdapter;
 
 public class MainFragmentPagerAdapter extends FragmentPagerAdapter {
     final int PAGE_COUNT = 3;
-    private String tabTitles[] = new String[] { "Preferences", "Destination", "Settings"};
+    private String[] tabTitles;
     private Context context;
-    private Fragment mainButton = new MainButtonsFragment(),advanced = new AdvancedFragment(),settings = new SettingsFragment() ;
-    private Fragment[] pageTitles = new Fragment[]{mainButton,advanced, settings};
+    private Fragment mainButton, advanced, settings;
+    private Fragment[] pageTitles;
 
 
     public MainFragmentPagerAdapter(FragmentManager fm, Context context) {
         super(fm);
         this.context = context;
-
-
+        mainButton = new MainButtonsFragment();
+        advanced = new AdvancedFragment();
+        settings = new SettingsFragment();
+        pageTitles = new Fragment[]{mainButton, advanced, settings};
+        tabTitles = new String[]{"Preferences", "Destination", "Settings"};
     }
 
     @Override
@@ -31,13 +34,6 @@ public class MainFragmentPagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public Fragment getItem(int position) {
-//        switch (position) {
-//            case 0:
-//                return new MainButtonsFragment();
-//            case 1:
-//                return new AdvancedFragment();
-//        }
-//        return null;
         return pageTitles[position];
     }
 

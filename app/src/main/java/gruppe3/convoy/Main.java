@@ -1,6 +1,7 @@
 package gruppe3.convoy;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -130,9 +131,9 @@ public class Main extends FragmentActivity implements SensorEventListener {
         SingleTon.myLocation.startLocationService(this);
         lastShaken = System.currentTimeMillis();
         // Start først sensorlytter hvis vi ikke er igang med at loade data
-        if (SingleTon.accelerometer!= null && SingleTon.dataLoadDone){
+        if (SingleTon.accelerometer!= null && SingleTon.dataLoadDone && !SingleTon.powerSaving){
             SingleTon.sensorManager.registerListener(this, SingleTon.accelerometer, SensorManager.SENSOR_DELAY_NORMAL);
-            Log.d("Sensor","Starter sensorlytter");
+            Log.d("Sensor", "Starter sensorlytter");
         }
     }
 
@@ -164,4 +165,5 @@ public class Main extends FragmentActivity implements SensorEventListener {
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
     }
+
 }
