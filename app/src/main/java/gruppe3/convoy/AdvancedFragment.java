@@ -27,7 +27,7 @@ import gruppe3.convoy.functionality.SingleTon;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class AdvancedFragment extends Fragment implements NumberPicker.OnValueChangeListener, View.OnClickListener {
+public class AdvancedFragment extends Fragment implements NumberPicker.OnValueChangeListener, View.OnClickListener, PlaceSelectionListener {
 
     private NumberPicker timer,minutter;
     private String[] hours,mins;
@@ -35,6 +35,7 @@ public class AdvancedFragment extends Fragment implements NumberPicker.OnValueCh
     private LinearLayout line;
 
     public static SupportPlaceAutocompleteFragment autocompleteFragment;
+    private Place place;
 
     public AdvancedFragment() {
         // Required empty public constructor
@@ -43,12 +44,12 @@ public class AdvancedFragment extends Fragment implements NumberPicker.OnValueCh
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        if (rod!=null){
-            ViewGroup parent = (ViewGroup) rod.getParent();
-            if(parent!=null){
-                parent.removeView(rod);
-            }
-        }
+//        if (rod!=null){
+//            ViewGroup parent = (ViewGroup) rod.getParent();
+//            if(parent!=null){
+//                parent.removeView(rod);
+//            }
+//        }
 
         try {
             if(SingleTon.nightMode){
@@ -62,32 +63,8 @@ public class AdvancedFragment extends Fragment implements NumberPicker.OnValueCh
 
         autocompleteFragment = (SupportPlaceAutocompleteFragment)
                 getChildFragmentManager().findFragmentById(R.id.autocomplete);
-        autocompleteFragment.getView().setVisibility(View.INVISIBLE); // Skal først være tilgængelig når startup er færdig
-        autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
-            @Override
-            public void onPlaceSelected(Place place) {
-                // TODO: Get info about the selected place.
-                Log.i("Advanced", "Id: " + place.getId());
-                Log.i("Advanced", "Name: " + place.getName());
-                Log.i("Advanced", "Address: " + place.getAddress());
-                Log.i("Advanced", "Pos: " + place.getLatLng());
-                SingleTon.hasDest = true;
-                SingleTon.destPos = new LatLng(place.getLatLng().latitude, place.getLatLng().longitude);
-                SingleTon.destAdress = place.getName().toString();
-
-                Log.i("Advanced", "var hasDest: " + SingleTon.hasDest);
-                Log.i("Advanced", "var destPos: " + SingleTon.destPos.toString());
-                ((TextView) rod.findViewById(R.id.destHead)).setText(place.getAddress());
-
-                enableNumberPicker(); // Aktiver numberpicker
-            }
-
-            @Override
-            public void onError(Status status) {
-                // TODO: Handle the error.
-                Log.i("Advanced", "An error occurred: " + status);
-            }
-        });
+//        autocompleteFragment.getView().setVisibility(View.INVISIBLE); // Skal først være tilgængelig når startup er færdig
+        autocompleteFragment.setOnPlaceSelectedListener(this);
 
         timer = (NumberPicker) rod.findViewById(R.id.timer_numberPicker);
         hours = new String[24];
@@ -108,20 +85,31 @@ public class AdvancedFragment extends Fragment implements NumberPicker.OnValueCh
         minutter.setMaxValue(11);
         minutter.setWrapSelectorWheel(true);
         minutter.setDisplayedValues(mins);
-        minutter.setValue(SingleTon.minutter);
+        minutter.setValue(SingleTon.minutter/5);
         minutter.setOnValueChangedListener(this);
 
         line = (LinearLayout) rod.findViewById(R.id.linje2);
-
-        disableNumberPicker(); // Låser numberPicker indtil der er indtastet en gyldig destination
         line.setOnClickListener(this);
+
+        if(!SingleTon.hasDest | place == null){
+            Log.d("Advanced" , "Destination nulstilles");
+            SingleTon.minutter = 0;
+            SingleTon.timer = 0;
+            SingleTon.hasDest = false;
+            place = null;
+            disableNumberPicker(); // Låser numberPicker indtil der er indtastet en gyldig destination
+        } else {
+            Log.d("Advanced", "Destination nulstilles ikke");
+            this.onPlaceSelected(place);
+            enableNumberPicker();
+        }
 
         final Handler h = new Handler();
         h.postDelayed(new Runnable(){
             @Override
             public void run() {
                 if(SingleTon.dataLoadDone){
-                    autocompleteFragment.getView().setVisibility(View.VISIBLE);
+//                    autocompleteFragment.getView().setVisibility(View.VISIBLE);
                 }else {
                     h.postDelayed(this, 100);
                 }
@@ -158,6 +146,8 @@ public class AdvancedFragment extends Fragment implements NumberPicker.OnValueCh
     // Deaktiver scroll-hjulet med antal tid tilbage
     private void disableNumberPicker(){
         line.setAlpha(0.5f);
+        timer.setValue(SingleTon.timer);
+        minutter.setValue(SingleTon.minutter/5);
         timer.setEnabled(false);
         minutter.setEnabled(false);
         if(SingleTon.nightMode){
@@ -179,5 +169,29 @@ public class AdvancedFragment extends Fragment implements NumberPicker.OnValueCh
                 Toast.makeText(getActivity(), "Destination required", Toast.LENGTH_SHORT).show();
             }
         }
+    }
+
+    @Override
+    public void onPlaceSelected(Place place) {
+        AdvancedFragment.this.place = place;
+        // TODO: Get info about the selected place.
+        Log.i("Advanced", "Id: " + place.getId());
+        Log.i("Advanced", "Name: " + place.getName());
+        Log.i("Advanced", "Address: " + place.getAddress());
+        Log.i("Advanced", "Pos: " + place.getLatLng());
+        SingleTon.hasDest = true;
+        SingleTon.destPos = new LatLng(place.getLatLng().latitude, place.getLatLng().longitude);
+        SingleTon.destAdress = place.getName().toString();
+
+        Log.i("Advanced", "var hasDest: " + SingleTon.hasDest);
+        Log.i("Advanced", "var destPos: " + SingleTon.destPos.toString());
+        ((TextView) rod.findViewById(R.id.destHead)).setText(place.getAddress());
+
+        enableNumberPicker(); // Aktiver numberpicker
+    }
+
+    @Override
+    public void onError(Status status) {
+
     }
 }
