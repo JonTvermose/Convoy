@@ -1,10 +1,12 @@
 package gruppe3.convoy;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.util.Log;
+import android.view.InflateException;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -41,10 +43,21 @@ public class AdvancedFragment extends Fragment implements NumberPicker.OnValueCh
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        if(SingleTon.nightMode){
-            rod = inflater.inflate(R.layout.fragment_advanced_night, container, false);
-        } else {
-            rod = inflater.inflate(R.layout.fragment_advanced, container, false);
+        if (rod!=null){
+            ViewGroup parent = (ViewGroup) rod.getParent();
+            if(parent!=null){
+                parent.removeView(rod);
+            }
+        }
+
+        try {
+            if(SingleTon.nightMode){
+                rod = inflater.inflate(R.layout.fragment_advanced_night, container, false);
+            } else {
+                rod = inflater.inflate(R.layout.fragment_advanced, container, false);
+            }
+        } catch (InflateException e){
+            return rod;
         }
 
         autocompleteFragment = (SupportPlaceAutocompleteFragment)
@@ -159,7 +172,7 @@ public class AdvancedFragment extends Fragment implements NumberPicker.OnValueCh
         Log.d("Advanced", "Der klikkes");
         // Viser en toast når der klikkes på numberpickeren og der ikke er en destination
         if(v==line){
-            Log.d("Advanced" , "Der klikkes på linearLayout");
+            Log.d("Advanced", "Der klikkes på linearLayout");
             if(minutter.isEnabled()){
                 // do nothing
             } else {

@@ -30,7 +30,7 @@ public class SingleTon extends Application {
     public static MyLocation myLocation;
     public static int timer,minutter;
     public static final String searchTxt1 = "Finding Location", searchTxt2 = "Connecting to Database", searchTxt3 = "Connected. Fetching data";
-    public static Boolean food, wc, bed, bath, fuel, adblue, roadTrain = false, dataLoadDone = false, dataLoading = false, nightMode, saveData, switchMode = false, powerSaving = false;
+    public static Boolean food, wc, bed, bath, fuel, adblue, roadTrain = false, dataLoadDone = false, dataLoading = false, nightMode, saveData, switchMode = false, powerSaving = false, session = false;
     public static boolean hasDest;
     public static LatLng destPos;
     public static String destAdress = "Your destination";
