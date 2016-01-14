@@ -30,7 +30,7 @@ public class SingleTon extends Application {
     public static MyLocation myLocation;
     public static int timer,minutter;
     public static final String searchTxt1 = "Finding Location", searchTxt2 = "Connecting to Database", searchTxt3 = "Connected. Fetching data";
-    public static Boolean food, wc, bed, bath, fuel, adblue, roadTrain = false, dataLoadDone = false, dataLoading = false, nightMode, saveData, switchMode = false;
+    public static Boolean food, wc, bed, bath, fuel, adblue, roadTrain = false, dataLoadDone = false, dataLoading = false, nightMode, saveData, switchMode = false, powerSaving = false;
     public static boolean hasDest;
     public static LatLng destPos;
     public static String destAdress = "Your destination";
@@ -49,7 +49,6 @@ public class SingleTon extends Application {
         Parse.initialize(this);
         Log.d("Data", "Parse initialiseret");
 
-
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         Log.d("Debug", "Preference Manager er startet");
         SingleTon.saveData = prefs.getBoolean("saveData", true);
@@ -62,6 +61,7 @@ public class SingleTon extends Application {
             SingleTon.fuel = prefs.getBoolean("fuel", false);
             SingleTon.adblue = prefs.getBoolean("adblue", false);
             SingleTon.roadTrain = prefs.getBoolean("roadTrain", false);
+            SingleTon.powerSaving = prefs.getBoolean("powerSaving", false);
         } else {
             SingleTon.nightMode = false;
             SingleTon.food = false;
@@ -71,11 +71,11 @@ public class SingleTon extends Application {
             SingleTon.fuel = false;
             SingleTon.adblue = false;
             SingleTon.roadTrain = false;
+            SingleTon.powerSaving = false;
         }
         if (SingleTon.myLocation != null){
             SingleTon.myLocation.onResume(); // Start opdatering fra GPS
         }
-
     }
 
     public static void fetchData(){
