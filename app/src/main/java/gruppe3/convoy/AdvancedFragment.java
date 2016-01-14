@@ -63,7 +63,7 @@ public class AdvancedFragment extends Fragment implements NumberPicker.OnValueCh
 
         autocompleteFragment = (SupportPlaceAutocompleteFragment)
                 getChildFragmentManager().findFragmentById(R.id.autocomplete);
-//        autocompleteFragment.getView().setVisibility(View.INVISIBLE); // Skal først være tilgængelig når startup er færdig
+        autocompleteFragment.getView().setVisibility(View.INVISIBLE); // Skal først være tilgængelig når startup er færdig
         autocompleteFragment.setOnPlaceSelectedListener(this);
 
         timer = (NumberPicker) rod.findViewById(R.id.timer_numberPicker);
@@ -109,7 +109,7 @@ public class AdvancedFragment extends Fragment implements NumberPicker.OnValueCh
             @Override
             public void run() {
                 if(SingleTon.dataLoadDone){
-//                    autocompleteFragment.getView().setVisibility(View.VISIBLE);
+                    autocompleteFragment.getView().setVisibility(View.VISIBLE);
                 }else {
                     h.postDelayed(this, 100);
                 }
