@@ -9,7 +9,9 @@ import java.io.Serializable;
  * Created by Jon on 25/11/2015.
  */
 public class Spot implements Serializable {
-    private LatLng pos;
+    //private LatLng pos;
+    private String lat;
+    private String lng;
     private boolean adblue;
     private boolean food;
     private boolean bath;
@@ -21,7 +23,7 @@ public class Spot implements Serializable {
 //    private String objectId;
     private String createdAt;
 
-    public Spot(String desc, boolean adblue, boolean food, boolean bath, boolean bed, boolean wc, boolean fuel, boolean roadtrain, String createdAt, LatLng pos) {
+    public Spot(String desc, boolean adblue, boolean food, boolean bath, boolean bed, boolean wc, boolean fuel, boolean roadtrain, String createdAt, String lat, String lng) {
 
         this.desc = desc;
         this.setAdblue(adblue);
@@ -33,10 +35,11 @@ public class Spot implements Serializable {
         this.setRoadtrain(roadtrain);
 //        this.objectId = objectId;
         this.createdAt = createdAt;
-        this.setPos(pos);
+        this.setLat(lat);
+        this.setLng(lng);
     }
 
-    public Spot(String desc, boolean adblue, boolean food, boolean bath, boolean bed, boolean wc, boolean fuel, boolean roadtrain,  LatLng pos) {
+    public Spot(String desc, boolean adblue, boolean food, boolean bath, boolean bed, boolean wc, boolean fuel, boolean roadtrain, String lat, String lng) {
 
         this.desc = desc;
         this.setAdblue(adblue);
@@ -48,7 +51,8 @@ public class Spot implements Serializable {
         this.setRoadtrain(roadtrain);
 //        this.objectId = objectId;
         this.createdAt = createdAt;
-        this.setPos(pos);
+        this.setLat(lat);
+        this.setLng(lng);
     }
 
     public String getCreatedAt() { return createdAt; }
@@ -67,12 +71,18 @@ public class Spot implements Serializable {
         this.desc = desc;
     }
 
-    public LatLng getPos() {
-        return pos;
+    public String getLat() { return lat; }
+
+    public void setLat(String lat) {
+        this.lat = lat;
     }
 
-    public void setPos(LatLng pos) {
-        this.pos = pos;
+    public String getLng() {
+        return lng;
+    }
+
+    public void setLng(String lng) {
+        this.lng = lng;
     }
 
     public boolean isAdblue() {
@@ -144,8 +154,8 @@ public class Spot implements Serializable {
         spotObject.put("wc", wc);
         spotObject.put("fuel", fuel);
         spotObject.put("roadtrain", roadtrain);
-        spotObject.put("posLat", pos.latitude);
-        spotObject.put("posLng", pos.longitude);
+        spotObject.put("posLat", lat);
+        spotObject.put("posLng", lng);
         spotObject.put("createdAt", createdAt);
 
         spotObject.saveInBackground();

@@ -16,6 +16,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoActionBar"
         >
+        <service android:name=".functionality.Serialisering" />
+
         <activity android:name=".Main"
             android:screenOrientation="portrait">
             <intent-filter>

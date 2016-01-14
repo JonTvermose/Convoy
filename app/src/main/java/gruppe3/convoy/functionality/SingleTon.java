@@ -2,6 +2,8 @@ package gruppe3.convoy.functionality;
 
 import android.app.Application;
 import android.content.SharedPreferences;
+import android.hardware.Sensor;
+import android.hardware.SensorManager;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
@@ -28,11 +30,13 @@ public class SingleTon extends Application {
     public static MyLocation myLocation;
     public static int timer,minutter;
     public static final String searchTxt1 = "Finding Location", searchTxt2 = "Connecting to Database", searchTxt3 = "Connected. Fetching data";
-    public static Boolean food, wc, bed, bath, fuel, adblue, roadTrain = false, dataLoadDone = false, dataLoading = false, nightMode, saveData, switchMode = false;
+    public static Boolean food, wc, bed, bath, fuel, adblue, roadTrain = false, dataLoadDone = false, dataLoading = false, nightMode, saveData, switchMode = false, powerSaving = false;
     public static boolean hasDest;
     public static LatLng destPos;
     public static String destAdress = "Your destination";
     private File spotsFile;
+    public static Sensor accelerometer;
+    public static SensorManager sensorManager;
 
     public static SingleTon getInstance() {
         return ourInstance;
@@ -57,6 +61,7 @@ public class SingleTon extends Application {
             SingleTon.fuel = prefs.getBoolean("fuel", false);
             SingleTon.adblue = prefs.getBoolean("adblue", false);
             SingleTon.roadTrain = prefs.getBoolean("roadTrain", false);
+            SingleTon.powerSaving = prefs.getBoolean("powerSaving", false);
         } else {
             SingleTon.nightMode = false;
             SingleTon.food = false;
@@ -66,11 +71,11 @@ public class SingleTon extends Application {
             SingleTon.fuel = false;
             SingleTon.adblue = false;
             SingleTon.roadTrain = false;
+            SingleTon.powerSaving = false;
         }
         if (SingleTon.myLocation != null){
             SingleTon.myLocation.onResume(); // Start opdatering fra GPS
         }
-
     }
 
     public static void fetchData(){
@@ -87,7 +92,7 @@ public class SingleTon extends Application {
                     if (e == null) {
                         spots = new ArrayList<Spot>();
                         for (int i = 0; spotList.size() > i; i++) {
-                            LatLng pos = new LatLng(Double.valueOf(spotList.get(i).getString("posLat")), Double.valueOf(spotList.get(i).getString("posLng")));
+                            //LatLng pos = new LatLng(Double.valueOf(spotList.get(i).getString("posLat")), Double.valueOf(spotList.get(i).getString("posLng")));
                             spots.add(new Spot(
                                     spotList.get(i).getString("desc"),
                                     spotList.get(i).getBoolean("adblue"),
@@ -98,7 +103,8 @@ public class SingleTon extends Application {
                                     spotList.get(i).getBoolean("fuel"),
                                     spotList.get(i).getBoolean("roadtrain"),
                                     spotList.get(i).getString("createdAt"),
-                                    pos
+                                    spotList.get(i).getString("posLat"),
+                                    spotList.get(i).getString("posLng")
                             ));
 
                         }

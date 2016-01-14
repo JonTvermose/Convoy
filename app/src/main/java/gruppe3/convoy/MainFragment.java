@@ -2,6 +2,8 @@ package gruppe3.convoy;
 
 
 import android.content.Intent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.TabLayout;
@@ -84,6 +86,8 @@ public class MainFragment extends Fragment {
                             d++;
                         }
                         if (SingleTon.dataLoadDone) {
+                            //Opstartsproces er færdig - start sensorlytter og skift progressbar ud med Search-knap
+                            SingleTon.sensorManager.registerListener((SensorEventListener) getActivity(), SingleTon.accelerometer, SensorManager.SENSOR_DELAY_NORMAL);
                             ProgressFragment.progressBar.setProgress(100);
                             getFragmentManager()
                                     .beginTransaction()
