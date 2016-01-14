@@ -34,7 +34,7 @@ public class SingleTon extends Application {
     public static String destAdress = "Your destination";
     public static Sensor accelerometer;
     public static SensorManager sensorManager;
-    public static double speedSetting = 1.3;
+    public static double speedSetting;
     private File spotsFile;
 
     public static SingleTon getInstance() {
@@ -61,6 +61,7 @@ public class SingleTon extends Application {
             SingleTon.adblue = prefs.getBoolean("adblue", false);
             SingleTon.roadTrain = prefs.getBoolean("roadTrain", false);
             SingleTon.powerSaving = prefs.getBoolean("powerSaving", false);
+            SingleTon.speedSetting = Double.valueOf(prefs.getString("speedSetting", "1.3"));
         } else {
             SingleTon.nightMode = false;
             SingleTon.food = false;
@@ -71,6 +72,7 @@ public class SingleTon extends Application {
             SingleTon.adblue = false;
             SingleTon.roadTrain = false;
             SingleTon.powerSaving = false;
+            SingleTon.speedSetting = 1.3;
         }
         if (SingleTon.myLocation != null){
             SingleTon.myLocation.onResume(); // Start opdatering fra GPS
