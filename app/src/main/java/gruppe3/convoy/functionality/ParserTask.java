@@ -104,7 +104,7 @@ public class ParserTask extends
             Log.d("Hviletid", "Tilføjer hviletidsmarker og zoomer map.");
             GMapsFragment.gMap.addMarker(new MarkerOptions().
                     position(SingleTon.destPos).
-                    title("Your position in " + SingleTon.timer + " hours and " + SingleTon.minutter + " minutes.")
+                    title("Approximated position in " + SingleTon.timer + " hours and " + SingleTon.minutter + " minutes.")
                     .icon(BitmapDescriptorFactory.defaultMarker(210f))).showInfoWindow(); // Destinationsmarkeren har en anden farve en normale markers
             GMapsFragment.gMap.animateCamera(CameraUpdateFactory.newLatLngZoom(SingleTon.destPos, 12));
             GMapsFragment.poly = GMapsFragment.gMap.addPolyline(GMapsFragment.polyLineOptions);

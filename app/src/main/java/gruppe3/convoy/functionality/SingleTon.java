@@ -18,8 +18,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import gruppe3.convoy.ProgressFragment;
-
 /**
  * Created by Jon on 06/01/2016.
  */
@@ -34,9 +32,10 @@ public class SingleTon extends Application {
     public static boolean hasDest;
     public static LatLng destPos;
     public static String destAdress = "Your destination";
-    private File spotsFile;
     public static Sensor accelerometer;
     public static SensorManager sensorManager;
+    public static double speedSetting = 1.3;
+    private File spotsFile;
 
     public static SingleTon getInstance() {
         return ourInstance;

@@ -212,16 +212,17 @@ public class GMapsFragment extends Fragment implements OnMapReadyCallback, View.
                 "origin=" + start.getLatitude() + "," + start.getLongitude()
                         + "&"
                         + "destination=" + dest.latitude + "," + dest.longitude;
-        // String key = "key=" + "AIzaSyCZSGpLIQ6JUmEJsj8TexBJMdrVZ-mwu40"; // TO DO - bør nok gemmes eller hentes fra andet sted?
+//         String key = "key=" + "AIzaSyCZSGpLIQ6JUmEJsj8TexBJMdrVZ-mwu40"; // TO DO - bør nok gemmes eller hentes fra andet sted?
         String mode = "mode=" + "driving"; // Dette kan udelades (er default for Google Directions)
         String units = "units=" + "metric"; // Eventuelt variabel baseret på indstillinger i appen
 
         // Google Directions bruger som standard hastighedsgrænser for biler. Vha. traffic_model forsøger vi at nedsætte hastigheden
         // så den er mere realistisk for en lastbil der skal følge andre hastighedsgrænser (80 eller 90 km/t på motorveje)
+        // !! Google Directions API giver pt. samme resultat uanset hvilken mode der vælges - derfor ganges den modtagne tid med en faktor
         String trafficModel = "traffic_model=" + "pessimistic";
         String departTime = "departure_time=" + "now";
 
-        String params = locations + "&" + mode + "&" + trafficModel + "&" + units + "&" + departTime; // + "&" + key;
+        String params = locations + "&" + mode + "&" + trafficModel + "&" + units + "&" + departTime; // + "&" + key; //
         String output = "json";
         String url = "https://maps.googleapis.com/maps/api/directions/" + output + "?" + params;
 

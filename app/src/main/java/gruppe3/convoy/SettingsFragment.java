@@ -109,6 +109,9 @@ public class SettingsFragment extends Fragment implements CompoundButton.OnCheck
                 SingleTon.sensorManager.registerListener((SensorEventListener) getActivity(), SingleTon.accelerometer, SensorManager.SENSOR_DELAY_NORMAL);
                 Log.d("Sensor","Starter sensorlytter");
             }
+            // Genstarter GPS-servicen med mindre/større opdateringsfrekvens afhængig af SingleTon.powerSaving
+            SingleTon.myLocation.stopLocationUpdates();
+            SingleTon.myLocation.startLocationService(getActivity());
         }
     }
 }

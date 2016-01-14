@@ -4,22 +4,15 @@ import android.content.Context;
 import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
-import android.util.TypedValue;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.model.LatLng;
 
 import java.text.DateFormat;
 import java.util.Date;
-
-import gruppe3.convoy.GMapsFragment;
-import gruppe3.convoy.MainFragment;
-import gruppe3.convoy.ProgressFragment;
 
 /*
  Klassen er udviklet af Jon Tvermose Nielsen
@@ -29,7 +22,7 @@ public class MyLocation implements LocationListener, GoogleApiClient.ConnectionC
     private LocationRequest mLocationRequest;
     private GoogleApiClient mGoogleApiClient;
     private Location mCurrentLocation, mLastLocation;
-    private static final long INTERVAL = 1000 * 10; // Update interval i ms
+    private static final long INTERVAL = 1000 * 10; // Update interval i ms = 10 sek
     private static final long FASTEST_INTERVAL = 1000 * 5; // Hurtigste update interval i ms
     private String mLastUpdateTime;
     private boolean mRequestingLocationUpdates = false;
@@ -85,7 +78,11 @@ public class MyLocation implements LocationListener, GoogleApiClient.ConnectionC
         mLocationRequest = new LocationRequest();
         mLocationRequest.setInterval(INTERVAL);
         mLocationRequest.setFastestInterval(FASTEST_INTERVAL);
-        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        if(!SingleTon.powerSaving){
+            mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        } else {
+            mLocationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
+        }
     }
 
     /**

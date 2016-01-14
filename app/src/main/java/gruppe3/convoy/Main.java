@@ -25,6 +25,7 @@ import gruppe3.convoy.functionality.SingleTon;
 public class Main extends FragmentActivity implements SensorEventListener {
 
     public static final String PREF_FILE_NAME = "ConvoyPrefs";
+
     private final int MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
     private long lastShaken = System.currentTimeMillis();
 

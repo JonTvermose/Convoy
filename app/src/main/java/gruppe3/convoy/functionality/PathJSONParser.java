@@ -1,25 +1,21 @@
 package gruppe3.convoy.functionality;
 
 /**
- * Created by Jon on 05/01/2016.
- */
-
-/**
- * Klassen er inspireret af http://javapapers.com/android/draw-path-on-google-maps-android-api/
+ * Klassen er inspireret af http://javapapers.com/android/draw-path-on-google-maps-android-api/ og udbygget af Jon Tvermose Nielsen
  * Klassens formål er at oversætte et JSON object fra Google Directions API
  */
 
 import android.util.Log;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import com.google.android.gms.maps.model.LatLng;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.google.android.gms.maps.model.LatLng;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 public class PathJSONParser {
 
@@ -30,6 +26,8 @@ public class PathJSONParser {
     public PathJSONParser(boolean restMode){
         this.restMode = restMode;
         seconds = SingleTon.timer * 60 * 60 + SingleTon.minutter * 60;
+        double newSec = seconds/SingleTon.speedSetting;
+        seconds = (int) newSec;
     }
 
 
@@ -47,7 +45,14 @@ public class PathJSONParser {
 
                 // Finder den samlede distance og tid
                 dist = (String) ((JSONObject) ((JSONObject) jLegs.get(0)).get("distance")).get("text");
-                dur = (String) ((JSONObject) ((JSONObject) jLegs.get(0)).get("duration")).get("text");
+                double duration = (int) ((JSONObject) ((JSONObject) jLegs.get(0)).get("duration")).get("value")*SingleTon.speedSetting;
+                int[] endDur = splitToComponentTimes(duration);
+                if(endDur[0] != 0){
+                    dur = endDur[0] + " hour ";
+                    dur = dur + endDur[1] + " m";
+                } else {
+                    dur = endDur[1] + " mins";
+                }
                 startAdress = (String) ((JSONObject) jLegs.get(0)).get("start_address");
                 endAdress = (String) ((JSONObject) jLegs.get(0)).get("end_address");
                 Log.d("Rute", "Samlet Distance: " + dist);
@@ -102,6 +107,18 @@ public class PathJSONParser {
         } catch (Exception e) {
         }
         return routes;
+    }
+
+    private int[] splitToComponentTimes(double longVal)
+    {
+        int hours = (int) longVal / 3600;
+        int remainder = (int) longVal - hours * 3600;
+        int mins = remainder / 60;
+        remainder = remainder - mins * 60;
+        int secs = remainder;
+
+        int[] ints = {hours , mins , secs};
+        return ints;
     }
 
     /**
