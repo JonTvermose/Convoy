@@ -1,7 +1,6 @@
 package gruppe3.convoy.functionality;
 
 import android.app.Application;
-import android.app.Service;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -15,15 +14,10 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 
 import com.google.android.gms.maps.model.LatLng;
-import com.parse.FindCallback;
 import com.parse.Parse;
-import com.parse.ParseException;
-import com.parse.ParseObject;
-import com.parse.ParseQuery;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by Jon on 06/01/2016.
@@ -45,10 +39,13 @@ public class SingleTon extends Application {
     public static BoundService mService;
     public static ServiceConnection mConnection;
     public static boolean mBound = false;
-    static ArrayList<Spot> spotOut;
+    public static ArrayList<Spot> spotsLokal;
+    static ArrayList<Spot> spotsDb;
     public static double speedSetting;
     private File spotsFile;
-
+    private static ArrayList<Spot> output = null;
+    public static boolean hentetLokal=false;
+    public static boolean hentetDb=false;
 
     public static SingleTon getInstance() {
         return ourInstance;
@@ -99,43 +96,26 @@ public class SingleTon extends Application {
     public static void fetchData(){
         dataLoading=true;
 
-        if(spots==null){
-            Log.d("Data", "Spots er null");
-            // Asynkront kald til DB
-            ParseQuery<ParseObject> query2 = ParseQuery.getQuery("Spots1");
-            query2.setLimit(1000);
-            query2.findInBackground(new FindCallback<ParseObject>() {
-                public void done(List<ParseObject> spotList, ParseException e) {
-                    Log.d("Data", "e = "+e);
-                    if (e == null) {
-                        spots = new ArrayList<Spot>();
-                        for (int i = 0; spotList.size() > i; i++) {
-                            //LatLng pos = new LatLng(Double.valueOf(spotList.get(i).getString("posLat")), Double.valueOf(spotList.get(i).getString("posLng")));
-                            spots.add(new Spot(
-                                    spotList.get(i).getString("desc"),
-                                    spotList.get(i).getBoolean("adblue"),
-                                    spotList.get(i).getBoolean("food"),
-                                    spotList.get(i).getBoolean("bath"),
-                                    spotList.get(i).getBoolean("bed"),
-                                    spotList.get(i).getBoolean("wc"),
-                                    spotList.get(i).getBoolean("fuel"),
-                                    spotList.get(i).getBoolean("roadtrain"),
-                                    spotList.get(i).getString("createdAt"),
-                                    spotList.get(i).getString("posLat"),
-                                    spotList.get(i).getString("posLng")
-                            ));
+        hentSpotsLocal("lokaleSpots");
 
-                        }
-                        Log.d("Data", "Done with spots!");
-                        Log.d("Data", "Size of Spots = " + spots.size());
-
-                        SingleTon.dataLoadDone = true;
-                    } else {
-                        Log.d("score", "Error: " + e.getMessage());
-                    }
-                }
-            });
-        }
+//        if(spots==null){
+//            Log.d("Data", "Spots er null");
+//            hentSpotsDb(null);
+//            System.out.println("spots array"+spots);
+//        }
+//        final Handler h = new Handler();
+//        h.postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                if (spots!=null) {
+//                    System.out.println("singleTon fetchData OK");
+//                    SingleTon.dataLoadDone = true;
+//                } else {
+//                    System.out.println("singleTon fetchData null");
+//                    h.postDelayed(this, 200);
+//                }
+//            }
+//        }, 200);
     }
 
 //    public void saveSpots(ArrayList<Spot> spots, String filename) {
@@ -193,7 +173,7 @@ public class SingleTon extends Application {
         unbindService(mConnection);
     }
 
-    public static ArrayList hentSpotsLocal(final String name){
+    public static void hentSpotsLocal(final String name){
 
         final Handler h = new Handler();
         h.postDelayed(new Runnable() {
@@ -201,27 +181,23 @@ public class SingleTon extends Application {
             public void run() {
                 if (SingleTon.mBound) {
                     System.out.println("if sætning");
-                    SingleTon.spotOut = (ArrayList<Spot>) mService.hent(name);
+                    mService.hent(name);
 
                 } else {
                     h.postDelayed(this, 100);
                 }
             }
         }, 100);
-        return spotOut;
     }
 
-    public static void gemSpotsLocal(final String name){
-        final ArrayList<Spot> spots = new ArrayList();
-        spots.add(new Spot("boundTest", true, true, true, true, true, true, true, "createdAt", "posLat", "posLng"));
-
+    public static void gemSpotsLocal(final String name, final ArrayList spotsListe){
         final Handler h = new Handler();
         h.postDelayed(new Runnable() {
             @Override
             public void run() {
                 if (SingleTon.mBound) {
-                    System.out.println("if sætning");
-                    mService.gem(spots, name);
+//                    System.out.println("if sætning");
+                    mService.gem(spotsListe, name);
                 } else {
                     h.postDelayed(this, 100);
                 }
@@ -230,8 +206,19 @@ public class SingleTon extends Application {
     }
 
 
-    public void hentSpotsDb(){
-
+    public static void hentSpotsDb(final String created){
+        final Handler h = new Handler();
+        h.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (SingleTon.mBound) {
+//                    System.out.println("if sætning");
+                    mService.hentFraDb(created);
+                } else {
+                    h.postDelayed(this, 100);
+                }
+            }
+        }, 100);
     }
 
     public void gemSpotsDb(){
