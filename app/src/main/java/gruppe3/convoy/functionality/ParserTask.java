@@ -102,11 +102,19 @@ public class ParserTask extends
             }
         if (dialog==null){
             Log.d("Hviletid", "Tilføjer hviletidsmarker og zoomer map.");
+            String dur = "Approximated position in ";
+            int[] endDur = parser.splitToComponentTimes();
+            if(endDur[0] != 0){
+                dur = dur + endDur[0] + " hour ";
+                dur = dur + endDur[1] + " m";
+            } else {
+                dur = endDur[1] + " mins";
+            }
             GMapsFragment.gMap.addMarker(new MarkerOptions().
                     position(SingleTon.destPos).
-                    title("Approximated position in " + SingleTon.timer + " hours and " + SingleTon.minutter + " minutes.")
+                    title(dur)
                     .icon(BitmapDescriptorFactory.defaultMarker(210f))).showInfoWindow(); // Destinationsmarkeren har en anden farve en normale markers
-            GMapsFragment.gMap.animateCamera(CameraUpdateFactory.newLatLngZoom(SingleTon.destPos, 12));
+            GMapsFragment.gMap.animateCamera(CameraUpdateFactory.newLatLngZoom(SingleTon.destPos, 10));
             GMapsFragment.poly = GMapsFragment.gMap.addPolyline(GMapsFragment.polyLineOptions);
         }
     }

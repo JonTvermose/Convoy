@@ -140,7 +140,6 @@ public class GMapsFragment extends AppCompatActivity implements OnMapReadyCallba
                 // Der udføres en hviletidssøgning
                 ReadTask reader = new ReadTask();
                 reader.execute(getMapsApiDirectionsUrl(startLoc, SingleTon.destPos));
-
             }
         } else {
             LatLng cPos = new LatLng(SingleTon.myLocation.getLocation().getLatitude(), SingleTon.myLocation.getLocation().getLongitude());
@@ -171,7 +170,7 @@ public class GMapsFragment extends AppCompatActivity implements OnMapReadyCallba
             public void onMapLongClick(LatLng latLng) {
                 Log.d("Kort", "Der klikkes med et langt tryk på kortet: " + latLng.latitude + ", " + latLng.longitude);
                 Vibrator vibe = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-                vibe.vibrate(50); // Vibrate for 500 milliseconds
+                vibe.vibrate(50); // Vibrate for x milliseconds
                 Location loc = new Location("");
                 loc.setLatitude(latLng.latitude);
                 loc.setLongitude(latLng.longitude);
@@ -457,7 +456,7 @@ public class GMapsFragment extends AppCompatActivity implements OnMapReadyCallba
                     mClusterManager.cluster();
 //                    gMap.animateCamera(CameraUpdateFactory.newLatLng(marker.getPosition()));
                     Vibrator vibe = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-                    vibe.vibrate(200); // Vibrate for 500 milliseconds
+                    vibe.vibrate(200); // Vibrate for x milliseconds
                     Toast.makeText(GMapsFragment.this, "Location added", Toast.LENGTH_SHORT).show();
                 }
             }

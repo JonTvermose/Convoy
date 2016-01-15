@@ -109,10 +109,22 @@ public class PathJSONParser {
         return routes;
     }
 
-    private int[] splitToComponentTimes(double longVal)
+    public int[] splitToComponentTimes(double longVal)
     {
         int hours = (int) longVal / 3600;
         int remainder = (int) longVal - hours * 3600;
+        int mins = remainder / 60;
+        remainder = remainder - mins * 60;
+        int secs = remainder;
+
+        int[] ints = {hours , mins , secs};
+        return ints;
+    }
+
+    public int[] splitToComponentTimes()
+    {
+        int hours = time / 3600;
+        int remainder = time - hours * 3600;
         int mins = remainder / 60;
         remainder = remainder - mins * 60;
         int secs = remainder;
