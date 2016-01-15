@@ -261,7 +261,6 @@ public class GMapsFragment extends AppCompatActivity implements OnMapReadyCallba
 
             // Dialogboks til at tilføje et lokation
             if(addDialog==null){
-
                 addDialog = new Dialog(this);
                 addDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
             }
@@ -402,12 +401,12 @@ public class GMapsFragment extends AppCompatActivity implements OnMapReadyCallba
                     ClusterMaker clustMark = new ClusterMaker(latLng);
                     clustMark.setSnippet(mark.getSnippet());
                     mClusterManager.addItem(clustMark); // Tilføj marker til clustermanageren
-                    GMapsFragment.this.dropPinEffect(mark); // Start animationen
+                    dropPinEffect(mark); // Start animationen
 
                     // Tilføjer spot til den hentede liste af spots, så det har samme funktionalitet som alle andre spots
                     Spot newSpot = new Spot(addSpot.getAddressTxt(), addSpot.adblue, addSpot.food, addSpot.bath, addSpot.bed, addSpot.wc, addSpot.fuel, addSpot.roadTrain, String.valueOf(latLng.latitude),String.valueOf(latLng.longitude));
                     SingleTon.searchedSpots.add(newSpot);
-                    SingleTon.spots.add(newSpot);
+//                    SingleTon.spots.add(newSpot);
                     addSpot = null; // Sikrer vi nulstiller data hvis der tilføjes flere spots i samme session.
 
                     // Uploader data til Parse.com
