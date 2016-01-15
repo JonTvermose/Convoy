@@ -27,7 +27,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:text="Road train > 25m"
+                android:text="Roadtrain > 25m"
                 android:textSize="20dp"
                 android:fontFamily="sans-serif-medium"
                 android:id="@+id/textView2" />
@@ -60,7 +60,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:text="Night mode"
+                android:text="Night Mode"
                 android:textSize="20dp"
                 android:fontFamily="sans-serif-medium"
                 android:id="@+id/textView3" />
@@ -91,7 +91,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:text="Save search criterias"
+                android:text="Save Preferences"
                 android:textSize="20dp"
                 android:fontFamily="sans-serif-medium"
                 android:id="@+id/textView4" />
@@ -123,7 +123,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:text="Power saving mode"
+                android:text="Power-saving Mode"
                 android:textSize="20dp"
                 android:fontFamily="sans-serif-medium"
                 android:id="@+id/textView5" />
