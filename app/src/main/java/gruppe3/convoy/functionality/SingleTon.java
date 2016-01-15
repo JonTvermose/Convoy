@@ -213,7 +213,7 @@ public class SingleTon extends Application {
             public void run() {
                 if (SingleTon.mBound) {
 //                    System.out.println("if sætning");
-                    mService.hentFraDb(created);
+//                    mService.hentFraDb(created);
                 } else {
                     h.postDelayed(this, 100);
                 }

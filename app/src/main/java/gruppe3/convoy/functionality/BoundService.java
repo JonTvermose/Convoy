@@ -88,10 +88,10 @@ public class BoundService extends Service{
                     SingleTon.hentetLokal=true;
                     if(SingleTon.spotsLokal==null){
                         System.out.println("spotsLokal = null");
-                        hentFraDb(null);
+                        hentFraDb(0);
                     } else {
                             System.out.println("else");
-                            hentFraDb(SingleTon.spotsLokal.get(SingleTon.spotsLokal.size()-1).getCreatedAt());
+                            hentFraDb(SingleTon.spotsLokal.size());
 
                     }
                 } catch (IOException | ClassNotFoundException e) {
@@ -101,16 +101,16 @@ public class BoundService extends Service{
         }).start();
     }
 
-    public void hentFraDb(String created){
+    public void hentFraDb(int size){
         System.out.println("spotsParse");
         // Asynkront kald til DB
         ParseQuery<ParseObject> query = ParseQuery.getQuery("Spots1");
         query.setLimit(1000);
 
-        if(created!=null){
-            System.out.println(created);
+        if(size!=0){
+            System.out.println(size);
             System.out.println("skip sat til: "+spotsParse.size());
-            query.setSkip(spotsParse.size());
+            query.setSkip(size);
         }
         query.findInBackground(new FindCallback<ParseObject>() {
             public void done(List<ParseObject> spotList, ParseException e) {
@@ -139,7 +139,7 @@ public class BoundService extends Service{
 
                     if(spotsSize==1000){
                         System.out.println("antal spots hentet fra DB: "+spotsParse.size());
-                        hentFraDb(spotsParse.get(spotsParse.size() - 1).getCreatedAt());
+                        hentFraDb(spotsParse.size());
                     } else {
 
 //                    SingleTon.spotsDb = spotsParse;
