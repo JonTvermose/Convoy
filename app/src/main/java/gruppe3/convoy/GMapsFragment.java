@@ -126,14 +126,14 @@ public class GMapsFragment extends AppCompatActivity implements OnMapReadyCallba
         // Hvis brugeren har indtastet en destination, tilføjes denne på kortet, og kameraet bevæges til positionen
         if(SingleTon.hasDest){
             Location startLoc = SingleTon.myLocation.getLocation();
-            Log.i("Kort", getMapsApiDirectionsUrl(startLoc, SingleTon.destPos));
-            destMark = gMap.addMarker(new MarkerOptions().
-                    position(SingleTon.destPos).
-                    title(SingleTon.destAdress)
-                    .icon(BitmapDescriptorFactory.defaultMarker(210f))); // Destinationsmarkeren har en anden farve en normale markers
-            destMark.showInfoWindow();
             if(SingleTon.minutter==0 && SingleTon.timer==0){
                 // Der udføres en "normal" destinationssøgning
+                Log.i("Kort", getMapsApiDirectionsUrl(startLoc, SingleTon.destPos));
+                destMark = gMap.addMarker(new MarkerOptions().
+                        position(SingleTon.destPos).
+                        title(SingleTon.destAdress)
+                        .icon(BitmapDescriptorFactory.defaultMarker(210f))); // Destinationsmarkeren har en anden farve en normale markers
+                destMark.showInfoWindow();
                 gMap.animateCamera(CameraUpdateFactory.newLatLngZoom(SingleTon.destPos, 12));
             } else {
                 Log.d("Kort" , "Der udføres hviletidssøgning");

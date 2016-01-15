@@ -20,7 +20,7 @@ import java.util.List;
 public class PathJSONParser {
 
     private String dist, dur, startAdress, endAdress;
-    private int seconds, time = 0;
+    private int seconds, time = 0, endTime, tempTime;
     private boolean restMode = false, found = false;
 
     public PathJSONParser(boolean restMode){
@@ -67,11 +67,11 @@ public class PathJSONParser {
 
                     /** Traversing all steps */
                     for (int k = 0; k < jSteps.length(); k++) {
+                        // Hviletidssøgning
                         time = time + (int) ((JSONObject) ((JSONObject) jSteps.get(k)).get("duration")).get("value");
                         Log.d("Hviletid" , "Time er: " + time + ", seconds er: " + seconds);
-                        // Hviletidssøgning
-                        if (time >= seconds && restMode){
-                            if (!found){
+                        if (time >= seconds + 1200 && restMode){
+                            if(!found){
                                 double lat = (double) ((JSONObject) ((JSONObject) jSteps.get(k-1)).get("end_location")).get("lat");
                                 double lng = (double) ((JSONObject) ((JSONObject) jSteps.get(k-1)).get("end_location")).get("lng");
                                 LatLng rest = new LatLng(lat, lng);
@@ -96,6 +96,9 @@ public class PathJSONParser {
                                         Double.toString(((LatLng) list.get(l)).longitude));
                                 path.add(hm);
                             }
+                        }
+                        if(!found){
+                            endTime = time;
                         }
                     }
                     routes.add(path);
@@ -123,8 +126,8 @@ public class PathJSONParser {
 
     public int[] splitToComponentTimes()
     {
-        int hours = time / 3600;
-        int remainder = time - hours * 3600;
+        int hours = endTime / 3600;
+        int remainder = endTime - hours * 3600;
         int mins = remainder / 60;
         remainder = remainder - mins * 60;
         int secs = remainder;

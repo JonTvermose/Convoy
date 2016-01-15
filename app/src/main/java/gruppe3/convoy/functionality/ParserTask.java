@@ -78,7 +78,6 @@ public class ParserTask extends
             route.setEnabled(true); // Gør "Find Route"-knappen tilgængelig
         }
 
-
         // traversing through routes
         for (int i = 0; i < routes.size(); i++) {
             points = new ArrayList<LatLng>();
@@ -101,21 +100,26 @@ public class ParserTask extends
             GMapsFragment.polyLineOptions.color(Color.BLUE); // Farve på stregerne
             }
         if (dialog==null){
-            Log.d("Hviletid", "Tilføjer hviletidsmarker og zoomer map.");
-            String dur = "Approximated position in ";
-            int[] endDur = parser.splitToComponentTimes();
-            if(endDur[0] != 0){
-                dur = dur + endDur[0] + " hour ";
-                dur = dur + endDur[1] + " m";
-            } else {
-                dur = endDur[1] + " mins";
-            }
-            GMapsFragment.gMap.addMarker(new MarkerOptions().
-                    position(SingleTon.destPos).
-                    title(dur)
-                    .icon(BitmapDescriptorFactory.defaultMarker(210f))).showInfoWindow(); // Destinationsmarkeren har en anden farve en normale markers
-            GMapsFragment.gMap.animateCamera(CameraUpdateFactory.newLatLngZoom(SingleTon.destPos, 10));
-            GMapsFragment.poly = GMapsFragment.gMap.addPolyline(GMapsFragment.polyLineOptions);
+            addRestMarker();
         }
+    }
+
+    // Tilføjer en hviletidsmarker samt tegner rute på kortet
+    private void addRestMarker(){
+        Log.d("Hviletid", "Tilføjer hviletidsmarker og zoomer map.");
+        String dur = "Approximated position in ";
+        int[] endDur = parser.splitToComponentTimes();
+        if(endDur[0] != 0){
+            dur = dur + endDur[0] + " hour ";
+            dur = dur + endDur[1] + " m";
+        } else {
+            dur = endDur[1] + " mins";
+        }
+        GMapsFragment.gMap.addMarker(new MarkerOptions().
+                position(SingleTon.destPos).
+                title(dur)
+                .icon(BitmapDescriptorFactory.defaultMarker(210f))).showInfoWindow(); // Destinationsmarkeren har en anden farve en normale markers
+        GMapsFragment.gMap.animateCamera(CameraUpdateFactory.newLatLngZoom(SingleTon.destPos, 10));
+        GMapsFragment.poly = GMapsFragment.gMap.addPolyline(GMapsFragment.polyLineOptions);
     }
 }

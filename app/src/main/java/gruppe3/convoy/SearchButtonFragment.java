@@ -24,6 +24,7 @@ import gruppe3.convoy.functionality.Spot;
  */
 public class SearchButtonFragment extends Fragment {
 
+    public static Button search;
 
     public SearchButtonFragment() {
         // Required empty public constructor
@@ -41,8 +42,7 @@ public class SearchButtonFragment extends Fragment {
             rod = inflater.inflate(R.layout.fragment_search_button, container, false);
         }
 
-
-        Button search = (Button) rod.findViewById(R.id.searchButton);
+        search = (Button) rod.findViewById(R.id.searchButton);
         Log.d("debug", "Search knap oprettet");
         search.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -105,12 +105,6 @@ public class SearchButtonFragment extends Fragment {
                         SingleTon.sensorManager.unregisterListener((SensorEventListener) getActivity()); // Vi afslutter sensorlytter når vi er i mapmode
                         Intent i = new Intent(getActivity(), GMapsFragment.class);
                         getActivity().startActivity(i);
-//                        getFragmentManager()
-//                                .beginTransaction()
-//                                .replace(R.id.MainFragment, new GMapsFragment())
-//                                .setTransitionStyle(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
-//                                .addToBackStack(null)
-//                                .commit();
                     }
                 }.execute();
             }

@@ -68,7 +68,9 @@ public class AdvancedFragment extends Fragment implements NumberPicker.OnValueCh
 
         timer = (NumberPicker) rod.findViewById(R.id.timer_numberPicker);
         hours = new String[24];
-        for(int i=0; i<hours.length; i++)
+        for(int i =0; i <= 9; i++)
+            hours[i] = "0" + Integer.toString(i);
+        for(int i=10; i<hours.length; i++)
             hours[i] = Integer.toString(i);
         timer.setMinValue(0);
         timer.setMaxValue(23);
@@ -79,7 +81,9 @@ public class AdvancedFragment extends Fragment implements NumberPicker.OnValueCh
 
         minutter = (NumberPicker) rod.findViewById(R.id.minutter_numberPicker);
         mins = new String[12];
-        for(int i=0; i<mins.length; i++)
+        mins[0] = "00";
+        mins[1] = "05";
+        for(int i=2; i<mins.length; i++)
             mins[i] = Integer.toString(i * 5);
         minutter.setMinValue(0);
         minutter.setMaxValue(11);
@@ -128,6 +132,22 @@ public class AdvancedFragment extends Fragment implements NumberPicker.OnValueCh
             SingleTon.timer = Integer.valueOf(hours[newVal]);
             Log.d("Advanced", "Timer er sat til: " + hours[newVal]);
         }
+        if(SingleTon.minutter!=0 | SingleTon.timer!=0){
+            String srcTxt = "Find Truck Stop in ";
+            if(SingleTon.timer!=0){
+                SearchButtonFragment.search.setText(srcTxt + translate(SingleTon.timer) + ":" + translate(SingleTon.minutter));
+            } else {
+                SearchButtonFragment.search.setText(srcTxt + translate(SingleTon.minutter) + " mins");
+            }
+        } else {
+            SearchButtonFragment.search.setText("Find Truck Stop near destination");
+        }
+    }
+
+    private String translate(int i){
+        if(i<=9)
+            return "0" + Integer.toString(i);
+        return Integer.toString(i);
     }
 
     // Aktiver scroll-hjulet med antal tid tilbage
@@ -182,6 +202,7 @@ public class AdvancedFragment extends Fragment implements NumberPicker.OnValueCh
         SingleTon.hasDest = true;
         SingleTon.destPos = new LatLng(place.getLatLng().latitude, place.getLatLng().longitude);
         SingleTon.destAdress = place.getName().toString();
+        SearchButtonFragment.search.setText("Find Truck Spot near destination"); // Ændrer tekst på search-knap
 
         Log.i("Advanced", "var hasDest: " + SingleTon.hasDest);
         Log.i("Advanced", "var destPos: " + SingleTon.destPos.toString());
