@@ -52,10 +52,11 @@ public class GMapsFragment extends AppCompatActivity implements OnMapReadyCallba
     private AddSpot addSpot; // Det spot der tilføjes
     private ClusterManager<ClusterMaker> mClusterManager;
     private Marker destMark;
-
-    public static GoogleMap gMap;
-    public static Polyline poly = null;
-    public static PolylineOptions polyLineOptions = null;
+    private Dialog addDialog;
+    private Dialog dialog;
+    private GoogleMap gMap;
+    private Polyline poly = null;
+    private PolylineOptions polyLineOptions = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -138,7 +139,7 @@ public class GMapsFragment extends AppCompatActivity implements OnMapReadyCallba
             } else {
                 Log.d("Kort" , "Der udføres hviletidssøgning");
                 // Der udføres en hviletidssøgning
-                ReadTask reader = new ReadTask();
+                ReadTask reader = new ReadTask(gMap, poly, polyLineOptions);
                 reader.execute(getMapsApiDirectionsUrl(startLoc, SingleTon.destPos));
             }
         } else {
@@ -259,8 +260,11 @@ public class GMapsFragment extends AppCompatActivity implements OnMapReadyCallba
             }
 
             // Dialogboks til at tilføje et lokation
-            final Dialog addDialog = new Dialog(this);
-            addDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+            if(addDialog==null){
+
+                addDialog = new Dialog(this);
+                addDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+            }
             if(SingleTon.nightMode){
                 addDialog.setContentView(R.layout.dialog_addlocation_night);
             } else {
@@ -272,6 +276,7 @@ public class GMapsFragment extends AppCompatActivity implements OnMapReadyCallba
                 @Override
                 public void onClick(View v) {
                     addDialog.hide();
+                    addDialog=null;
                 }
             });
 
@@ -468,13 +473,16 @@ public class GMapsFragment extends AppCompatActivity implements OnMapReadyCallba
         Log.d("Kort", "Der klikkes på en ClusterMarker: " + marker.getPosition().latitude + ", " + marker.getPosition().longitude);
         goButton.setVisibility(View.GONE); // Siker at GO-knappen forsvinder hvis man har trykket på et andet spot før dette
 
-        final Dialog dialog = new Dialog(this);
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        if(dialog==null){
+            dialog = new Dialog(this);
+            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        }
         if (SingleTon.nightMode) {
             dialog.setContentView(R.layout.dialog_spot_night);
         } else {
             dialog.setContentView(R.layout.dialog_spot); // XML-layout til Dialog-boksen
         }
+
 
         // Fjern rute fra kort hvis der eksisterer et i forvejen
         if (poly != null) {
@@ -487,7 +495,7 @@ public class GMapsFragment extends AppCompatActivity implements OnMapReadyCallba
             /* Henter rute til POI */
             Location startLoc = SingleTon.myLocation.getLocation();
             String url = GMapsFragment.this.getMapsApiDirectionsUrl(startLoc,  new LatLng(Double.valueOf(spot.getLat()),Double.valueOf(spot.getLng())));
-            ReadTask downloadTask = new ReadTask(dialog);
+            ReadTask downloadTask = new ReadTask(dialog, gMap, poly, polyLineOptions);
             downloadTask.execute(url);
 
             ImageView adblue = (ImageView) dialog.findViewById(R.id.adblue_imageView);
@@ -585,9 +593,9 @@ public class GMapsFragment extends AppCompatActivity implements OnMapReadyCallba
 
     @Override
     protected void onDestroy(){
-        gMap=null;
-        poly=null;
-        polyLineOptions=null;
+//        gMap=null;
+//        poly=null;
+//        polyLineOptions=null;
         super.onDestroy();
     }
 }

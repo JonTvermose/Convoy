@@ -8,9 +8,11 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 
 import org.json.JSONObject;
@@ -30,12 +32,22 @@ public class ParserTask extends
 
     private PathJSONParser parser;
     private Dialog dialog;
+    private GoogleMap gMap;
+    private Polyline poly;
+    private PolylineOptions polyLineOptions;
 
-    public ParserTask(Dialog dialog) {
+    public ParserTask(Dialog dialog, GoogleMap gMap, Polyline poly, PolylineOptions polylineOptions) {
         this.dialog = dialog;
+        this.gMap=gMap;
+        this.poly=poly;
+        this.polyLineOptions=polylineOptions;
     }
 
-    public ParserTask(){}
+    public ParserTask(GoogleMap gMap, Polyline poly, PolylineOptions polylineOptions){
+        this.gMap=gMap;
+        this.poly=poly;
+        this.polyLineOptions=polylineOptions;
+    }
 
     @Override
     protected List<List<HashMap<String, String>>> doInBackground(
@@ -81,7 +93,7 @@ public class ParserTask extends
         // traversing through routes
         for (int i = 0; i < routes.size(); i++) {
             points = new ArrayList<LatLng>();
-            GMapsFragment.polyLineOptions = new PolylineOptions();
+            polyLineOptions = new PolylineOptions();
 
             List<HashMap<String, String>> path = routes.get(i);
 
@@ -95,9 +107,9 @@ public class ParserTask extends
                 points.add(position);
             }
 
-            GMapsFragment.polyLineOptions.addAll(points);
-            GMapsFragment.polyLineOptions.width(6); // Tykkelse på stregerne
-            GMapsFragment.polyLineOptions.color(Color.BLUE); // Farve på stregerne
+            polyLineOptions.addAll(points);
+            polyLineOptions.width(6); // Tykkelse på stregerne
+            polyLineOptions.color(Color.BLUE); // Farve på stregerne
             }
         if (dialog==null){
             addRestMarker();
@@ -115,11 +127,12 @@ public class ParserTask extends
         } else {
             dur = endDur[1] + " mins";
         }
-        GMapsFragment.gMap.addMarker(new MarkerOptions().
+        Log.d("Parser" , dur);
+        gMap.addMarker(new MarkerOptions().
                 position(SingleTon.destPos).
                 title(dur)
                 .icon(BitmapDescriptorFactory.defaultMarker(210f))).showInfoWindow(); // Destinationsmarkeren har en anden farve en normale markers
-        GMapsFragment.gMap.animateCamera(CameraUpdateFactory.newLatLngZoom(SingleTon.destPos, 10));
-        GMapsFragment.poly = GMapsFragment.gMap.addPolyline(GMapsFragment.polyLineOptions);
+        gMap.animateCamera(CameraUpdateFactory.newLatLngZoom(SingleTon.destPos, 10));
+        poly = gMap.addPolyline(polyLineOptions);
     }
 }
