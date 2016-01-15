@@ -47,43 +47,44 @@ import gruppe3.convoy.functionality.Spot;
  */
 public class GMapsFragment extends AppCompatActivity implements OnMapReadyCallback, View.OnClickListener, ClusterManager.OnClusterItemClickListener<ClusterMaker> {
 
-    public static GoogleMap gMap;
     private Spot spot; // Det spot der er klikket på
     private ImageView goButton, zoomLocation, addLocation, homeButton;
     private AddSpot addSpot; // Det spot der tilføjes
     private ClusterManager<ClusterMaker> mClusterManager;
     private Marker destMark;
 
+    public static GoogleMap gMap;
     public static Polyline poly = null;
     public static PolylineOptions polyLineOptions = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if(savedInstanceState==null){
+            if (SingleTon.nightMode){
+                setContentView(R.layout.fragment_gmap_night);
+            } else {
+                setContentView(R.layout.fragment_gmap);
+            }
 
-        if (SingleTon.nightMode){
-            setContentView(R.layout.fragment_gmap_night);
-        } else {
-            setContentView(R.layout.fragment_gmap);
+            //Knap til at zoome ind på nuværende lokation
+            zoomLocation = (ImageView) findViewById(R.id.zoomLocation);
+            zoomLocation.setOnClickListener(this);
+
+            // Knap til at tilføje lokation
+            addLocation = (ImageView) findViewById(R.id.imageAddLoc);
+            addLocation.setOnClickListener(this);
+
+            // Knap til startsiden
+            homeButton = (ImageView) findViewById(R.id.imageHome);
+            homeButton.setOnClickListener(this);
+
+            //Knap til at starte vejvisning til et valgt POI
+            goButton = (ImageView) findViewById(R.id.goButton);
+            goButton.setVisibility(View.GONE); // Skjuler knappen indtil den kan bruges
+            goButton.setOnClickListener(this);
+
         }
-
-        //Knap til at zoome ind på nuværende lokation
-        zoomLocation = (ImageView) findViewById(R.id.zoomLocation);
-        zoomLocation.setOnClickListener(this);
-
-        // Knap til at tilføje lokation
-        addLocation = (ImageView) findViewById(R.id.imageAddLoc);
-        addLocation.setOnClickListener(this);
-
-        // Knap til startsiden
-        homeButton = (ImageView) findViewById(R.id.imageHome);
-        homeButton.setOnClickListener(this);
-
-        //Knap til at starte vejvisning til et valgt POI
-        goButton = (ImageView) findViewById(R.id.goButton);
-        goButton.setVisibility(View.GONE); // Skjuler knappen indtil den kan bruges
-        goButton.setOnClickListener(this);
-
         getMap();
     }
 
@@ -581,8 +582,13 @@ public class GMapsFragment extends AppCompatActivity implements OnMapReadyCallba
     @Override
     protected void onStop(){
         super.onStop();
-        gMap = null;
-        poly = null;
-        polyLineOptions = null;
+    }
+
+    @Override
+    protected void onDestroy(){
+        gMap=null;
+        poly=null;
+        polyLineOptions=null;
+        super.onDestroy();
     }
 }
