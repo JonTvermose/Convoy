@@ -110,14 +110,12 @@ public class SettingsFragment extends Fragment implements CompoundButton.OnCheck
             Log.d("Advanced", "NightMode er sat til: " + isChecked);
             SingleTon.nightMode = isChecked;
 
-            getActivity().getSupportFragmentManager().popBackStack();
             // Genskaber appen i den nye mode
             SingleTon.switchMode=true;
             getActivity().getSupportFragmentManager()
                     .beginTransaction()
                     .setCustomAnimations(R.animator.fade_in, R.animator.fade_out)
                     .replace(R.id.MainFragment, new MainFragment())
-                    .addToBackStack(null)
                     .commit();
 
         } else if (buttonView==powerSaving) {
@@ -145,11 +143,9 @@ public class SettingsFragment extends Fragment implements CompoundButton.OnCheck
 
     @Override
     public void onStartTrackingTouch(SeekBar seekBar) {
-
     }
 
     @Override
     public void onStopTrackingTouch(SeekBar seekBar) {
-
     }
 }

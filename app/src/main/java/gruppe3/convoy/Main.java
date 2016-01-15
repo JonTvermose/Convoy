@@ -165,7 +165,6 @@ public class Main extends FragmentActivity implements SensorEventListener {
                     .beginTransaction()
                     .setCustomAnimations(R.animator.fade_in, R.animator.fade_out)
                     .replace(R.id.MainFragment, new MainFragment())
-                    .addToBackStack(null)
                     .commit();
         }
     }
