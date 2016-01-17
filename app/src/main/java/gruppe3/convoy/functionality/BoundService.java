@@ -31,6 +31,9 @@ public class BoundService extends Service{
     private final IBinder mBinder = new LocalBinder();
     private static ArrayList<Spot> spotsParse = new ArrayList();
     private static Object obj;
+    private static String filnavn;
+    private static ArrayList<Spot> spotsLokal = new ArrayList();
+    private static int spotsLokalSize = 0;
 
     /**
      * Class used for the client Binder.  Because we know this service always
@@ -58,6 +61,7 @@ public class BoundService extends Service{
                     ObjectOutputStream objektstream = new ObjectOutputStream(datastream);
                     objektstream.writeObject(obj);
                     objektstream.close();
+                    System.out.println("Skrevet til telefonen");
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -65,37 +69,36 @@ public class BoundService extends Service{
         }).start();
     }
 
-    public void hent(String filnavn) {
-        System.out.println(1);
+    public void hent(String filename) {
+        filnavn=filename;
         final String fileName = this.getFilesDir() + "/"+filnavn+".ser";
         System.out.println(fileName);
         new Thread(new Runnable() {
             public void run() {
-                System.out.println(3);
                 try {
-                    System.out.println(4);
-                    FileInputStream datastream = null;
-                    System.out.println(4.5);
                     try{
-                        datastream = new FileInputStream(fileName);
+                        FileInputStream datastream = new FileInputStream(fileName);
                         ObjectInputStream objektstream = new ObjectInputStream(datastream);
-                        SingleTon.spotsLokal = (ArrayList<Spot>) objektstream.readObject();
+                        spotsLokal = (ArrayList<Spot>) objektstream.readObject();
                         objektstream.close();
                     } catch (FileNotFoundException e){
                         System.out.println("File not found");
-                        SingleTon.spotsLokal = null;
+                        spotsLokal = null;
                     }
                     SingleTon.hentetLokal=true;
-                    if(SingleTon.spotsLokal==null){
+                    if(spotsLokal==null){
                         System.out.println("spotsLokal = null");
                         hentFraDb(0);
                     } else {
-                            System.out.println("else");
-                            hentFraDb(SingleTon.spotsLokal.size());
-
+                        System.out.println("else");
+                        spotsLokalSize=spotsLokal.size();
+                        System.out.println("antal spots før: " + spotsLokalSize);
+                        spotsParse=spotsLokal;
+                        hentFraDb(spotsLokal.size());
+//                            System.arraycopy(spotsLokal,0,spotsParse,0,spotsLokal.size());
                     }
                 } catch (IOException | ClassNotFoundException e) {
-                    SingleTon.spotsLokal=null;
+                    spotsLokal=null;
                 }
             }
         }).start();
@@ -108,8 +111,7 @@ public class BoundService extends Service{
         query.setLimit(1000);
 
         if(size!=0){
-            System.out.println(size);
-            System.out.println("skip sat til: "+spotsParse.size());
+            System.out.println("skip sat til: "+size);
             query.setSkip(size);
         }
         query.findInBackground(new FindCallback<ParseObject>() {
@@ -135,15 +137,18 @@ public class BoundService extends Service{
                     }
                     Log.d("Data", "Done with spots!");
                     System.out.println("Size of Spots = " + spotsParse.size());
-                    System.out.println("spotsParse" + spotsParse.get(spotsParse.size() - 1).getCreatedAt());
 
                     if(spotsSize==1000){
                         System.out.println("antal spots hentet fra DB: "+spotsParse.size());
                         hentFraDb(spotsParse.size());
                     } else {
-
+                        if(spotsParse.size()!=spotsLokalSize){
+                            System.out.println("gemt på telefonen");
+                            gem(spotsParse, filnavn);
+                        }
 //                    SingleTon.spotsDb = spotsParse;
                         SingleTon.searchedSpots = spotsParse;
+                        System.out.println("antal spots efter: " + SingleTon.searchedSpots.size());
                         SingleTon.hentetDb=true;
                         SingleTon.dataLoadDone = true;
                     }

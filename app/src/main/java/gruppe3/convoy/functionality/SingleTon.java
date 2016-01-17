@@ -39,7 +39,6 @@ public class SingleTon extends Application {
     public static BoundService mService;
     public static ServiceConnection mConnection;
     public static boolean mBound = false;
-    public static ArrayList<Spot> spotsLokal;
     static ArrayList<Spot> spotsDb;
     public static double speedSetting;
     private File spotsFile;
