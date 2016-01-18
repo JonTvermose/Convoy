@@ -120,7 +120,14 @@ public class MainFragment extends Fragment {
                                 }
                                 if(SingleTon.spots == null || SingleTon.spots.size()==0){
                                     // Hvis spots er null eller tom giver det ingen mening at søge efter noget.
-                                    Toast.makeText(getActivity(), "No Truck stops found. Search option disabled.", Toast.LENGTH_LONG).show();
+                                    Toast.makeText(getActivity(), "No Truck stops found. Search option disabled. App closing.", Toast.LENGTH_LONG).show();
+                                    // Luk appen når toasten er færdig med at blive vist.
+                                    new Handler().postDelayed(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            getActivity().finish();
+                                        }
+                                    }, Toast.LENGTH_LONG);
                                 } else {
                                     getFragmentManager()
                                             .beginTransaction()
