@@ -14,34 +14,39 @@
         android:alpha="0.8"
         >
 
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:hint="Input location name"
+            android:layout_marginTop="16dp"
+            android:layout_marginLeft="16dp"
+            android:maxWidth="200dp"
+            android:textColor="@color/white"
+            android:textColorHint="@color/white"
+            android:id="@+id/inputLocName" />
+
         <TextView
-            android:layout_width="310dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:text="Testtekst, ballerup, danmark"
             android:id="@+id/loc_addressTxt"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentLeft="true"
             android:fontFamily="sans-serif-medium"
             android:textSize="20dp"
             android:textColor="@color/white"
-            android:layout_marginLeft="20dp"
-            android:layout_marginTop="20dp"
-            android:layout_marginBottom="20dp"
-            android:layout_toLeftOf="@+id/close_addLocation"
-            android:layout_toStartOf="@+id/close_addLocation"/>
+            android:layout_below="@+id/inputLocName"
+            android:layout_alignLeft="@+id/loc_facilities"
+            android:layout_alignStart="@+id/loc_facilities"
+            android:layout_marginTop="16dp"/>
 
         <ImageView
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:id="@+id/close_addLocation"
             android:src="@drawable/ic_close_white_48dp"
-            android:layout_alignTop="@+id/loc_addressTxt"
+            android:layout_alignTop="@+id/inputLocName"
             android:layout_alignRight="@+id/linearLayout1"
-            android:layout_alignEnd="@+id/linearLayout1"
-            android:layout_marginLeft="16dp"
-            />
+            android:layout_alignEnd="@+id/linearLayout1" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -52,11 +57,11 @@
             android:id="@+id/loc_facilities"
             android:fontFamily="sans-serif-medium"
             android:textSize="20dp"
-            android:layout_below="@+id/loc_addressTxt"
-            android:layout_marginTop="16dp"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
+            android:layout_marginTop="30dp"
             android:layout_marginBottom="8dp"
+            android:layout_below="@+id/loc_addressTxt"
+            android:layout_alignLeft="@+id/linearLayout1"
+            android:layout_alignStart="@+id/linearLayout1"
              />
 
         <LinearLayout
