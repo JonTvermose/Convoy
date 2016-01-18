@@ -117,12 +117,7 @@ public class ParserTask extends
         if (dialog==null){
             addRestMarker();
         }
-        // Fjern rute fra kort hvis der eksisterer et i forvejen
-        if (gMapsFragment.getPoly() != null) {
-            gMapsFragment.getPoly().remove();
-        }
-        poly = gMap.addPolyline(polyLineOptions); // Tegn ruten på kortet
-        gMapsFragment.setPoly(poly);
+        gMapsFragment.setPolyLineOptions(polyLineOptions);
     }
 
     // Tilføjer en hviletidsmarker samt tegner rute på kortet

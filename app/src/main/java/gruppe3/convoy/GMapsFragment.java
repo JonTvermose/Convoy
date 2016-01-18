@@ -499,7 +499,6 @@ public class GMapsFragment extends AppCompatActivity implements OnMapReadyCallba
                     // Når animation er færdig
                     marker.remove();
                     mClusterManager.cluster();
-//                    gMap.animateCamera(CameraUpdateFactory.newLatLng(marker.getPosition()));
                     Vibrator vibe = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
                     vibe.vibrate(200); // Vibrate for x milliseconds
                     Toast.makeText(GMapsFragment.this, "Location added", Toast.LENGTH_SHORT).show();
@@ -528,6 +527,11 @@ public class GMapsFragment extends AppCompatActivity implements OnMapReadyCallba
             dialog.setContentView(R.layout.dialog_spot_night);
         } else {
             dialog.setContentView(R.layout.dialog_spot); // XML-layout til Dialog-boksen
+        }
+
+        // Fjern rute fra kort hvis der eksisterer et i forvejen
+        if (poly != null) {
+            poly.remove();
         }
 
         try {
@@ -606,13 +610,9 @@ public class GMapsFragment extends AppCompatActivity implements OnMapReadyCallba
                 @Override
                 public void onClick(View v) {
                     Toast.makeText(GMapsFragment.this, "Drawing route.", Toast.LENGTH_SHORT).show();
-//                    if (polyLineOptions == null) { // Kan fjernes så længe knappen er deaktiveret indtil ruten er modtaget og parset
-//                        Toast.makeText(GMapsFragment.this, "Route not ready!", Toast.LENGTH_LONG).show();
-//                    } else {
-//                        poly = GMapsFragment.this.gMap.addPolyline(polyLineOptions);
-                        dialog.hide();
+                    poly = gMap.addPolyline(polyLineOptions); // Tegn ruten på kortet
+                    dialog.hide();
                         goButton.setVisibility(View.VISIBLE); // Viser GO-knappen
-//                    }
                 }
             });
 
@@ -656,11 +656,7 @@ public class GMapsFragment extends AppCompatActivity implements OnMapReadyCallba
         super.onDestroy();
     }
 
-    public Polyline getPoly(){
-        return poly;
-    }
-
-    public void setPoly(Polyline poly){
-        this.poly = poly;
+    public void setPolyLineOptions(PolylineOptions poly){
+        this.polyLineOptions = poly;
     }
 }
