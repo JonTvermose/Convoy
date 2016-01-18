@@ -4,7 +4,7 @@
   <item android:state_pressed="true">
     <shape android:shape="rectangle">
       <corners android:radius="4dp"/>
-      <solid android:color="@color/pressed_color_night"/>
+      <solid android:color="@color/accent_color_night"/>
     </shape>
   </item>
 
