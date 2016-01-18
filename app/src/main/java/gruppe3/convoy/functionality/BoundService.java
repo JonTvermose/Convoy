@@ -21,6 +21,7 @@ import java.io.ObjectOutputStream;
 import java.util.Date;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -30,12 +31,15 @@ import java.util.Set;
 public class BoundService extends Service{
     // Binder given to clients
     private final IBinder mBinder = new LocalBinder();
-    private static ArrayList<Spot> spotsParse = new ArrayList();
     private static Object obj;
     private static String filnavn;
-    private static ArrayList<Spot> spotsLokal = new ArrayList();
-//    private static Set<Spot> spotsLo;
     private static int spotsLokalSize = 0;
+//    private static ArrayList<Spot> spotsLokal = new ArrayList();
+//    private static ArrayList<Spot> spotsParse = new ArrayList();
+    private static Set<Spot> spotsLokal = new HashSet<>();
+    private static Set<Spot> spotsParse = new HashSet<>();
+
+
 
     /**
      * Class used for the client Binder.  Because we know this service always
@@ -80,7 +84,7 @@ public class BoundService extends Service{
                     try{
                         FileInputStream datastream = new FileInputStream(fileName);
                         ObjectInputStream objektstream = new ObjectInputStream(datastream);
-                        spotsLokal = (ArrayList<Spot>) objektstream.readObject();
+                        spotsLokal = (Set<Spot>) objektstream.readObject();
                         objektstream.close();
                     } catch (IOException | ClassNotFoundException e){
                         System.out.println("File not found");
@@ -150,7 +154,8 @@ public class BoundService extends Service{
                             gem(spotsParse, filnavn);
                         }
 //                    SingleTon.spotsDb = spotsParse;
-                        SingleTon.spots = spotsParse;
+                        SingleTon.spots = new ArrayList();
+                        SingleTon.spots.addAll(spotsParse);
                         System.out.println("antal spots efter: " + SingleTon.spots.size());
                         SingleTon.hentetDb=true;
                         SingleTon.dataLoadDone = true;
