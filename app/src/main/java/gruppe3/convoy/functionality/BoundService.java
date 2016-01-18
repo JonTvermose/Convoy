@@ -22,6 +22,7 @@ import java.util.Date;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by Christian on 14-01-2016.
@@ -33,6 +34,7 @@ public class BoundService extends Service{
     private static Object obj;
     private static String filnavn;
     private static ArrayList<Spot> spotsLokal = new ArrayList();
+//    private static Set<Spot> spotsLo;
     private static int spotsLokalSize = 0;
 
     /**
@@ -75,31 +77,31 @@ public class BoundService extends Service{
         System.out.println(fileName);
         new Thread(new Runnable() {
             public void run() {
-                try {
                     try{
                         FileInputStream datastream = new FileInputStream(fileName);
                         ObjectInputStream objektstream = new ObjectInputStream(datastream);
                         spotsLokal = (ArrayList<Spot>) objektstream.readObject();
                         objektstream.close();
-                    } catch (FileNotFoundException e){
+                    } catch (IOException | ClassNotFoundException e){
                         System.out.println("File not found");
                         spotsLokal = null;
                     }
                     SingleTon.hentetLokal=true;
-                    if(spotsLokal==null){
-                        System.out.println("spotsLokal = null");
-                        hentFraDb(0);
+                    if(SingleTon.isConnected){
+                        if(spotsLokal==null){
+                            System.out.println("Internet, men ingen lokal data");
+                            hentFraDb(0);
+                        } else {
+                            System.out.println("Internet og lokal data");
+                            spotsLokalSize=spotsLokal.size();
+                            System.out.println("antal spots før: " + spotsLokalSize);
+                            spotsParse=spotsLokal;
+                            hentFraDb(spotsLokal.size());
+                        }
                     } else {
-                        System.out.println("else");
-                        spotsLokalSize=spotsLokal.size();
-                        System.out.println("antal spots før: " + spotsLokalSize);
-                        spotsParse=spotsLokal;
-                        hentFraDb(spotsLokal.size());
-//                            System.arraycopy(spotsLokal,0,spotsParse,0,spotsLokal.size());
+                        System.out.println("Hverken internet eller lokal data");
+                        SingleTon.spots=null;
                     }
-                } catch (IOException | ClassNotFoundException e) {
-                    spotsLokal=null;
-                }
             }
         }).start();
     }
@@ -147,7 +149,7 @@ public class BoundService extends Service{
                             gem(spotsParse, filnavn);
                         }
 //                    SingleTon.spotsDb = spotsParse;
-                        SingleTon.searchedSpots = spotsParse;
+                        SingleTon.spots = spotsParse;
                         System.out.println("antal spots efter: " + SingleTon.searchedSpots.size());
                         SingleTon.hentetDb=true;
                         SingleTon.dataLoadDone = true;
