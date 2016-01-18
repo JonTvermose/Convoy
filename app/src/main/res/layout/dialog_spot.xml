@@ -35,7 +35,7 @@
             android:id="@+id/title_TextView"
             android:fontFamily="sans-serif-medium"
             android:textSize="20dp"
-            android:layout_marginTop="29dp"
+            android:layout_marginTop="30dp"
             android:layout_below="@+id/inputLocName"
             android:layout_alignLeft="@+id/linearLayout1"
             android:layout_alignStart="@+id/linearLayout1" />
@@ -172,10 +172,10 @@
                 android:layout_height="wrap_content"
                 android:text=""
                 android:id="@+id/loc_switch"
-                android:background="@drawable/knap_blaa_bg3"
+                android:background="@drawable/knap_blaa_bg"
                 android:layout_marginRight="20dp"
                 android:layout_marginTop="8dp"
-                android:enabled="false"/>
+                android:enabled="true"/>
 
         </LinearLayout>
 
@@ -209,7 +209,7 @@
             android:id="@+id/findRoute_button"
             android:layout_below="@+id/linearLayout3"
             android:layout_centerHorizontal="true"
-            android:layout_margin="80dp"
+            android:layout_marginTop="80dp"
             android:padding="16dp"
             android:height="24dp"
             android:elevation="2dp"
