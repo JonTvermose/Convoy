@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ripple xmlns:android="http://schemas.android.com/apk/res/android"
+        android:color="@color/accent_color_night_color_night">
+  <item>
+    <selector>
+        <item android:state_pressed="true">
+            <shape android:shape="rectangle">
+                <corners android:radius="4dp"/>
+            </shape>
+        </item>
+
+        <item android:state_enabled="false">
+        <shape android:shape="rectangle">
+          <corners android:radius="4dp"/>
+          <solid android:color="@color/pressed_color_night"/>
+        </shape>
+         </item>
+
+      <item android:state_selected="true">
+        <shape android:shape="rectangle">
+          <corners android:radius="4dp"/>
+          <solid android:color="#8090A4AE"/>
+        </shape>
+      </item>
+
+      <!-- Den mest generelle skal være nederst -->
+      <item>
+        <shape android:shape="rectangle">
+          <corners android:radius="4dp"/>
+          <solid android:color="@color/accent_color_night"/>
+        </shape>
+      </item>
+    </selector>
+  </item>
+</ripple>

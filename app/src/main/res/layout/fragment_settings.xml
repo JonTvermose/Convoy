@@ -119,6 +119,7 @@
             android:id="@+id/linje4"
             android:elevation="@dimen/elevation_cards"
             android:padding="8dp">
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -127,6 +128,7 @@
                 android:textSize="20dp"
                 android:fontFamily="sans-serif-medium"
                 android:id="@+id/textView5" />
+
             <Switch
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -136,6 +138,7 @@
                 android:layout_marginRight="20dp"
                 android:enabled="true"
                 />
+
         </LinearLayout>
 
         <LinearLayout
@@ -151,36 +154,53 @@
             android:id="@+id/linje5"
             android:elevation="@dimen/elevation_cards"
             android:padding="8dp">
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:text="Your average speed"
+                android:text="Your Average Speed"
                 android:textSize="20dp"
                 android:fontFamily="sans-serif-medium"
                 android:id="@+id/textView6" />
 
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:weightSum="3">
 
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/trailer" />
+                <ImageView
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:src="@drawable/truck_trailer_noback_small"
+                    android:id="@+id/trailer"
+                    android:layout_weight="1"
+                    android:layout_marginRight="56dp"/>
 
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/lastbil" />
+                <ImageView
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:src="@drawable/truck_noback_small1"
+                    android:id="@+id/lastbil"
+                    android:layout_weight="1"
+                    android:layout_marginRight="56dp"/>
 
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/bil" />
+                <ImageView
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:src="@drawable/car_noback1"
+                    android:id="@+id/bil"
+                    android:layout_weight="1"/>
+
+            </LinearLayout>
 
             <SeekBar
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/speedBar_seekbar"
-                android:layout_gravity="center_horizontal" />
+                android:layout_gravity="center_horizontal"/>
+
 
         </LinearLayout>
 

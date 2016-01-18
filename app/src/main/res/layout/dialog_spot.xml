@@ -174,10 +174,10 @@
                 android:layout_height="wrap_content"
                 android:text=""
                 android:id="@+id/loc_switch"
-                android:background="@drawable/knap_blaa_bg"
+                android:background="@drawable/knap_blaa_bg4"
                 android:layout_marginRight="20dp"
                 android:layout_marginTop="8dp"
-                android:enabled="true"/>
+                android:enabled="false"/>
 
         </LinearLayout>
 
@@ -207,7 +207,7 @@
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="FIND ROUTE"
+            android:text="OK"
             android:id="@+id/findRoute_button"
             android:layout_below="@+id/linearLayout4"
             android:layout_centerHorizontal="true"
