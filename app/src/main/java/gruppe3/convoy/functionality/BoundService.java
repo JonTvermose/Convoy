@@ -150,7 +150,7 @@ public class BoundService extends Service{
                         }
 //                    SingleTon.spotsDb = spotsParse;
                         SingleTon.spots = spotsParse;
-                        System.out.println("antal spots efter: " + SingleTon.searchedSpots.size());
+                        System.out.println("antal spots efter: " + SingleTon.spots.size());
                         SingleTon.hentetDb=true;
                         SingleTon.dataLoadDone = true;
                     }
