@@ -1,9 +1,11 @@
 package gruppe3.convoy;
 
 
+import android.content.Context;
 import android.content.Intent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.TabLayout;
@@ -14,6 +16,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import gruppe3.convoy.functionality.MyLocation;
 import gruppe3.convoy.functionality.SingleTon;
@@ -75,6 +78,14 @@ public class MainFragment extends Fragment {
                         .add(R.id.mainBottomFragment, new SearchButtonFragment())
                         .commit();
             } else {
+                // Appen er lige startet
+                // Tjek for internetforbindelse
+                ConnectivityManager cm = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+                if (cm.getActiveNetworkInfo() == null) {
+                    Log.d("Error", "Ingen internetforbindelse på opstart.");
+                    SingleTon.isConnected = false;
+                    Toast.makeText(getActivity(), "You have no internet connection!", Toast.LENGTH_SHORT).show();
+                }
                 // Hvis appen lige er blevet startet begyndes opstartsproces med en progressbar
                 getFragmentManager()
                         .beginTransaction()
@@ -103,15 +114,20 @@ public class MainFragment extends Fragment {
                             if (SingleTon.dataLoadDone) {
                                 //Opstartsproces er færdig - start sensorlytter og skift progressbar ud med Search-knap
                                 SingleTon.session = true;
+                                ProgressFragment.progressBar.setProgress(100);
                                 if (!SingleTon.powerSaving) {
                                     SingleTon.sensorManager.registerListener((SensorEventListener) getActivity(), SingleTon.accelerometer, SensorManager.SENSOR_DELAY_NORMAL);
                                 }
-                                ProgressFragment.progressBar.setProgress(100);
-                                getFragmentManager()
-                                        .beginTransaction()
-                                        .setCustomAnimations(R.animator.fade_in, R.animator.fade_out)
-                                        .replace(R.id.mainBottomFragment, new SearchButtonFragment())
-                                        .commit();
+                                if(SingleTon.spots == null || SingleTon.spots.size()==0){
+                                    // Hvis spots er null eller tom giver det ingen mening at søge efter noget.
+                                    Toast.makeText(getActivity(), "No Truck stops found. Search option disabled.", Toast.LENGTH_LONG).show();
+                                } else {
+                                    getFragmentManager()
+                                            .beginTransaction()
+                                            .setCustomAnimations(R.animator.fade_in, R.animator.fade_out)
+                                            .replace(R.id.mainBottomFragment, new SearchButtonFragment())
+                                            .commit();
+                                }
                             } else {
                                 h.postDelayed(this, 100);
                             }

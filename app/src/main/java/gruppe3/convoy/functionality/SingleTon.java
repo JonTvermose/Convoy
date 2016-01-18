@@ -48,6 +48,7 @@ public class SingleTon extends Application {
     private static ArrayList<Spot> output = null;
     public static boolean hentetLokal=false;
     public static boolean hentetDb=false;
+    public static boolean isConnected = true;
 
     public static SingleTon getInstance() {
         return ourInstance;
