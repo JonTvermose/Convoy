@@ -37,7 +37,7 @@ public class AddSpot {
                     return geo.getFromLocation(loc.getLatitude(), loc.getLongitude(), 1);
                 }
                 catch (IOException e) {
-                    addressTxt = "Error.";
+                    addressTxt = "Error finding address.";
                     Log.d("Kort" , "IO Exception");
                     e.printStackTrace(); // getFromLocation() may sometimes fail
                 }
@@ -48,6 +48,7 @@ public class AddSpot {
             protected void onPostExecute(List<Address> addresses){
                 if (addresses==null){
                     // TO DO - fejlhåndtering hvis der ikke modtages adresse fra GEOcoder server
+                    addressTxt = "";
                     return;
                 }
                 if (addresses.isEmpty()) {

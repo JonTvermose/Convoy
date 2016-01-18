@@ -8,6 +8,7 @@ import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
+import android.net.ConnectivityManager;
 import android.os.Handler;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
@@ -18,6 +19,8 @@ import com.parse.Parse;
 
 import java.io.File;
 import java.util.ArrayList;
+
+import gruppe3.convoy.Main;
 
 /**
  * Created by Jon on 06/01/2016.
@@ -92,58 +95,10 @@ public class SingleTon extends Application {
         }
     }
 
-    public static void fetchData(){
-        dataLoading=true;
-
+    public static void fetchData() {
+        dataLoading = true;
         hentSpotsLocal("lokaleSpots");
-
-//        if(spots==null){
-//            Log.d("Data", "Spots er null");
-//            hentSpotsDb(null);
-//            System.out.println("spots array"+spots);
-//        }
-//        final Handler h = new Handler();
-//        h.postDelayed(new Runnable() {
-//            @Override
-//            public void run() {
-//                if (spots!=null) {
-//                    System.out.println("singleTon fetchData OK");
-//                    SingleTon.dataLoadDone = true;
-//                } else {
-//                    System.out.println("singleTon fetchData null");
-//                    h.postDelayed(this, 200);
-//                }
-//            }
-//        }, 200);
     }
-
-//    public void saveSpots(ArrayList<Spot> spots, String filename) {
-//       try {
-//          Serialisering.gem(spots, filename);
-//
-//       } catch(Exception e) {
-//            e.printStackTrace();
-//        }
-//    }
-//
-//    public void loadSpots(String filename) {
-//        spotsFile = new File(getFilesDir(), "Spots");
-//        if (spotsFile.exists()) {
-//            try {
-//                ArrayList<Spot> spots = (ArrayList<Spot>) Serialisering.hent(filename);
-//                System.out.println(spots.get(spots.size()-1).getCreatedAt());
-//
-//                ParseQuery<ParseObject> query2 = ParseQuery.getQuery("Spots1");
-//
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//            }
-//        }
-//
-//
-//    }
-
-
 
     public void startBinding(){
         /** Defines callbacks for service binding, passed to bindService() */

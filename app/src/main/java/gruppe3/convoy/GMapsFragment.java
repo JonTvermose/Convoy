@@ -4,8 +4,10 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
+import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.SystemClock;
 import android.os.Vibrator;
 import android.support.v7.app.AppCompatActivity;
@@ -57,6 +59,7 @@ public class GMapsFragment extends AppCompatActivity implements OnMapReadyCallba
     private GoogleMap gMap;
     private Polyline poly = null;
     private PolylineOptions polyLineOptions = null;
+    private ConnectivityManager cm;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,6 +70,8 @@ public class GMapsFragment extends AppCompatActivity implements OnMapReadyCallba
             } else {
                 setContentView(R.layout.fragment_gmap);
             }
+
+            cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
 
             //Knap til at zoome ind på nuværende lokation
             zoomLocation = (ImageView) findViewById(R.id.zoomLocation);
@@ -175,8 +180,15 @@ public class GMapsFragment extends AppCompatActivity implements OnMapReadyCallba
                 Location loc = new Location("");
                 loc.setLatitude(latLng.latitude);
                 loc.setLongitude(latLng.longitude);
-                addSpot = new AddSpot(loc, GMapsFragment.this);
-                GMapsFragment.this.onClick(addLocation); // Genbruger onClick-metoden
+
+                // Tjek for internetforbindelse
+                if (cm.getActiveNetworkInfo() == null){
+                    Log.d("Error", "Ingen internetforbindelse på langt tryk.");
+                    Toast.makeText(GMapsFragment.this, "You have no internet connection!", Toast.LENGTH_SHORT).show();
+                } else {
+                    addSpot = new AddSpot(loc, GMapsFragment.this);
+                    GMapsFragment.this.onClick(addLocation); // Genbruger onClick-metoden
+                }
             }
         });
 
@@ -256,6 +268,12 @@ public class GMapsFragment extends AppCompatActivity implements OnMapReadyCallba
             Log.d("Kort", "Der klikkes på tilføj sted-knap");
             // Hvis der er klikket på knappen er addSpot = null og dermed skal nuværende lokation bruges
             if (addSpot == null) {
+                // Tjek for internetforbindelse
+                if (cm.getActiveNetworkInfo() == null){
+                    Log.d("Error", "Ingen internetforbindelse på AddSpot knap.");
+                    Toast.makeText(this, "You have no internet connection!", Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 addSpot = new AddSpot(SingleTon.myLocation.getLocation(), this);
             }
 
@@ -380,8 +398,22 @@ public class GMapsFragment extends AppCompatActivity implements OnMapReadyCallba
 
             addDialog.show();
 
-            TextView address = (TextView) addDialog.findViewById(R.id.loc_addressTxt);
-            address.setText(addSpot.getAddressTxt()); // Opdaterer adressefeltet med adressen
+            // Opdater adressefeltet - adressen findes asynkront i AddSpot klassen
+            final TextView address = (TextView) addDialog.findViewById(R.id.loc_addressTxt);
+            final Handler h = new Handler();
+            h.postDelayed(new Runnable() {
+                int p = 0;
+                @Override
+                public void run() {
+                    if (addSpot.getAddressTxt() != null) {
+                        address.setText(addSpot.getAddressTxt()); // Opdaterer adressefeltet med adressen
+                    } else if (p<50) {
+                        // Prøv igen om 100 ms - vi venter højest 5 sekunder på svar.
+                        h.postDelayed(this, 100);
+                    }
+                    p++;
+                }
+            }, 50);
 
             Button createLocation = (Button) addDialog.findViewById(R.id.createLocButton);
             createLocation.setOnClickListener(new View.OnClickListener() {
@@ -394,7 +426,7 @@ public class GMapsFragment extends AppCompatActivity implements OnMapReadyCallba
                             position(latLng).
                             title(addSpot.getAddressTxt()));
 
-                    if(SingleTon.searchedSpots==null){
+                    if (SingleTon.searchedSpots == null) {
                         SingleTon.searchedSpots = new ArrayList<Spot>();
                     }
                     mark.setSnippet(Integer.toString(SingleTon.searchedSpots.size())); // Set snippet så vi kan fremsøge spot når der klikkes på det
@@ -404,7 +436,7 @@ public class GMapsFragment extends AppCompatActivity implements OnMapReadyCallba
                     dropPinEffect(mark); // Start animationen
 
                     // Tilføjer spot til den hentede liste af spots, så det har samme funktionalitet som alle andre spots
-                    Spot newSpot = new Spot(addSpot.getAddressTxt(), addSpot.adblue, addSpot.food, addSpot.bath, addSpot.bed, addSpot.wc, addSpot.fuel, addSpot.roadTrain, String.valueOf(latLng.latitude),String.valueOf(latLng.longitude));
+                    Spot newSpot = new Spot(addSpot.getAddressTxt(), addSpot.adblue, addSpot.food, addSpot.bath, addSpot.bed, addSpot.wc, addSpot.fuel, addSpot.roadTrain, String.valueOf(latLng.latitude), String.valueOf(latLng.longitude));
                     SingleTon.searchedSpots.add(newSpot);
 //                    SingleTon.spots.add(newSpot);
                     addSpot = null; // Sikrer vi nulstiller data hvis der tilføjes flere spots i samme session.
@@ -421,7 +453,7 @@ public class GMapsFragment extends AppCompatActivity implements OnMapReadyCallba
                     parseSpot.put("desc", newSpot.getDesc());
                     parseSpot.put("posLat", newSpot.getLat());
                     parseSpot.put("posLng", newSpot.getLng());
-                    parseSpot.saveInBackground();
+                    parseSpot.saveEventually();
                 }
             });
         }
@@ -472,6 +504,18 @@ public class GMapsFragment extends AppCompatActivity implements OnMapReadyCallba
         Log.d("Kort", "Der klikkes på en ClusterMarker: " + marker.getPosition().latitude + ", " + marker.getPosition().longitude);
         goButton.setVisibility(View.GONE); // Siker at GO-knappen forsvinder hvis man har trykket på et andet spot før dette
 
+        // Tjek for internetforbindelse
+        if (cm.getActiveNetworkInfo() == null){
+            Log.d("Error", "Ingen internetforbindelse.");
+            Toast.makeText(this, "You have no internet connection!", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
+        // Fjern rute fra kort hvis der eksisterer et i forvejen
+        if (poly != null) {
+            poly.remove();
+        }
+
         if(dialog==null){
             dialog = new Dialog(this);
             dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -480,12 +524,6 @@ public class GMapsFragment extends AppCompatActivity implements OnMapReadyCallba
             dialog.setContentView(R.layout.dialog_spot_night);
         } else {
             dialog.setContentView(R.layout.dialog_spot); // XML-layout til Dialog-boksen
-        }
-
-
-        // Fjern rute fra kort hvis der eksisterer et i forvejen
-        if (poly != null) {
-            poly.remove();
         }
 
         try {
@@ -587,14 +625,20 @@ public class GMapsFragment extends AppCompatActivity implements OnMapReadyCallba
 
     @Override
     protected void onStop(){
+        gMap.setMyLocationEnabled(false);
         super.onStop();
     }
 
     @Override
+    protected void onResume(){
+        if(gMap!=null){
+            gMap.setMyLocationEnabled(true);
+        }
+        super.onResume();
+    }
+
+    @Override
     protected void onDestroy(){
-//        gMap=null;
-//        poly=null;
-//        polyLineOptions=null;
         super.onDestroy();
     }
 }
