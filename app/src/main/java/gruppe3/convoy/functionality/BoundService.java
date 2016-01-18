@@ -101,6 +101,7 @@ public class BoundService extends Service{
                     } else {
                         System.out.println("Hverken internet eller lokal data");
                         SingleTon.spots=null;
+                        SingleTon.dataLoadDone=true;
                     }
             }
         }).start();

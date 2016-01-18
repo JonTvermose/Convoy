@@ -2,6 +2,7 @@ package gruppe3.convoy;
 
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
@@ -12,6 +13,7 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -58,7 +60,7 @@ public class MainFragment extends Fragment {
         TabLayout tabLayout = (TabLayout) rod.findViewById(R.id.sliding_tabs);
         tabLayout.setupWithViewPager(mPager);
 
-        if(SingleTon.switchMode){
+        if(SingleTon.switchMode && SingleTon.session){
             // Hvis vi bare skal lave et farveskift
             SingleTon.switchMode=false;
             getFragmentManager()
@@ -84,7 +86,6 @@ public class MainFragment extends Fragment {
                 if (cm.getActiveNetworkInfo() == null) {
                     Log.d("Error", "Ingen internetforbindelse på opstart.");
                     SingleTon.isConnected = false;
-                    Toast.makeText(getActivity(), "You have no internet connection!", Toast.LENGTH_SHORT).show();
                 }
                 // Hvis appen lige er blevet startet begyndes opstartsproces med en progressbar
                 getFragmentManager()
@@ -106,7 +107,11 @@ public class MainFragment extends Fragment {
                         if (MyLocation.POSUPDATED) {
                             // Hvis positionen er opdateret: opdater progressbar og start datahentning
                             if (d < 90) {
-                                ProgressFragment.progressBarTxt.setText(SingleTon.searchTxt2);
+                                if(SingleTon.isConnected){
+                                    ProgressFragment.progressBarTxt.setText(SingleTon.searchTxt2);
+                                } else {
+                                    ProgressFragment.progressBarTxt.setText(SingleTon.searchTxt2b);
+                                }
                                 ProgressFragment.progressBar.setProgress(d);
                                 d++;
                                 d++;
@@ -120,14 +125,35 @@ public class MainFragment extends Fragment {
                                 }
                                 if(SingleTon.spots == null || SingleTon.spots.size()==0){
                                     // Hvis spots er null eller tom giver det ingen mening at søge efter noget.
-                                    Toast.makeText(getActivity(), "No Truck stops found. Search option disabled. App closing.", Toast.LENGTH_LONG).show();
-                                    // Luk appen når toasten er færdig med at blive vist.
-                                    new Handler().postDelayed(new Runnable() {
+                                    ProgressFragment.progressBarTxt.setText("Error retrieving data. Please restart the app.");
+                                    ProgressFragment.progressBarTxt.setOnClickListener(new View.OnClickListener() {
                                         @Override
-                                        public void run() {
-                                            getActivity().finish();
+                                        public void onClick(View v) {
+                                            new AlertDialog.Builder(getActivity())
+                                                    .setTitle("Error")
+                                                    .setMessage("Could not connect to database.\nNo truck stops was found on your phone.\n\nPlease check your internet connection and try again.")
+                                                    .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                                                        @Override
+                                                        public void onClick(DialogInterface dialog, int which) {
+//                                                    getActivity().finish();
+                                                            android.os.Process.killProcess(android.os.Process.myPid()); // "Dræb appen.
+                                                        }
+                                                    })
+                                                    .show();
                                         }
-                                    }, Toast.LENGTH_LONG);
+                                    });
+                                    SingleTon.session = false;
+                                    new AlertDialog.Builder(getActivity())
+                                            .setTitle("Error")
+                                            .setMessage("Could not connect to database.\nNo truck stops was found on your phone.\n\nPlease check your internet connection and try again.")
+                                            .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                                                @Override
+                                                public void onClick(DialogInterface dialog, int which) {
+//                                                    getActivity().finish();
+                                                    android.os.Process.killProcess(android.os.Process.myPid()); // "Dræb appen.
+                                                }
+                                            })
+                                            .show();
                                 } else {
                                     getFragmentManager()
                                             .beginTransaction()
