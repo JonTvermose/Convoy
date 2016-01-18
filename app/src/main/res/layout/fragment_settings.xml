@@ -160,6 +160,22 @@
                 android:fontFamily="sans-serif-medium"
                 android:id="@+id/textView6" />
 
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/trailer" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/lastbil" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/bil" />
+
             <SeekBar
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
