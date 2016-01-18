@@ -114,10 +114,11 @@ public class ParserTask extends
             polyLineOptions.width(6); // Tykkelse på stregerne
             polyLineOptions.color(Color.BLUE); // Farve på stregerne
             }
+        gMapsFragment.setPolyLineOptions(polyLineOptions);
         if (dialog==null){
             addRestMarker();
+            gMapsFragment.drawLines();
         }
-        gMapsFragment.setPolyLineOptions(polyLineOptions);
     }
 
     // Tilføjer en hviletidsmarker samt tegner rute på kortet

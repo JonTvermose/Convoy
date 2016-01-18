@@ -54,7 +54,7 @@ public class GMapsFragment extends AppCompatActivity implements OnMapReadyCallba
 
     private Spot spot; // Det spot der er klikket på
     private ImageView goButton, zoomLocation, addLocation, homeButton;
-    private AddSpot addSpot; // Det spot der tilføjes
+//    private AddSpot addSpot; // Det spot der tilføjes
     private ClusterManager<ClusterMaker> mClusterManager;
     private Marker destMark;
     private Dialog addDialog;
@@ -183,15 +183,7 @@ public class GMapsFragment extends AppCompatActivity implements OnMapReadyCallba
                 Location loc = new Location("");
                 loc.setLatitude(latLng.latitude);
                 loc.setLongitude(latLng.longitude);
-
-                // Tjek for internetforbindelse
-                if (cm.getActiveNetworkInfo() == null) {
-                    Log.d("Error", "Ingen internetforbindelse på langt tryk.");
-                    Toast.makeText(GMapsFragment.this, "You have no internet connection!", Toast.LENGTH_SHORT).show();
-                } else {
-                    addSpot = new AddSpot(loc, GMapsFragment.this);
-                    GMapsFragment.this.onClick(addLocation); // Genbruger onClick-metoden
-                }
+                addLocation(new AddSpot(loc, GMapsFragment.this));
             }
         });
 
@@ -268,203 +260,7 @@ public class GMapsFragment extends AppCompatActivity implements OnMapReadyCallba
         } else if (v == homeButton){
             finish();
         } else if (v == addLocation) {
-            Log.d("Kort", "Der klikkes på tilføj sted-knap");
-            // Hvis der er klikket på knappen er addSpot = null og dermed skal nuværende lokation bruges
-            if (addSpot == null) {
-                // Tjek for internetforbindelse
-                if (cm.getActiveNetworkInfo() == null){
-                    Log.d("Error", "Ingen internetforbindelse på AddSpot knap.");
-                    Toast.makeText(this, "You have no internet connection!", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                addSpot = new AddSpot(SingleTon.myLocation.getLocation(), this);
-            }
-
-            // Dialogboks til at tilføje et lokation
-            if(addDialog==null){
-                addDialog = new Dialog(this);
-                addDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-            }
-            if(SingleTon.nightMode){
-                addDialog.setContentView(R.layout.dialog_addlocation_night);
-            } else {
-                addDialog.setContentView(R.layout.dialog_addlocation); // XML-layout til Dialog-boksen
-            }
-
-            final EditText addLocName = (EditText) addDialog.findViewById(R.id.inputLocName);
-
-            final ImageView close = (ImageView) addDialog.findViewById(R.id.close_addLocation);
-            close.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    addDialog.hide();
-                    addDialog=null;
-                }
-            });
-
-            final ImageView adblue = (ImageView) addDialog.findViewById(R.id.adblue_img);
-            adblue.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (!addSpot.adblue) {
-                        addSpot.adblue = true;
-                        adblue.setImageResource(R.drawable.adblue_t_check);
-                        adblue.setSelected(true);
-                    } else {
-                        addSpot.adblue = false;
-                        adblue.setImageResource(R.drawable.adblue_t);
-                        adblue.setSelected(false);
-                    }
-                }
-            });
-            final ImageView bed = (ImageView) addDialog.findViewById(R.id.bed_img);
-            bed.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (!addSpot.bed) {
-                        addSpot.bed = true;
-                        bed.setImageResource(R.drawable.bed_t_check);
-                        bed.setSelected(true);
-                    } else {
-                        addSpot.bed = false;
-                        bed.setImageResource(R.drawable.bed_t);
-                        bed.setSelected(false);
-                    }
-                }
-            });
-            final ImageView bath = (ImageView) addDialog.findViewById(R.id.bath_img);
-            bath.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (!addSpot.bath) {
-                        addSpot.bath = true;
-                        bath.setImageResource(R.drawable.bath_t_check);
-                        bath.setSelected(true);
-                    } else {
-                        addSpot.bath = false;
-                        bath.setImageResource(R.drawable.bath_t);
-                        bath.setSelected(false);
-                    }
-                }
-            });
-            final ImageView food = (ImageView) addDialog.findViewById(R.id.food_img);
-            food.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (!addSpot.food) {
-                        addSpot.food = true;
-                        food.setImageResource(R.drawable.food_t_check);
-                        food.setSelected(true);
-                    } else {
-                        addSpot.food = false;
-                        food.setImageResource(R.drawable.food_t);
-                        food.setSelected(false);
-                    }
-                }
-            });
-            final ImageView fuel = (ImageView) addDialog.findViewById(R.id.fuel_img);
-            fuel.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (!addSpot.fuel) {
-                        addSpot.fuel = true;
-                        fuel.setImageResource(R.drawable.fuel_t_check);
-                        fuel.setSelected(true);
-                    } else {
-                        addSpot.fuel = false;
-                        fuel.setImageResource(R.drawable.fuel_t);
-                        fuel.setSelected(false);
-                    }
-                }
-            });
-            final ImageView wc = (ImageView) addDialog.findViewById(R.id.wc_img);
-            wc.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (!addSpot.wc) {
-                        addSpot.wc = true;
-                        wc.setImageResource(R.drawable.wc_t_check);
-                        wc.setSelected(true);
-                    } else {
-                        addSpot.wc = false;
-                        wc.setImageResource(R.drawable.wc_t);
-                        wc.setSelected(false);
-                    }
-                }
-            });
-
-            Switch roadTrain = (Switch) addDialog.findViewById(R.id.loc_switch);
-            roadTrain.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                @Override
-                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    addSpot.roadTrain = isChecked;
-                }
-            });
-
-            addDialog.show();
-
-            // Opdater adressefeltet - adressen findes asynkront i AddSpot klassen
-            final TextView address = (TextView) addDialog.findViewById(R.id.loc_addressTxt);
-            final Handler h = new Handler();
-            h.postDelayed(new Runnable() {
-                int p = 0;
-                @Override
-                public void run() {
-                    if (addSpot.getAddressTxt() != null) {
-                        address.setText(addSpot.getAddressTxt()); // Opdaterer adressefeltet med adressen
-                    } else if (p<50) {
-                        // Prøv igen om 100 ms - vi venter højest 5 sekunder på svar.
-                        h.postDelayed(this, 100);
-                    }
-                    p++;
-                }
-            }, 50);
-
-            Button createLocation = (Button) addDialog.findViewById(R.id.createLocButton);
-            createLocation.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    addDialog.hide();
-                    // Tilføjer spot til google map kortet så vi kan animere det
-                    LatLng latLng = new LatLng(addSpot.loc.getLatitude(), addSpot.loc.getLongitude());
-                    Marker mark = gMap.addMarker(new MarkerOptions().
-                            position(latLng).
-                            title(addSpot.getAddressTxt()));
-
-                    if (SingleTon.searchedSpots == null) {
-                        SingleTon.searchedSpots = new ArrayList<Spot>();
-                    }
-                    mark.setSnippet(Integer.toString(SingleTon.searchedSpots.size())); // Set snippet så vi kan fremsøge spot når der klikkes på det
-                    ClusterMaker clustMark = new ClusterMaker(latLng);
-                    clustMark.setSnippet(mark.getSnippet());
-                    mClusterManager.addItem(clustMark); // Tilføj marker til clustermanageren
-                    dropPinEffect(mark); // Start animationen
-
-                    String name = addLocName.getText().toString();
-                    if (name.equals("") || name.toUpperCase().equals("INPUT LOCATION NAME")){
-                        Log.d("Kort" , "Doven bruger - Dummy name givet til tilføjet lokation.");
-                        name = "Truck Stop"; // Generisk navn hvis brugeren er doven
-                    }
-                    // Tilføjer spot til den hentede liste af spots, så det har samme funktionalitet som alle andre spots
-                    Spot newSpot = new Spot(name, addSpot.adblue, addSpot.food, addSpot.bath, addSpot.bed, addSpot.wc, addSpot.fuel, addSpot.roadTrain, String.valueOf(latLng.latitude), String.valueOf(latLng.longitude));
-                    SingleTon.searchedSpots.add(newSpot);
-                    addSpot = null; // Sikrer vi nulstiller data hvis der tilføjes flere spots i samme session.
-
-                    // Uploader data til Parse.com
-                    ParseObject parseSpot = new ParseObject("Spots1");
-                    parseSpot.put("adblue", newSpot.isAdblue());
-                    parseSpot.put("bath", newSpot.isBath());
-                    parseSpot.put("bed", newSpot.isBed());
-                    parseSpot.put("food", newSpot.isFood());
-                    parseSpot.put("fuel", newSpot.isFuel());
-                    parseSpot.put("roadtrain", newSpot.isRoadtrain());
-                    parseSpot.put("wc", newSpot.isWc());
-                    parseSpot.put("desc", newSpot.getDesc());
-                    parseSpot.put("posLat", newSpot.getLat());
-                    parseSpot.put("posLng", newSpot.getLng());
-                    parseSpot.saveEventually();
-                }
-            });
+            addLocation(new AddSpot(SingleTon.myLocation.getLocation(), this));
         }
     }
 
@@ -658,5 +454,204 @@ public class GMapsFragment extends AppCompatActivity implements OnMapReadyCallba
 
     public void setPolyLineOptions(PolylineOptions poly){
         this.polyLineOptions = poly;
+    }
+
+    public void drawLines(){
+        poly = gMap.addPolyline(polyLineOptions); // Tegn ruten på kortet
+    }
+
+    private void addLocation(final AddSpot addSpot){
+        Log.d("Kort", "Der klikkes på tilføj sted-knap");
+        // Tjek for internetforbindelse
+        if (cm.getActiveNetworkInfo() == null){
+            Log.d("Error", "Ingen internetforbindelse på AddSpot knap.");
+            Toast.makeText(this, "You have no internet connection!", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // Dialogboks til at tilføje et lokation
+        if(addDialog==null){
+            addDialog = new Dialog(this);
+            addDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        }
+        if(SingleTon.nightMode){
+            addDialog.setContentView(R.layout.dialog_addlocation_night);
+        } else {
+            addDialog.setContentView(R.layout.dialog_addlocation); // XML-layout til Dialog-boksen
+        }
+
+        final EditText addLocName = (EditText) addDialog.findViewById(R.id.inputLocName);
+
+        final ImageView close = (ImageView) addDialog.findViewById(R.id.close_addLocation);
+        close.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                addDialog.hide();
+                addDialog=null;
+            }
+        });
+
+        final ImageView adblue = (ImageView) addDialog.findViewById(R.id.adblue_img);
+        adblue.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!addSpot.adblue) {
+                    addSpot.adblue = true;
+                    adblue.setImageResource(R.drawable.adblue_t_check);
+                    adblue.setSelected(true);
+                } else {
+                    addSpot.adblue = false;
+                    adblue.setImageResource(R.drawable.adblue_t);
+                    adblue.setSelected(false);
+                }
+            }
+        });
+        final ImageView bed = (ImageView) addDialog.findViewById(R.id.bed_img);
+        bed.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!addSpot.bed) {
+                    addSpot.bed = true;
+                    bed.setImageResource(R.drawable.bed_t_check);
+                    bed.setSelected(true);
+                } else {
+                    addSpot.bed = false;
+                    bed.setImageResource(R.drawable.bed_t);
+                    bed.setSelected(false);
+                }
+            }
+        });
+        final ImageView bath = (ImageView) addDialog.findViewById(R.id.bath_img);
+        bath.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!addSpot.bath) {
+                    addSpot.bath = true;
+                    bath.setImageResource(R.drawable.bath_t_check);
+                    bath.setSelected(true);
+                } else {
+                    addSpot.bath = false;
+                    bath.setImageResource(R.drawable.bath_t);
+                    bath.setSelected(false);
+                }
+            }
+        });
+        final ImageView food = (ImageView) addDialog.findViewById(R.id.food_img);
+        food.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!addSpot.food) {
+                    addSpot.food = true;
+                    food.setImageResource(R.drawable.food_t_check);
+                    food.setSelected(true);
+                } else {
+                    addSpot.food = false;
+                    food.setImageResource(R.drawable.food_t);
+                    food.setSelected(false);
+                }
+            }
+        });
+        final ImageView fuel = (ImageView) addDialog.findViewById(R.id.fuel_img);
+        fuel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!addSpot.fuel) {
+                    addSpot.fuel = true;
+                    fuel.setImageResource(R.drawable.fuel_t_check);
+                    fuel.setSelected(true);
+                } else {
+                    addSpot.fuel = false;
+                    fuel.setImageResource(R.drawable.fuel_t);
+                    fuel.setSelected(false);
+                }
+            }
+        });
+        final ImageView wc = (ImageView) addDialog.findViewById(R.id.wc_img);
+        wc.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!addSpot.wc) {
+                    addSpot.wc = true;
+                    wc.setImageResource(R.drawable.wc_t_check);
+                    wc.setSelected(true);
+                } else {
+                    addSpot.wc = false;
+                    wc.setImageResource(R.drawable.wc_t);
+                    wc.setSelected(false);
+                }
+            }
+        });
+
+        Switch roadTrain = (Switch) addDialog.findViewById(R.id.loc_switch);
+        roadTrain.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                addSpot.roadTrain = isChecked;
+            }
+        });
+
+        addDialog.show();
+
+        // Opdater adressefeltet - adressen findes asynkront i AddSpot klassen
+        final TextView address = (TextView) addDialog.findViewById(R.id.loc_addressTxt);
+        final Handler h = new Handler();
+        h.postDelayed(new Runnable() {
+            int p = 0;
+            @Override
+            public void run() {
+                if (addSpot.getAddressTxt() != null) {
+                    address.setText(addSpot.getAddressTxt()); // Opdaterer adressefeltet med adressen
+                } else if (p<50) {
+                    // Prøv igen om 100 ms - vi venter højest 5 sekunder på svar.
+                    h.postDelayed(this, 100);
+                }
+                p++;
+            }
+        }, 50);
+
+        Button createLocation = (Button) addDialog.findViewById(R.id.createLocButton);
+        createLocation.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                addDialog.hide();
+                // Tilføjer spot til google map kortet så vi kan animere det
+                LatLng latLng = new LatLng(addSpot.loc.getLatitude(), addSpot.loc.getLongitude());
+                Marker mark = gMap.addMarker(new MarkerOptions().
+                        position(latLng).
+                        title(addSpot.getAddressTxt()));
+
+                if (SingleTon.searchedSpots == null) {
+                    SingleTon.searchedSpots = new ArrayList<Spot>();
+                }
+                mark.setSnippet(Integer.toString(SingleTon.searchedSpots.size())); // Set snippet så vi kan fremsøge spot når der klikkes på det
+                ClusterMaker clustMark = new ClusterMaker(latLng);
+                clustMark.setSnippet(mark.getSnippet());
+                mClusterManager.addItem(clustMark); // Tilføj marker til clustermanageren
+                dropPinEffect(mark); // Start animationen
+
+                String name = addLocName.getText().toString();
+                if (name.equals("") || name.toUpperCase().equals("INPUT LOCATION NAME")){
+                    Log.d("Kort" , "Doven bruger - Dummy name givet til tilføjet lokation.");
+                    name = "Truck Stop"; // Generisk navn hvis brugeren er doven
+                }
+                // Tilføjer spot til den hentede liste af spots, så det har samme funktionalitet som alle andre spots
+                Spot newSpot = new Spot(name, addSpot.adblue, addSpot.food, addSpot.bath, addSpot.bed, addSpot.wc, addSpot.fuel, addSpot.roadTrain, String.valueOf(latLng.latitude), String.valueOf(latLng.longitude));
+                SingleTon.searchedSpots.add(newSpot);
+
+                // Uploader data til Parse.com
+                ParseObject parseSpot = new ParseObject("Spots1");
+                parseSpot.put("adblue", newSpot.isAdblue());
+                parseSpot.put("bath", newSpot.isBath());
+                parseSpot.put("bed", newSpot.isBed());
+                parseSpot.put("food", newSpot.isFood());
+                parseSpot.put("fuel", newSpot.isFuel());
+                parseSpot.put("roadtrain", newSpot.isRoadtrain());
+                parseSpot.put("wc", newSpot.isWc());
+                parseSpot.put("desc", newSpot.getDesc());
+                parseSpot.put("posLat", newSpot.getLat());
+                parseSpot.put("posLng", newSpot.getLng());
+                parseSpot.saveEventually();
+            }
+        });
     }
 }
