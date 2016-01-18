@@ -37,7 +37,7 @@
             android:fontFamily="sans-serif-medium"
             android:textSize="20dp"
             android:layout_marginTop="30dp"
-            android:layout_below="@+id/close_imageView"
+            android:layout_below="@+id/inputLocName"
             android:layout_alignLeft="@+id/linearLayout1"
             android:layout_alignStart="@+id/linearLayout1" />
 
@@ -152,7 +152,9 @@
             android:id="@+id/linearLayout3"
             android:weightSum="3"
             android:background="@drawable/knap_night_bg"
-            android:layout_margin="16dp">
+            android:layout_marginRight="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="0dp">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -183,9 +185,9 @@
             android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/linearLayout2"
+            android:layout_below="@+id/linearLayout3"
             android:id="@+id/linearLayout4"
-            android:layout_marginTop="50dp">
+            android:layout_marginTop="8dp">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -198,7 +200,7 @@
                 android:fontFamily="sans-serif-medium"
                 android:textSize="20dp"
                 android:gravity="center_horizontal"
-                android:layout_margin="40dp"/>
+                android:layout_margin="16dp"/>
 
         </LinearLayout>
 
@@ -209,7 +211,7 @@
             android:id="@+id/findRoute_button"
             android:layout_below="@+id/linearLayout4"
             android:layout_centerHorizontal="true"
-            android:layout_margin="24dp"
+            android:layout_margin="16dp"
             android:padding="16dp"
             android:height="24dp"
             android:elevation="2dp"

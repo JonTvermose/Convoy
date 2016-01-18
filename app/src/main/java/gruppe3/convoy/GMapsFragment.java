@@ -147,7 +147,7 @@ public class GMapsFragment extends AppCompatActivity implements OnMapReadyCallba
             } else {
                 Log.d("Kort" , "Der udføres hviletidssøgning");
                 // Der udføres en hviletidssøgning
-                ReadTask reader = new ReadTask(gMap, poly, polyLineOptions);
+                ReadTask reader = new ReadTask(gMap, poly, polyLineOptions, this);
                 reader.execute(getMapsApiDirectionsUrl(startLoc, SingleTon.destPos));
             }
         } else {
@@ -520,11 +520,6 @@ public class GMapsFragment extends AppCompatActivity implements OnMapReadyCallba
             return false;
         }
 
-        // Fjern rute fra kort hvis der eksisterer et i forvejen
-        if (poly != null) {
-            poly.remove();
-        }
-
         if(dialog==null){
             dialog = new Dialog(this);
             dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -541,7 +536,7 @@ public class GMapsFragment extends AppCompatActivity implements OnMapReadyCallba
             /* Henter rute til POI */
             Location startLoc = SingleTon.myLocation.getLocation();
             String url = GMapsFragment.this.getMapsApiDirectionsUrl(startLoc,  new LatLng(Double.valueOf(spot.getLat()),Double.valueOf(spot.getLng())));
-            ReadTask downloadTask = new ReadTask(dialog, gMap, poly, polyLineOptions);
+            ReadTask downloadTask = new ReadTask(dialog, gMap, poly, polyLineOptions, this);
             downloadTask.execute(url);
 
             ImageView adblue = (ImageView) dialog.findViewById(R.id.adblue_imageView);
@@ -554,7 +549,11 @@ public class GMapsFragment extends AppCompatActivity implements OnMapReadyCallba
             roadTrain.setChecked(spot.isRoadtrain());
             roadTrain.setEnabled(false);
             TextView name = (TextView) dialog.findViewById(R.id.inputLocName);
-            name.setText(spot.getDesc());
+            String nameTxt = spot.getDesc();
+            if (nameTxt.length() > 20){
+                nameTxt = nameTxt.substring(0,17) + "...";
+            }
+            name.setText(nameTxt);
 
             // Sæt billederne afhængig af hvilken service der er tilgængelig på det pågældende spot
             if (spot.isAdblue()) {
@@ -607,13 +606,13 @@ public class GMapsFragment extends AppCompatActivity implements OnMapReadyCallba
                 @Override
                 public void onClick(View v) {
                     Toast.makeText(GMapsFragment.this, "Drawing route.", Toast.LENGTH_SHORT).show();
-                    if (polyLineOptions == null) { // Kan fjernes så længe knappen er deaktiveret indtil ruten er modtaget og parset
-                        Toast.makeText(GMapsFragment.this, "Route not ready!", Toast.LENGTH_LONG).show();
-                    } else {
-                        poly = GMapsFragment.this.gMap.addPolyline(polyLineOptions);
+//                    if (polyLineOptions == null) { // Kan fjernes så længe knappen er deaktiveret indtil ruten er modtaget og parset
+//                        Toast.makeText(GMapsFragment.this, "Route not ready!", Toast.LENGTH_LONG).show();
+//                    } else {
+//                        poly = GMapsFragment.this.gMap.addPolyline(polyLineOptions);
                         dialog.hide();
                         goButton.setVisibility(View.VISIBLE); // Viser GO-knappen
-                    }
+//                    }
                 }
             });
 
@@ -655,5 +654,13 @@ public class GMapsFragment extends AppCompatActivity implements OnMapReadyCallba
     @Override
     protected void onDestroy(){
         super.onDestroy();
+    }
+
+    public Polyline getPoly(){
+        return poly;
+    }
+
+    public void setPoly(Polyline poly){
+        this.poly = poly;
     }
 }

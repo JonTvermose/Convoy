@@ -35,18 +35,21 @@ public class ParserTask extends
     private GoogleMap gMap;
     private Polyline poly;
     private PolylineOptions polyLineOptions;
+    private GMapsFragment gMapsFragment;
 
-    public ParserTask(Dialog dialog, GoogleMap gMap, Polyline poly, PolylineOptions polylineOptions) {
+    public ParserTask(Dialog dialog, GoogleMap gMap, Polyline poly, PolylineOptions polylineOptions, GMapsFragment gMapsFragment) {
         this.dialog = dialog;
         this.gMap=gMap;
         this.poly=poly;
         this.polyLineOptions=polylineOptions;
+        this.gMapsFragment = gMapsFragment;
     }
 
-    public ParserTask(GoogleMap gMap, Polyline poly, PolylineOptions polylineOptions){
+    public ParserTask(GoogleMap gMap, Polyline poly, PolylineOptions polylineOptions, GMapsFragment gMapsFragment){
         this.gMap=gMap;
         this.poly=poly;
         this.polyLineOptions=polylineOptions;
+        this.gMapsFragment = gMapsFragment;
     }
 
     @Override
@@ -114,6 +117,12 @@ public class ParserTask extends
         if (dialog==null){
             addRestMarker();
         }
+        // Fjern rute fra kort hvis der eksisterer et i forvejen
+        if (gMapsFragment.getPoly() != null) {
+            gMapsFragment.getPoly().remove();
+        }
+        poly = gMap.addPolyline(polyLineOptions); // Tegn ruten på kortet
+        gMapsFragment.setPoly(poly);
     }
 
     // Tilføjer en hviletidsmarker samt tegner rute på kortet
@@ -133,6 +142,6 @@ public class ParserTask extends
                 title(dur)
                 .icon(BitmapDescriptorFactory.defaultMarker(210f))).showInfoWindow(); // Destinationsmarkeren har en anden farve en normale markers
         gMap.animateCamera(CameraUpdateFactory.newLatLngZoom(SingleTon.destPos, 10));
-        poly = gMap.addPolyline(polyLineOptions);
+//        poly = gMap.addPolyline(polyLineOptions);
     }
 }
