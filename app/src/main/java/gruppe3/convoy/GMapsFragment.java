@@ -17,6 +17,7 @@ import android.view.Window;
 import android.view.animation.BounceInterpolator;
 import android.widget.Button;
 import android.widget.CompoundButton;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -35,6 +36,8 @@ import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.maps.android.clustering.Cluster;
 import com.google.maps.android.clustering.ClusterManager;
 import com.parse.ParseObject;
+
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 
@@ -182,7 +185,7 @@ public class GMapsFragment extends AppCompatActivity implements OnMapReadyCallba
                 loc.setLongitude(latLng.longitude);
 
                 // Tjek for internetforbindelse
-                if (cm.getActiveNetworkInfo() == null){
+                if (cm.getActiveNetworkInfo() == null) {
                     Log.d("Error", "Ingen internetforbindelse på langt tryk.");
                     Toast.makeText(GMapsFragment.this, "You have no internet connection!", Toast.LENGTH_SHORT).show();
                 } else {
@@ -287,6 +290,8 @@ public class GMapsFragment extends AppCompatActivity implements OnMapReadyCallba
             } else {
                 addDialog.setContentView(R.layout.dialog_addlocation); // XML-layout til Dialog-boksen
             }
+
+            final EditText addLocName = (EditText) addDialog.findViewById(R.id.inputLocName);
 
             final ImageView close = (ImageView) addDialog.findViewById(R.id.close_addLocation);
             close.setOnClickListener(new View.OnClickListener() {
@@ -435,10 +440,14 @@ public class GMapsFragment extends AppCompatActivity implements OnMapReadyCallba
                     mClusterManager.addItem(clustMark); // Tilføj marker til clustermanageren
                     dropPinEffect(mark); // Start animationen
 
+                    String name = addLocName.getText().toString();
+                    if (name.equals("") || name.toUpperCase().equals("INPUT LOCATION NAME")){
+                        Log.d("Kort" , "Doven bruger - Dummy name givet til tilføjet lokation.");
+                        name = "Truck Stop"; // Generisk navn hvis brugeren er doven
+                    }
                     // Tilføjer spot til den hentede liste af spots, så det har samme funktionalitet som alle andre spots
-                    Spot newSpot = new Spot(addSpot.getAddressTxt(), addSpot.adblue, addSpot.food, addSpot.bath, addSpot.bed, addSpot.wc, addSpot.fuel, addSpot.roadTrain, String.valueOf(latLng.latitude), String.valueOf(latLng.longitude));
+                    Spot newSpot = new Spot(name, addSpot.adblue, addSpot.food, addSpot.bath, addSpot.bed, addSpot.wc, addSpot.fuel, addSpot.roadTrain, String.valueOf(latLng.latitude), String.valueOf(latLng.longitude));
                     SingleTon.searchedSpots.add(newSpot);
-//                    SingleTon.spots.add(newSpot);
                     addSpot = null; // Sikrer vi nulstiller data hvis der tilføjes flere spots i samme session.
 
                     // Uploader data til Parse.com
@@ -541,6 +550,11 @@ public class GMapsFragment extends AppCompatActivity implements OnMapReadyCallba
             ImageView food = (ImageView) dialog.findViewById(R.id.food_imageView);
             ImageView fuel = (ImageView) dialog.findViewById(R.id.fuel_imageView);
             ImageView wc = (ImageView) dialog.findViewById(R.id.wc_imageView);
+            Switch roadTrain = (Switch) dialog.findViewById(R.id.loc_switch);
+            roadTrain.setChecked(spot.isRoadtrain());
+            roadTrain.setEnabled(false);
+            TextView name = (TextView) dialog.findViewById(R.id.inputLocName);
+            name.setText(spot.getDesc());
 
             // Sæt billederne afhængig af hvilken service der er tilgængelig på det pågældende spot
             if (spot.isAdblue()) {
@@ -618,6 +632,7 @@ public class GMapsFragment extends AppCompatActivity implements OnMapReadyCallba
             // Hvad skal der ske hvis man klikker på en marker som vi ikke kan identificere?
             Toast.makeText(this, "Could not find id: " + marker.getSnippet(), Toast.LENGTH_LONG).show();
             Log.d("Kort", "Kunne ikke finde det rigtige spot. SingleTon.searchedSpots størrelse: " + SingleTon.searchedSpots.size() + " , der søges efter spot nr: " + marker.getSnippet());
+            e.printStackTrace();
         }
 
         return true;
