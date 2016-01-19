@@ -125,6 +125,7 @@ public class GMapsFragment extends AppCompatActivity implements OnMapReadyCallba
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
+        SearchButtonFragment.search.setEnabled(true); // Genaktiverer Search-knappen
         Log.d("Kort", "GMapsAktivitet.onMapReady() er kaldt");
         this.gMap = googleMap;
 

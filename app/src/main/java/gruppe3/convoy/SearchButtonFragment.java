@@ -9,7 +9,6 @@ import android.net.ConnectivityManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -51,6 +50,7 @@ public class SearchButtonFragment extends Fragment {
         search.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                search.setEnabled(false); // Deaktiver så der ikke trykkes flere gange i samme "tryk"
                 // Tjek for internetforbindelse
                 ConnectivityManager cm = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
                 if (cm.getActiveNetworkInfo() == null) {
@@ -119,7 +119,7 @@ public class SearchButtonFragment extends Fragment {
                         SingleTon.sensorManager.unregisterListener((SensorEventListener) getActivity()); // Vi afslutter sensorlytter når vi er i mapmode
                         Intent i = new Intent(getActivity(), GMapsFragment.class);
                         getActivity().startActivity(i);
-                        getActivity().overridePendingTransition(R.animator.fade_in, R.animator.fade_out);
+                        getActivity().overridePendingTransition(R.animator.fade_in2, R.animator.fade_out2);
                     }
                 }.execute();
             }
