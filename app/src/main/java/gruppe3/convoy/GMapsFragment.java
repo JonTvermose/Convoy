@@ -54,7 +54,7 @@ public class GMapsFragment extends AppCompatActivity implements OnMapReadyCallba
 
     private Spot spot; // Det spot der er klikket på
     private ImageView goButton, zoomLocation, addLocation, homeButton;
-//    private AddSpot addSpot; // Det spot der tilføjes
+    //    private AddSpot addSpot; // Det spot der tilføjes
     private ClusterManager<ClusterMaker> mClusterManager;
     private Marker destMark;
     private Dialog addDialog;
@@ -136,7 +136,7 @@ public class GMapsFragment extends AppCompatActivity implements OnMapReadyCallba
         if(SingleTon.hasDest){
             Location startLoc = SingleTon.myLocation.getLocation();
             if(SingleTon.minutter==0 && SingleTon.timer==0){
-                // Der udføres en "normal" destinationssøgning
+                // Der udføres en "normal" destinationssøgning, dvs. kameraet zoomes til destinationens lokation
                 Log.i("Kort", getMapsApiDirectionsUrl(startLoc, SingleTon.destPos));
                 destMark = gMap.addMarker(new MarkerOptions().
                         position(SingleTon.destPos).
@@ -146,15 +146,16 @@ public class GMapsFragment extends AppCompatActivity implements OnMapReadyCallba
                 gMap.animateCamera(CameraUpdateFactory.newLatLngZoom(SingleTon.destPos, 12));
             } else {
                 Log.d("Kort" , "Der udføres hviletidssøgning. Timer: " + SingleTon.timer + ", Minutter: " + SingleTon.minutter);
-                // Der udføres en hviletidssøgning
+                // Der udføres en hviletidssøgning, der beregnes hvor brugeren vil være på det givne tidspunkt, tegnes og zoomes til det pågældende sted
                 new ReadTask(gMap, poly, polyLineOptions, this).execute(getMapsApiDirectionsUrl(startLoc, SingleTon.destPos));
             }
         } else {
+            // Kortet startes "normalt", der zoomes til nuværende lokation
             LatLng cPos = new LatLng(SingleTon.myLocation.getLocation().getLatitude(), SingleTon.myLocation.getLocation().getLongitude());
             gMap.animateCamera(CameraUpdateFactory.newLatLngZoom(cPos, 12));
         }
 
-        // Tilføjer markers til Google Maps
+        // Tilføjer markers/clusters til kortet samt tilhørende clicklisteners
         mClusterManager = new ClusterManager<ClusterMaker>(this, gMap);
         gMap.setOnMarkerClickListener(mClusterManager);
         gMap.setOnCameraChangeListener(mClusterManager);
@@ -177,11 +178,13 @@ public class GMapsFragment extends AppCompatActivity implements OnMapReadyCallba
             @Override
             public void onMapLongClick(LatLng latLng) {
                 Log.d("Kort", "Der klikkes med et langt tryk på kortet: " + latLng.latitude + ", " + latLng.longitude);
-                if(gMap.getCameraPosition().zoom < 13.5f){
-                    Log.d("Kort" , "Der zoomes. Nuværende zoom: " + gMap.getCameraPosition().zoom);
+                // Der zoomes hvis man er zoomet for langt ud
+                if (gMap.getCameraPosition().zoom < 13.5f) {
+                    Log.d("Kort", "Der zoomes. Nuværende zoom: " + gMap.getCameraPosition().zoom);
                     gMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, gMap.getCameraPosition().zoom + 1));
                 } else {
-                    Log.d("Kort" , "Der tilføjes et spot");
+                    // Ellers kan man tilføje et spot der hvor man har klikket
+                    Log.d("Kort", "Der tilføjes et spot");
                     Vibrator vibe = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
                     vibe.vibrate(50); // Vibrate for x milliseconds
                     Location loc = new Location("");
@@ -218,7 +221,6 @@ public class GMapsFragment extends AppCompatActivity implements OnMapReadyCallba
                 "origin=" + start.getLatitude() + "," + start.getLongitude()
                         + "&"
                         + "destination=" + dest.latitude + "," + dest.longitude;
-//         String key = "key=" + "AIzaSyCZSGpLIQ6JUmEJsj8TexBJMdrVZ-mwu40"; // TO DO - bør nok gemmes eller hentes fra andet sted?
         String mode = "mode=" + "driving"; // Dette kan udelades (er default for Google Directions)
         String units = "units=" + "metric"; // Eventuelt variabel baseret på indstillinger i appen
 
@@ -243,6 +245,7 @@ public class GMapsFragment extends AppCompatActivity implements OnMapReadyCallba
     public void onClick(View v) {
         if (v == zoomLocation) {
             Log.d("Kort", "Der klikkes på Zoomknap");
+            // Der zoomes til nuværende lokation
             if (gMap != null) {
                 LatLng cPos = new LatLng(SingleTon.myLocation.getLocation().getLatitude(), SingleTon.myLocation.getLocation().getLongitude());
                 gMap.animateCamera(CameraUpdateFactory.newLatLngZoom(cPos, 12), 1000, null);
@@ -252,6 +255,7 @@ public class GMapsFragment extends AppCompatActivity implements OnMapReadyCallba
             }
         } else if (v == goButton) {
             Log.d("Kort", "Der klikkes på GO-knap");
+            // Der viderestilles til google maps kørselsvejledning. Slutsted medsendes (startsted er nuværende lokation når den udelades)
             if (spot != null) {
                 Intent intent = new Intent(android.content.Intent.ACTION_VIEW,
                         Uri.parse("http://maps.google.com/maps?&daddr="
@@ -263,7 +267,7 @@ public class GMapsFragment extends AppCompatActivity implements OnMapReadyCallba
                 Toast.makeText(this, "You must choose where to go!", Toast.LENGTH_LONG).show(); // Safety-text, bør ikke rammes
             }
         } else if (v == homeButton){
-            finish();
+            finish(); // Aktiviteten lukkes
         } else if (v == addLocation) {
             addLocation(new AddSpot(SingleTon.myLocation.getLocation(), this));
         }
@@ -272,14 +276,10 @@ public class GMapsFragment extends AppCompatActivity implements OnMapReadyCallba
     // Animerer en marker på Google Maps med en "drop-pin-effekt"
     // Tyv stjålet fra https://guides.codepath.com/android/Google-Maps-API-v2-Usage#falling-pin-animation og udbygget
     private void dropPinEffect(final Marker marker) {
-        // Handler allows us to repeat a code block after a specified delay
         final android.os.Handler handler = new android.os.Handler();
         final long start = SystemClock.uptimeMillis();
         final long duration = 1500;
-
-        // Use the bounce interpolator
-        final android.view.animation.Interpolator interpolator = new BounceInterpolator();
-
+        final android.view.animation.Interpolator interpolator = new BounceInterpolator(); // Use the bounce interpolator
         // Animate marker with a bounce updating its position every 15ms
         handler.post(new Runnable() {
             private float alpha = 1;
@@ -297,9 +297,10 @@ public class GMapsFragment extends AppCompatActivity implements OnMapReadyCallba
                     // Post this event again 15ms from now.
                     handler.postDelayed(this, 15);
                 } else {
-                    // Når animation er færdig
+                    // Når animation er færdig fjernes standard Google Maps marker, og Google Maps Util Cluster gentegnes
                     marker.remove();
                     mClusterManager.cluster();
+                    // "Beløn" brugeren for at tilføje en lokation med en kort vibration
                     Vibrator vibe = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
                     vibe.vibrate(200); // Vibrate for x milliseconds
                     Toast.makeText(GMapsFragment.this, "Location added", Toast.LENGTH_SHORT).show();
@@ -320,10 +321,13 @@ public class GMapsFragment extends AppCompatActivity implements OnMapReadyCallba
             return false;
         }
 
+        // Byg eller genbrug dialog - forhindrer memoryleak!!
         if(dialog==null){
             dialog = new Dialog(this);
             dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         }
+
+        // Udpak afhængig af day/night mode
         if (SingleTon.nightMode) {
             dialog.setContentView(R.layout.dialog_spot_night);
         } else {
@@ -336,9 +340,16 @@ public class GMapsFragment extends AppCompatActivity implements OnMapReadyCallba
         }
 
         try {
-            spot = SingleTon.searchedSpots.get(Integer.valueOf(marker.getSnippet()));
+            spot = SingleTon.searchedSpots.get(Integer.valueOf(marker.getSnippet())); // TO DO - kan optimeres (meget)
 
-            /* Henter rute til POI */
+            /*
+            Henter rute til POI
+            1. Find startlokation
+            2. Byg URL til Google Directions API
+            3. Kontakt Google Directions API og modtag JSON
+            4. Oversæt JSON, gem de "vigtige ting", byg en rute
+            5. Opdater Dialogboksen med adresse, afstand og tid
+            */
             Location startLoc = SingleTon.myLocation.getLocation();
             String url = GMapsFragment.this.getMapsApiDirectionsUrl(startLoc,  new LatLng(Double.valueOf(spot.getLat()),Double.valueOf(spot.getLng())));
             ReadTask downloadTask = new ReadTask(dialog, gMap, poly, polyLineOptions, this);
@@ -352,6 +363,8 @@ public class GMapsFragment extends AppCompatActivity implements OnMapReadyCallba
             ImageView wc = (ImageView) dialog.findViewById(R.id.wc_imageView);
             ImageView roadTrain = (ImageView) dialog.findViewById(R.id.roadTrain_img);
             TextView name = (TextView) dialog.findViewById(R.id.inputLocName);
+
+            // Forkort navnet på stedet hvis det er for langt
             String nameTxt = spot.getDesc();
             if (nameTxt.length() > 20){
                 nameTxt = nameTxt.substring(0,17) + "...";
@@ -363,7 +376,7 @@ public class GMapsFragment extends AppCompatActivity implements OnMapReadyCallba
                 roadTrain.setVisibility(View.VISIBLE);
                 roadTrain.setSelected(false);
             } else {
-                roadTrain.setVisibility(View.GONE);
+                roadTrain.setVisibility(View.GONE); // Vi viser intet billede hvis der ikke er roadtrain
             }
             if (spot.isAdblue()) {
                 adblue.setImageResource(R.drawable.adblue_t_check);
@@ -408,7 +421,7 @@ public class GMapsFragment extends AppCompatActivity implements OnMapReadyCallba
                 wc.setSelected(true);
             }
 
-            // Clicklistener til "FIND ROUTE"-knappen
+            // Clicklistener til "FIND ROUTE"-knappen. Her tegnes ruten på kortet.
             Button route = (Button) dialog.findViewById(R.id.findRoute_button);
             route.setEnabled(false);
             route.setOnClickListener(new View.OnClickListener() {
@@ -417,7 +430,7 @@ public class GMapsFragment extends AppCompatActivity implements OnMapReadyCallba
                     Toast.makeText(GMapsFragment.this, "Drawing route.", Toast.LENGTH_SHORT).show();
                     poly = gMap.addPolyline(polyLineOptions); // Tegn ruten på kortet
                     dialog.hide();
-                        goButton.setVisibility(View.VISIBLE); // Viser GO-knappen
+                    goButton.setVisibility(View.VISIBLE); // Viser GO-knappen
                 }
             });
 
@@ -444,21 +457,16 @@ public class GMapsFragment extends AppCompatActivity implements OnMapReadyCallba
 
     @Override
     protected void onStop(){
-        gMap.setMyLocationEnabled(false);
+        gMap.setMyLocationEnabled(false); // Stopper GPS-forbrug når map er åbnet og appen ikke er synlig
         super.onStop();
     }
 
     @Override
     protected void onResume(){
         if(gMap!=null){
-            gMap.setMyLocationEnabled(true);
+            gMap.setMyLocationEnabled(true); // Genstarter GPS-opdateringer når map er åbnet og appen er synlig
         }
         super.onResume();
-    }
-
-    @Override
-    protected void onDestroy(){
-        super.onDestroy();
     }
 
     public void setPolyLineOptions(PolylineOptions poly){
@@ -478,19 +486,23 @@ public class GMapsFragment extends AppCompatActivity implements OnMapReadyCallba
             return;
         }
 
-        // Dialogboks til at tilføje et lokation
+        // Dialogboks til at tilføje et lokation laves eller genbruges
         if(addDialog==null){
             addDialog = new Dialog(this);
             addDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         }
+
+        // Udpakker layout baseret på day/night mode
         if(SingleTon.nightMode){
             addDialog.setContentView(R.layout.dialog_addlocation_night);
         } else {
             addDialog.setContentView(R.layout.dialog_addlocation); // XML-layout til Dialog-boksen
         }
 
+        // Indtastningsfelt til navn på lokation
         final EditText addLocName = (EditText) addDialog.findViewById(R.id.inputLocName);
 
+        // Luk knappen
         final ImageView close = (ImageView) addDialog.findViewById(R.id.close_addLocation);
         close.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -500,6 +512,10 @@ public class GMapsFragment extends AppCompatActivity implements OnMapReadyCallba
             }
         });
 
+        /*
+        Herunder følger ImageViews der symboliserer hvilke faciliteter der kan tilføjes.
+        Når man klikker på billedet skiftes billedet og boolean sættes så værdi kan aflæses senere
+         */
         final ImageView adblue = (ImageView) addDialog.findViewById(R.id.adblue_img);
         adblue.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -609,7 +625,7 @@ public class GMapsFragment extends AppCompatActivity implements OnMapReadyCallba
 
         addDialog.show();
 
-        // Opdater adressefeltet - adressen findes asynkront i AddSpot klassen
+        // Adressen findes asynkront i AddSpot klassen. Der ventes i alt 50 * 100 ms på svar fra GEO-koderen i AddSpot.java
         final TextView address = (TextView) addDialog.findViewById(R.id.loc_addressTxt);
         final Handler h = new Handler();
         h.postDelayed(new Runnable() {
@@ -626,26 +642,36 @@ public class GMapsFragment extends AppCompatActivity implements OnMapReadyCallba
             }
         }, 50);
 
+        /*
+        Opret lokation knappen
+         */
         Button createLocation = (Button) addDialog.findViewById(R.id.createLocButton);
         createLocation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                addDialog.hide();
+                addDialog.hide(); // Skjul dialogboksen
+
+                // Sikrer os mod nullpointers
+                if (SingleTon.searchedSpots == null) {
+                    SingleTon.searchedSpots = new ArrayList<Spot>();
+                }
+
                 // Tilføjer spot til google map kortet så vi kan animere det
                 LatLng latLng = new LatLng(addSpot.loc.getLatitude(), addSpot.loc.getLongitude());
                 Marker mark = gMap.addMarker(new MarkerOptions().
                         position(latLng).
                         title(addSpot.getAddressTxt()));
-
-                if (SingleTon.searchedSpots == null) {
-                    SingleTon.searchedSpots = new ArrayList<Spot>();
-                }
                 mark.setSnippet(Integer.toString(SingleTon.searchedSpots.size())); // Set snippet så vi kan fremsøge spot når der klikkes på det
+
+                // tilføj spottet til clusterManageren
                 ClusterMaker clustMark = new ClusterMaker(latLng);
                 clustMark.setSnippet(mark.getSnippet());
-                mClusterManager.addItem(clustMark); // Tilføj marker til clustermanageren
-                dropPinEffect(mark); // Start animationen
+                mClusterManager.addItem(clustMark);
 
+                // Start animationen af markeren
+                dropPinEffect(mark);
+
+                // Sikrer det brugerudfyldte navn giver mening
                 String name = addLocName.getText().toString();
                 if (name.equals("") || name.toUpperCase().equals("INPUT LOCATION NAME")){
                     Log.d("Kort" , "Doven bruger - Dummy name givet til tilføjet lokation.");

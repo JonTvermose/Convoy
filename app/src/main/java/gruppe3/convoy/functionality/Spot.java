@@ -9,7 +9,7 @@ import java.io.Serializable;
  * Created by Jon on 25/11/2015.
  */
 public class Spot implements Serializable {
-    //private LatLng pos;
+
     private String lat;
     private String lng;
     private boolean adblue;
@@ -20,7 +20,6 @@ public class Spot implements Serializable {
     private boolean fuel;
     private boolean roadtrain;
     private String desc;
-//    private String objectId;
     private String createdAt;
 
     public Spot(String desc, boolean adblue, boolean food, boolean bath, boolean bed, boolean wc, boolean fuel, boolean roadtrain, String createdAt, String lat, String lng) {
@@ -33,7 +32,6 @@ public class Spot implements Serializable {
         this.setWc(wc);
         this.setFuel(fuel);
         this.setRoadtrain(roadtrain);
-//        this.objectId = objectId;
         this.createdAt = createdAt;
         this.setLat(lat);
         this.setLng(lng);
@@ -49,7 +47,6 @@ public class Spot implements Serializable {
         this.setWc(wc);
         this.setFuel(fuel);
         this.setRoadtrain(roadtrain);
-//        this.objectId = objectId;
         this.createdAt = createdAt;
         this.setLat(lat);
         this.setLng(lng);
@@ -58,10 +55,6 @@ public class Spot implements Serializable {
     public String getCreatedAt() { return createdAt; }
 
     public void setCreatedAt(String createdAt) { this.createdAt = createdAt; }
-
-//    public void setObjectId(String objectId) { this.objectId = objectId; }
-
-//    public String getObjectId() { return objectId; }
 
     public String getDesc(){
         return desc;
@@ -142,10 +135,7 @@ public class Spot implements Serializable {
     }
 
     public void pushToDB(){
-
         ParseObject spotObject = new ParseObject("Spots");
-
-//        spotObject.put("objectId", objectId);
         spotObject.put("desc", desc);
         spotObject.put("adblue", adblue);
         spotObject.put("food", food);
@@ -157,7 +147,6 @@ public class Spot implements Serializable {
         spotObject.put("posLat", lat);
         spotObject.put("posLng", lng);
         spotObject.put("createdAt", createdAt);
-
         spotObject.saveInBackground();
     }
 }
