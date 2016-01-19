@@ -1,6 +1,5 @@
 package gruppe3.convoy;
 
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -61,19 +60,19 @@ public class Tutorial_akt extends FragmentActivity implements View.OnClickListen
                 text.setText(hovedskaerm);
                 back.setVisibility(View.GONE);
                 break;
-            case 2: img.setImageResource(R.drawable.destination1);
+            case 2: img.setImageResource(R.drawable.destination);
                 text.setText(destination);
                 back.setVisibility(View.VISIBLE);
                 break;
-            case 3: img.setImageResource(R.drawable.settings1);
+            case 3: img.setImageResource(R.drawable.settings);
                 text.setText(settings1);
                 break;
-            case 4: img.setImageResource(R.drawable.settings1);
+            case 4: img.setImageResource(R.drawable.settings);
                 text.setText(settings2);
                 next.setText("Next hint");
                 break;
             case 5:
-                img.setImageResource(R.drawable.map1);
+                img.setImageResource(R.drawable.map);
                 next.setText("Finish");
                 text.setText(map);
                 break;
