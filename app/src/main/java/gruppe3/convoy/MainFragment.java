@@ -4,11 +4,13 @@ package gruppe3.convoy;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.PagerAdapter;
@@ -159,6 +161,12 @@ public class MainFragment extends Fragment {
                                             .setCustomAnimations(R.animator.fade_in, R.animator.fade_out)
                                             .replace(R.id.mainBottomFragment, new SearchButtonFragment())
                                             .commit();
+                                    SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+                                    if(prefs.getBoolean("showTutorial", true)){
+                                        Intent i = new Intent(getActivity(), Tutorial_akt.class);
+                                        getActivity().startActivity(i);
+                                        getActivity().overridePendingTransition(R.animator.fade_in2, R.animator.fade_out2);
+                                    }
                                 }
                             } else {
                                 h.postDelayed(this, 100);

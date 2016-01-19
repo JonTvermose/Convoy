@@ -1,6 +1,9 @@
 package gruppe3.convoy;
 
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentActivity;
 import android.view.View;
 import android.widget.Button;
@@ -21,16 +24,20 @@ public class Tutorial_akt extends FragmentActivity implements View.OnClickListen
             "You can also set your average speed to better suit your vehicle of choice for a more accurate time calculation on the map.";
     private String map = "Here is your overview. It shows every truck spot in the world! It is possible to add your own truck spot at your location by pressing the icon in the upper right corner " +
             "or by pressing and holding on a selected area on the map if you want to add a spot somewhere else. ";
-    ImageView img = (ImageView) findViewById(R.id.tutorialImage);
+    private ImageView img;
 
-
-    protected void onCreateView(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tutorial);
 
+        img = (ImageView) findViewById(R.id.tutorialImage);
+
         next = (Button) findViewById(R.id.next);
+        next.setOnClickListener(this);
         back = (Button) findViewById(R.id.back);
+        back.setOnClickListener(this);
         skipAll = (Button) findViewById(R.id.skipAll);
+        skipAll.setOnClickListener(this);
         text = (TextView) findViewById(R.id.desc);
 
         img.setImageResource(R.drawable.hovedskaerm1);
@@ -38,38 +45,45 @@ public class Tutorial_akt extends FragmentActivity implements View.OnClickListen
         back.setVisibility(View.GONE);
     }
 
-
     @Override
     public void onClick(View v) {
         if ( v == next) {
             if (page < 6)
-            ++page;
+                page++;
         } else if (v == back) {
-           if (page > 1)
-            --page;
+            if (page > 1)
+                page--;
         } else if (v == skipAll) {
             page = 6;
         }
         switch (page) {
             case 1: img.setImageResource(R.drawable.hovedskaerm1);
-                    text.setText(hovedskaerm);
-                    back.setVisibility(View.GONE);
+                text.setText(hovedskaerm);
+                back.setVisibility(View.GONE);
                 break;
             case 2: img.setImageResource(R.drawable.destination1);
-                    text.setText(destination);
+                text.setText(destination);
+                back.setVisibility(View.VISIBLE);
                 break;
             case 3: img.setImageResource(R.drawable.settings1);
                 text.setText(settings1);
                 break;
             case 4: img.setImageResource(R.drawable.settings1);
                 text.setText(settings2);
+                next.setText("Next hint");
                 break;
-            case 5: img.setImageResource(R.drawable.map1);
-                text.setText(map);
+            case 5:
+                img.setImageResource(R.drawable.map1);
                 next.setText("Finish");
+                text.setText(map);
                 break;
-            case 6: break;
+            case 6:
+                finish();
+                this.overridePendingTransition(R.animator.fade_in, R.animator.fade_out);
+                SharedPreferences.Editor prefs = PreferenceManager.getDefaultSharedPreferences(this).edit();
+                prefs.putBoolean("showTutorial", false).apply();
+                break;
+            default: page = 1;
         }
-
     }
 }
