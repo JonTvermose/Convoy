@@ -16,4 +16,54 @@
         android:background="@color/primary_color"
         />
 
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="180dp"
+        android:layout_centerHorizontal="true"
+        android:layout_alignBottom="@+id/tutorialImage"
+        android:background="@color/black"
+        android:alpha="0.9">
+
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Back"
+            android:id="@+id/back"
+            android:layout_gravity="left|bottom"
+            android:alpha="1"
+            android:layout_margin="16dp"/>
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Skip all"
+            android:id="@+id/skipAll"
+            android:layout_gravity="center|bottom"
+            android:alpha="1"
+            android:layout_margin="16dp"/>
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Next hint"
+            android:id="@+id/next"
+            android:layout_gravity="right|bottom"
+            android:alpha="1"
+            android:layout_margin="16dp"/>
+
+        <TextView
+            android:layout_width="313dp"
+            android:layout_height="112dp"
+            android:text="Welcome to Convoy! This is your home screen! Here you can select your truck stop preferences."
+            android:textSize="20dp"
+            android:textColor="@color/orange_600"
+            android:id="@+id/desc"
+            android:layout_alignBottom="@+id/tutorialImage"
+            android:layout_alignLeft="@+id/tutorialImage"
+            android:layout_alignStart="@+id/tutorialImage"
+            android:layout_gravity="center"
+            android:alpha="1"/>
+    </FrameLayout>
+
 </RelativeLayout>
