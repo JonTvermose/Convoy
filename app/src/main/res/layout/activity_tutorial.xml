@@ -18,7 +18,7 @@
 
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="180dp"
+        android:layout_height="210dp"
         android:layout_centerHorizontal="true"
         android:layout_alignBottom="@+id/tutorialImage"
         android:background="@color/black"
@@ -53,16 +53,18 @@
             android:layout_margin="16dp"/>
 
         <TextView
-            android:layout_width="313dp"
+            android:layout_width="351dp"
             android:layout_height="112dp"
             android:text="Welcome to Convoy! This is your home screen! Here you can select your truck stop preferences."
-            android:textSize="20dp"
+            android:textSize="16dp"
             android:textColor="@color/orange_600"
             android:id="@+id/desc"
+            android:layout_marginTop="8dp"
             android:layout_alignBottom="@+id/tutorialImage"
             android:layout_alignLeft="@+id/tutorialImage"
             android:layout_alignStart="@+id/tutorialImage"
-            android:layout_gravity="center"
+            android:layout_gravity="center_horizontal|top"
+            android:gravity="center"
             android:alpha="1"/>
     </FrameLayout>
 
