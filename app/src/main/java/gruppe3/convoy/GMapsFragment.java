@@ -208,6 +208,8 @@ public class GMapsFragment extends AppCompatActivity implements OnMapReadyCallba
 
         // Clicklistener til markers. Når man klikker på en marker åbnes en Dialog-boks
         mClusterManager.setOnClusterItemClickListener(this);
+
+        SearchButtonFragment.progressDialog.dismiss(); // Luk ProgressDialog der "bygger kort"
     }
 
     /**

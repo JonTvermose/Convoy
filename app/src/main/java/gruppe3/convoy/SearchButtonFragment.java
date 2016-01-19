@@ -1,6 +1,7 @@
 package gruppe3.convoy;
 
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.hardware.SensorEventListener;
@@ -28,6 +29,7 @@ import gruppe3.convoy.functionality.Spot;
 public class SearchButtonFragment extends Fragment {
 
     public static Button search;
+    public static ProgressDialog progressDialog;
 
     public SearchButtonFragment() {
         // Required empty public constructor
@@ -56,6 +58,7 @@ public class SearchButtonFragment extends Fragment {
                     Toast.makeText(getActivity(), "You have no internet connection!", Toast.LENGTH_SHORT).show();
                     return;
                 }
+                progressDialog = ProgressDialog.show(getActivity(), "Building Map","Finding spots...", true);
 
                 new AsyncTask<Void, Void, String>() {
                     @Override
@@ -106,6 +109,7 @@ public class SearchButtonFragment extends Fragment {
                             }
                             Log.d("Søgning", "Der blev fundet: " + SingleTon.searchedSpots.size() + " søgeresultater ud af: " + SingleTon.spots.size());
                         }
+                        progressDialog.setMessage("Found " + SingleTon.searchedSpots.size() + " spots. Retrieving map...");
 
                         return null;
                     }
@@ -115,6 +119,7 @@ public class SearchButtonFragment extends Fragment {
                         SingleTon.sensorManager.unregisterListener((SensorEventListener) getActivity()); // Vi afslutter sensorlytter når vi er i mapmode
                         Intent i = new Intent(getActivity(), GMapsFragment.class);
                         getActivity().startActivity(i);
+                        getActivity().overridePendingTransition(R.animator.fade_in, R.animator.fade_out);
                     }
                 }.execute();
             }
