@@ -5,8 +5,8 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES"/>
-    <uses-permission android:name="android.permission.VIBRATE"/>
+    <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
+    <uses-permission android:name="android.permission.VIBRATE" />
 
     <application
         android:name=".functionality.SingleTon"
@@ -14,19 +14,20 @@
         android:icon="@mipmap/logo_new_blue_96"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme.NoActionBar"
-        >
+        android:theme="@style/AppTheme.NoActionBar">
         <service android:name=".functionality.BoundService" />
 
-        <activity android:name=".Main"
+        <activity
+            android:name=".Main"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <activity android:name=".GMapsFragment"
+        <activity
+            android:name=".GMapsFragment"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -43,7 +44,7 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyCZSGpLIQ6JUmEJsj8TexBJMdrVZ-mwu40" />
 
-
+        <activity android:name=".Tutorial_akt"></activity>
     </application>
 
 </manifest>
