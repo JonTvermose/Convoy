@@ -145,10 +145,9 @@ public class GMapsFragment extends AppCompatActivity implements OnMapReadyCallba
                 destMark.showInfoWindow();
                 gMap.animateCamera(CameraUpdateFactory.newLatLngZoom(SingleTon.destPos, 12));
             } else {
-                Log.d("Kort" , "Der udføres hviletidssøgning");
+                Log.d("Kort" , "Der udføres hviletidssøgning. Timer: " + SingleTon.timer + ", Minutter: " + SingleTon.minutter);
                 // Der udføres en hviletidssøgning
-                ReadTask reader = new ReadTask(gMap, poly, polyLineOptions, this);
-                reader.execute(getMapsApiDirectionsUrl(startLoc, SingleTon.destPos));
+                new ReadTask(gMap, poly, polyLineOptions, this).execute(getMapsApiDirectionsUrl(startLoc, SingleTon.destPos));
             }
         } else {
             LatLng cPos = new LatLng(SingleTon.myLocation.getLocation().getLatitude(), SingleTon.myLocation.getLocation().getLongitude());

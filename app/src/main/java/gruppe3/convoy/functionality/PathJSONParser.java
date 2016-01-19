@@ -20,7 +20,8 @@ import java.util.List;
 public class PathJSONParser {
 
     private String dist, dur, startAdress, endAdress;
-    private int seconds, time = 0, endTime, tempTime;
+    private int seconds, endTime, tempTime;
+    private double time = 0;
     private boolean restMode = false, found = false;
 
     public PathJSONParser(boolean restMode){
@@ -68,17 +69,17 @@ public class PathJSONParser {
                     /** Traversing all steps */
                     for (int k = 0; k < jSteps.length(); k++) {
                         // Hviletidssøgning
-                        time = time + (int) ((JSONObject) ((JSONObject) jSteps.get(k)).get("duration")).get("value");
+                        time = time + (int) ((JSONObject) ((JSONObject) jSteps.get(k)).get("duration")).get("value")*SingleTon.speedSetting;
                         Log.d("Hviletid" , "Time er: " + time + ", seconds er: " + seconds);
                         if (time >= seconds + 1200 && restMode){
                             if(!found){
                                 double lat = (double) ((JSONObject) ((JSONObject) jSteps.get(k-1)).get("end_location")).get("lat");
                                 double lng = (double) ((JSONObject) ((JSONObject) jSteps.get(k-1)).get("end_location")).get("lng");
                                 LatLng rest = new LatLng(lat, lng);
-                                SingleTon.destPos = rest;
+                                SingleTon.restPos = rest;
                                 // Hvis den beregnede tid er større end hviletiden stopper vi ruten der.
                                 Log.d("Hviletid" , "Ruten er færdigberegnet!");
-                                Log.d("Hviletid" , "Destinationen er: " + SingleTon.destPos.latitude + ", " + SingleTon.destPos.longitude);
+                                Log.d("Hviletid" , "Hviletidspositionen er: " + SingleTon.restPos.latitude + ", " + SingleTon.restPos.longitude);
                                 found = true;
                             }
                         } else {
@@ -98,7 +99,7 @@ public class PathJSONParser {
                             }
                         }
                         if(!found){
-                            endTime = time;
+                            endTime = (int) time;
                         }
                     }
                     routes.add(path);

@@ -130,14 +130,14 @@ public class ParserTask extends
             dur = dur + endDur[0] + " hour ";
             dur = dur + endDur[1] + " m";
         } else {
-            dur = endDur[1] + " mins";
+            dur = dur + endDur[1] + " mins";
         }
         Log.d("Parser" , dur);
         gMap.addMarker(new MarkerOptions().
-                position(SingleTon.destPos).
+                position(SingleTon.restPos).
                 title(dur)
-                .icon(BitmapDescriptorFactory.defaultMarker(210f))).showInfoWindow(); // Destinationsmarkeren har en anden farve en normale markers
-        gMap.animateCamera(CameraUpdateFactory.newLatLngZoom(SingleTon.destPos, 10));
+                .icon(BitmapDescriptorFactory.defaultMarker(210f))).showInfoWindow(); // Hviletidsmarkeren har en anden farve en normale markers
+        gMap.animateCamera(CameraUpdateFactory.newLatLngZoom(SingleTon.restPos, 10));
 //        poly = gMap.addPolyline(polyLineOptions);
     }
 }
