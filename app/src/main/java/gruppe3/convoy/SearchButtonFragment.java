@@ -109,8 +109,6 @@ public class SearchButtonFragment extends Fragment {
                             }
                             Log.d("Søgning", "Der blev fundet: " + SingleTon.searchedSpots.size() + " søgeresultater ud af: " + SingleTon.spots.size());
                         }
-                        progressDialog.setMessage("Found " + SingleTon.searchedSpots.size() + " spots. Retrieving map...");
-
                         return null;
                     }
 

@@ -54,7 +54,6 @@ public class GMapsFragment extends AppCompatActivity implements OnMapReadyCallba
 
     private Spot spot; // Det spot der er klikket på
     private ImageView goButton, zoomLocation, addLocation, homeButton;
-    //    private AddSpot addSpot; // Det spot der tilføjes
     private ClusterManager<ClusterMaker> mClusterManager;
     private Marker destMark;
     private Dialog addDialog;
@@ -68,6 +67,7 @@ public class GMapsFragment extends AppCompatActivity implements OnMapReadyCallba
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if(savedInstanceState==null){
+            SearchButtonFragment.progressDialog.setMessage("Found " + SingleTon.searchedSpots.size() + " spots. Retrieving map...");
             if (SingleTon.nightMode){
                 setContentView(R.layout.fragment_gmap_night);
             } else {
@@ -180,9 +180,10 @@ public class GMapsFragment extends AppCompatActivity implements OnMapReadyCallba
             public void onMapLongClick(LatLng latLng) {
                 Log.d("Kort", "Der klikkes med et langt tryk på kortet: " + latLng.latitude + ", " + latLng.longitude);
                 // Der zoomes hvis man er zoomet for langt ud
-                if (gMap.getCameraPosition().zoom < 13.5f) {
+                if (gMap.getCameraPosition().zoom < 14.5f) {
                     Log.d("Kort", "Der zoomes. Nuværende zoom: " + gMap.getCameraPosition().zoom);
-                    gMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, gMap.getCameraPosition().zoom + 1));
+                    gMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
+                    Toast.makeText(GMapsFragment.this, "Zoom not close enough.\n\nPress again to add location.", Toast.LENGTH_LONG).show();
                 } else {
                     // Ellers kan man tilføje et spot der hvor man har klikket
                     Log.d("Kort", "Der tilføjes et spot");
