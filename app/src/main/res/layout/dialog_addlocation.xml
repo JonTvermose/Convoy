@@ -119,7 +119,7 @@
                 android:layout_centerHorizontal="true"
                 android:layout_marginRight="16dp"
                 android:layout_marginLeft="16dp"
-                android:layout_marginBottom="16dp"
+                android:layout_marginBottom="8dp"
                 android:id="@+id/linearLayout2"
                 android:weightSum="3">
 
@@ -159,37 +159,31 @@
 
             <LinearLayout
                 android:orientation="horizontal"
-                android:layout_width="fill_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/linearLayout2"
                 android:layout_centerHorizontal="true"
+                android:layout_marginRight="16dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginBottom="8dp"
                 android:id="@+id/linearLayout3"
-                android:weightSum="3"
-                android:background="@drawable/knap_blaa_bg"
-                android:layout_margin="16dp">
+                >
 
-                <TextView
+
+                <ImageView
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
-                    android:text="Road train:"
-                    android:id="@+id/roadTrainTxt"
-                    android:fontFamily="sans-serif-medium"
-                    android:textSize="20dp"
-                    android:layout_margin="8dp"
-                    android:layout_marginLeft="8dp"
-
+                    android:layout_height="50dp"
+                    android:id="@+id/roadTrain_img"
+                    android:src="@drawable/roadtrain_txt_noback"
+                    android:layout_below="@+id/linearLayout2"
+                    android:elevation="2dp"
+                    android:background="@drawable/knap_blaa_bg"
+                    android:padding="4dp"
+                    android:scaleType="fitXY"
+                    android:adjustViewBounds="true"
+                    android:layout_centerHorizontal="true"
                     />
 
-                <Switch
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text=""
-                    android:id="@+id/loc_switch"
-                    android:background="@drawable/knap_blaa_bg"
-                    android:layout_marginRight="20dp"
-                    android:layout_marginTop="8dp"
-                    android:enabled="true"/>
 
             </LinearLayout>
 

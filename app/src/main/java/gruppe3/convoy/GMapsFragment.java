@@ -350,9 +350,7 @@ public class GMapsFragment extends AppCompatActivity implements OnMapReadyCallba
             ImageView food = (ImageView) dialog.findViewById(R.id.food_imageView);
             ImageView fuel = (ImageView) dialog.findViewById(R.id.fuel_imageView);
             ImageView wc = (ImageView) dialog.findViewById(R.id.wc_imageView);
-            Switch roadTrain = (Switch) dialog.findViewById(R.id.loc_switch);
-            roadTrain.setChecked(spot.isRoadtrain());
-            roadTrain.setEnabled(false);
+            ImageView roadTrain = (ImageView) dialog.findViewById(R.id.roadTrain_img);
             TextView name = (TextView) dialog.findViewById(R.id.inputLocName);
             String nameTxt = spot.getDesc();
             if (nameTxt.length() > 20){
@@ -361,6 +359,12 @@ public class GMapsFragment extends AppCompatActivity implements OnMapReadyCallba
             name.setText(nameTxt);
 
             // Sæt billederne afhængig af hvilken service der er tilgængelig på det pågældende spot
+            if (spot.isRoadtrain()) {
+                roadTrain.setVisibility(View.VISIBLE);
+                roadTrain.setSelected(false);
+            } else {
+                roadTrain.setVisibility(View.GONE);
+            }
             if (spot.isAdblue()) {
                 adblue.setImageResource(R.drawable.adblue_t_check);
                 adblue.setSelected(false);
@@ -587,11 +591,19 @@ public class GMapsFragment extends AppCompatActivity implements OnMapReadyCallba
             }
         });
 
-        Switch roadTrain = (Switch) addDialog.findViewById(R.id.loc_switch);
-        roadTrain.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        final ImageView roadTrain = (ImageView) addDialog.findViewById(R.id.roadTrain_img);
+        roadTrain.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                addSpot.roadTrain = isChecked;
+            public void onClick(View v) {
+                if (!addSpot.roadTrain) {
+                    addSpot.roadTrain = true;
+                    roadTrain.setImageResource(R.drawable.roadtrain_txt_noback_check);
+                    roadTrain.setSelected(true);
+                } else {
+                    addSpot.roadTrain = false;
+                    roadTrain.setImageResource(R.drawable.roadtrain_txt_noback);
+                    roadTrain.setSelected(false);
+                }
             }
         });
 
