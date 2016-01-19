@@ -177,12 +177,18 @@ public class GMapsFragment extends AppCompatActivity implements OnMapReadyCallba
             @Override
             public void onMapLongClick(LatLng latLng) {
                 Log.d("Kort", "Der klikkes med et langt tryk på kortet: " + latLng.latitude + ", " + latLng.longitude);
-                Vibrator vibe = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-                vibe.vibrate(50); // Vibrate for x milliseconds
-                Location loc = new Location("");
-                loc.setLatitude(latLng.latitude);
-                loc.setLongitude(latLng.longitude);
-                addLocation(new AddSpot(loc, GMapsFragment.this));
+                if(gMap.getCameraPosition().zoom < 13.5f){
+                    Log.d("Kort" , "Der zoomes. Nuværende zoom: " + gMap.getCameraPosition().zoom);
+                    gMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, gMap.getCameraPosition().zoom + 1));
+                } else {
+                    Log.d("Kort" , "Der tilføjes et spot");
+                    Vibrator vibe = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+                    vibe.vibrate(50); // Vibrate for x milliseconds
+                    Location loc = new Location("");
+                    loc.setLatitude(latLng.latitude);
+                    loc.setLongitude(latLng.longitude);
+                    addLocation(new AddSpot(loc, GMapsFragment.this));
+                }
             }
         });
 
