@@ -137,7 +137,15 @@ public class ParserTask extends
                 position(SingleTon.restPos).
                 title(dur)
                 .icon(BitmapDescriptorFactory.defaultMarker(210f))).showInfoWindow(); // Hviletidsmarkeren har en anden farve en normale markers
-        gMap.animateCamera(CameraUpdateFactory.newLatLngZoom(SingleTon.restPos, 10));
-//        poly = gMap.addPolyline(polyLineOptions);
+        float zoom = 0;
+        if (SingleTon.timer>=3){
+            zoom = 9;
+        } else if(SingleTon.timer >=1){
+            zoom = 10;
+        } else {
+            zoom = 12;
+        }
+        Log.d("Kort" , "Zoomlevel er: " + zoom);
+        gMap.animateCamera(CameraUpdateFactory.newLatLngZoom(SingleTon.restPos, zoom));
     }
 }
