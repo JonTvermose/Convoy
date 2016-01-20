@@ -23,7 +23,7 @@ public class Tutorial_akt extends FragmentActivity implements View.OnClickListen
             "When a destination has been selected, it is also possible to select a pause-timer for a truck spot near you, when you have to take your break.";
     private String settings1 = "In the settings menu you can choose whether or not you are driving with a road-train. Switch night mode on for a more pleasing color scheme during nighttime." +
             "If you become tired of setting your preferences in the main screen, you can save your preferences in this tab aswell.";
-    private String settings2 = "If your phone lower on power you can switch on the power-saving mode. " +
+    private String settings2 = "If your phone is low on power you can switch on the power-saving mode. " +
             "You can also set your average speed to better suit your vehicle of choice for a more accurate time calculation on the map.";
     private String map = "Here is your overview. It shows every truck spot in the world! It is possible to add your own truck spot at your location by pressing the icon in the upper right corner " +
             "or by pressing and holding on a selected area on the map if you want to add a spot somewhere else. ";
