@@ -1,9 +1,7 @@
 package gruppe3.convoy;
 
 
-import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.InflateException;
@@ -12,14 +10,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.NumberPicker;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.places.Place;
-import com.google.android.gms.location.places.ui.PlaceSelectionListener;
-import com.google.android.gms.location.places.ui.SupportPlaceAutocompleteFragment;
-import com.google.android.gms.maps.model.LatLng;
 
 import gruppe3.convoy.functionality.SingleTon;
 
@@ -45,12 +38,6 @@ public class AdvancedFragment extends Fragment implements NumberPicker.OnValueCh
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-//        if (rod!=null){
-//            ViewGroup parent = (ViewGroup) rod.getParent();
-//            if(parent!=null){
-//                parent.removeView(rod);
-//            }
-//        }
 
         System.out.println("Advanced onCreate");
 
@@ -69,16 +56,6 @@ public class AdvancedFragment extends Fragment implements NumberPicker.OnValueCh
                 .beginTransaction()
                 .add(R.id.autocompleteholder, new AutoCompleteFragment())
                 .commit();
-
-
-//
-//        autocompleteFragment = (SupportPlaceAutocompleteFragment)
-//                getChildFragmentManager().findFragmentById(R.id.autocomplete);
-//        System.out.println(autocompleteFragment);
-//        if(autocompleteFragment!=null){
-//            autocompleteFragment.getView().setVisibility(View.INVISIBLE); // Skal først være tilgængelig når startup er færdig
-//            autocompleteFragment.setOnPlaceSelectedListener(this);
-//        }
 
         timer = (NumberPicker) rod.findViewById(R.id.timer_numberPicker);
         hours = new String[24];
@@ -122,17 +99,6 @@ public class AdvancedFragment extends Fragment implements NumberPicker.OnValueCh
             enableNumberPicker();
         }
 
-        final Handler h = new Handler();
-        h.postDelayed(new Runnable(){
-            @Override
-            public void run() {
-                if(SingleTon.dataLoadDone){
-//                    autocompleteFragment.getView().setVisibility(View.VISIBLE);
-                }else {
-                    h.postDelayed(this, 100);
-                }
-            }
-        }, 100);
         return rod;
     }
 
@@ -204,29 +170,4 @@ public class AdvancedFragment extends Fragment implements NumberPicker.OnValueCh
             }
         }
     }
-
-//    @Override
-//    public void onPlaceSelected(Place place) {
-//        AdvancedFragment.this.place = place;
-//        // TODO: Get info about the selected place.
-//        Log.i("Advanced", "Id: " + place.getId());
-//        Log.i("Advanced", "Name: " + place.getName());
-//        Log.i("Advanced", "Address: " + place.getAddress());
-//        Log.i("Advanced", "Pos: " + place.getLatLng());
-//        SingleTon.hasDest = true;
-//        SingleTon.destPos = new LatLng(place.getLatLng().latitude, place.getLatLng().longitude);
-//        SingleTon.destAdress = place.getName().toString();
-//        SearchButtonFragment.search.setText("Find Truck Spot near destination"); // Ændrer tekst på search-knap
-//
-//        Log.i("Advanced", "var hasDest: " + SingleTon.hasDest);
-//        Log.i("Advanced", "var destPos: " + SingleTon.destPos.toString());
-//        ((TextView) rod.findViewById(R.id.destHead)).setText(place.getAddress());
-//
-//        enableNumberPicker(); // Aktiver numberpicker
-//    }
-//
-//    @Override
-//    public void onError(Status status) {
-//
-//    }
 }

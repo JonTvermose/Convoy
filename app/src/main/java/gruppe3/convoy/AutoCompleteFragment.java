@@ -3,12 +3,9 @@ package gruppe3.convoy;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -52,11 +49,9 @@ public class AutoCompleteFragment extends Fragment implements PlaceSelectionList
         autoReplace.setVisibility(View.INVISIBLE);
 
         System.out.println("Auto onCreate");
-        autocompleteFragment = (SupportPlaceAutocompleteFragment)
-                getChildFragmentManager().findFragmentById(R.id.autocomplete);
-//        System.out.println(autocompleteFragment);
-//            autocompleteFragment.getView().setVisibility(View.INVISIBLE); // Skal først være tilgængelig når startup er færdig
-            autocompleteFragment.setOnPlaceSelectedListener(this);
+        autocompleteFragment = (SupportPlaceAutocompleteFragment) getChildFragmentManager().findFragmentById(R.id.autocomplete);
+        autocompleteFragment.setOnPlaceSelectedListener(this);
+
         if (SingleTon.dataLoadDone){
             autocompleteFragment.getView().setVisibility(View.VISIBLE);
         } else {
@@ -75,18 +70,11 @@ public class AutoCompleteFragment extends Fragment implements PlaceSelectionList
                         .commit();
             }
         });
-
-
-
         return rod;
     }
 
     @Override
     public void onPlaceSelected(Place place) {
-        Log.i("Advanced", "Id: " + place.getId());
-        Log.i("Advanced", "Name: " + place.getName());
-        Log.i("Advanced", "Address: " + place.getAddress());
-        Log.i("Advanced", "Pos: " + place.getLatLng());
         SingleTon.hasDest = true;
         SingleTon.destPos = new LatLng(place.getLatLng().latitude, place.getLatLng().longitude);
         SingleTon.destAdress = place.getName().toString();
@@ -95,20 +83,8 @@ public class AutoCompleteFragment extends Fragment implements PlaceSelectionList
         autocompleteFragment.getView().setVisibility(View.INVISIBLE);
         autoReplace.setVisibility(View.VISIBLE);
 
-        Log.i("Advanced", "var hasDest: " + SingleTon.hasDest);
-        Log.i("Advanced", "var destPos: " + SingleTon.destPos.toString());
-
         autotekst.setText(place.getName());
         AdvancedFragment.enableNumberPicker();
-//        if(SingleTon.nightMode){
-//            System.out.println("NightMode "+getParentFragment().getView().findViewById(R.id.destHead));
-//            ((TextView) getParentFragment().getView().findViewById(R.id.destHead)).setText(place.getAddress());
-//        } else {
-//            System.out.println("DayMode "+getParentFragment().getView().findViewById(R.id.destHead));
-//            ((TextView) getParentFragment().getView().findViewById(R.id.destHead)).setText(place.getAddress());
-//        }
-
-//        enableNumberPicker(); // Aktiver numberpicker
     }
 
     @Override
