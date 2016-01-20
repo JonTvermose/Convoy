@@ -28,8 +28,9 @@
 
         <Button
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="32dp"
             android:text="Back"
+            android:background="@drawable/knap_tutorial"
             android:id="@+id/back"
             android:layout_gravity="left|bottom"
             android:alpha="1"
@@ -37,8 +38,9 @@
 
         <Button
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="32dp"
             android:text="Skip all"
+            android:background="@drawable/knap_tutorial"
             android:id="@+id/skipAll"
             android:layout_gravity="center|bottom"
             android:alpha="1"
@@ -46,8 +48,9 @@
 
         <Button
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="32dp"
             android:text="Next hint"
+            android:background="@drawable/knap_tutorial"
             android:id="@+id/next"
             android:layout_gravity="right|bottom"
             android:alpha="1"
@@ -70,8 +73,8 @@
             android:textColor="@color/orange_600"
             android:id="@+id/desc"
             android:layout_marginTop="16dp"
-            android:layout_marginLeft="12dp"
-            android:layout_marginRight="12dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
             android:layout_alignBottom="@+id/tutorialImage"
             android:layout_alignLeft="@+id/tutorialImage"
             android:layout_alignStart="@+id/tutorialImage"
