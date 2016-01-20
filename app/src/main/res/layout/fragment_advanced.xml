@@ -41,9 +41,8 @@
                 android:fontFamily="sans-serif-medium"
                 android:padding="8dp" />
 
-            <fragment
-                android:name="com.google.android.gms.location.places.ui.SupportPlaceAutocompleteFragment"
-                android:id="@+id/autocomplete"
+            <FrameLayout
+                android:id="@+id/autocompleteholder"
                 android:tag="autoC"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
