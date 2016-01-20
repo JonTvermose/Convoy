@@ -100,7 +100,7 @@ public class Tutorial_akt extends FragmentActivity implements View.OnClickListen
                 break;
             case 6:
                 finish();
-                this.overridePendingTransition(R.animator.fade_in, R.animator.fade_out);
+                this.overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
                 SharedPreferences.Editor prefs = PreferenceManager.getDefaultSharedPreferences(this).edit();
                 prefs.putBoolean("showTutorial", false).apply();
                 break;

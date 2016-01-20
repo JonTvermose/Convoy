@@ -117,7 +117,7 @@ public class SearchButtonFragment extends Fragment {
                         SingleTon.sensorManager.unregisterListener((SensorEventListener) getActivity()); // Vi afslutter sensorlytter når vi er i mapmode
                         Intent i = new Intent(getActivity(), GMapsFragment.class);
                         getActivity().startActivity(i);
-                        getActivity().overridePendingTransition(R.animator.fade_in2, R.animator.fade_out2);
+                        getActivity().overridePendingTransition(R.anim.fade_in2, R.anim.fade_out2);
                     }
                 }.execute();
             }

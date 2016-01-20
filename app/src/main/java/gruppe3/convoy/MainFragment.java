@@ -66,7 +66,7 @@ public class MainFragment extends Fragment {
             SingleTon.switchMode=false;
             getFragmentManager()
                     .beginTransaction()
-                    .setCustomAnimations(R.animator.fade_in, R.animator.fade_out)
+                    .setCustomAnimations(R.anim.fade_in, R.anim.fade_out)
                     .replace(R.id.mainBottomFragment, new SearchButtonFragment())
                     .commit();
         } else {
@@ -77,7 +77,7 @@ public class MainFragment extends Fragment {
                 }
                 getFragmentManager()
                         .beginTransaction()
-                        .setCustomAnimations(R.animator.fade_in, R.animator.fade_out)
+                        .setCustomAnimations(R.anim.fade_in, R.anim.fade_out)
                         .add(R.id.mainBottomFragment, new SearchButtonFragment())
                         .commit();
             } else {
@@ -159,14 +159,14 @@ public class MainFragment extends Fragment {
                                 } else {
                                     getFragmentManager()
                                             .beginTransaction()
-                                            .setCustomAnimations(R.animator.fade_in, R.animator.fade_out)
+                                            .setCustomAnimations(R.anim.fade_in, R.anim.fade_out)
                                             .replace(R.id.mainBottomFragment, new SearchButtonFragment())
                                             .commit();
                                     SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
                                     if(prefs.getBoolean("showTutorial", true)){
                                         Intent i = new Intent(getActivity(), Tutorial_akt.class);
                                         getActivity().startActivity(i);
-                                        getActivity().overridePendingTransition(R.animator.fade_in2, R.animator.fade_out2);
+                                        getActivity().overridePendingTransition(R.anim.fade_in2, R.anim.fade_out2);
                                     }
                                 }
                             } else {
