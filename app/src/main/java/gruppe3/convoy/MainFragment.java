@@ -50,7 +50,7 @@ public class MainFragment extends Fragment {
         // Inflate the layout for this fragment
 
 
-
+        System.out.println("MainFrag onCreate");
 
         // Instantiate a ViewPager and a PagerAdapter.
         mPager = (ViewPager) rod.findViewById(R.id.pager);
@@ -190,7 +190,8 @@ public class MainFragment extends Fragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        AdvancedFragment.autocompleteFragment.onActivityResult(requestCode, resultCode, data);
+        System.out.println("onActivityResult");
+        AutoCompleteFragment.autocompleteFragment.onActivityResult(requestCode, resultCode, data);
     }
 
 }
