@@ -29,6 +29,9 @@ public class PathJSONParser {
         seconds = SingleTon.timer * 60 * 60 + SingleTon.minutter * 60;
         double newSec = seconds/SingleTon.speedSetting;
         seconds = (int) newSec;
+        if(restMode){
+            SingleTon.restPos = SingleTon.destPos;
+        }
     }
 
 
