@@ -5,12 +5,16 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentActivity;
 import android.view.View;
+import android.view.animation.AccelerateInterpolator;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
+import android.view.animation.DecelerateInterpolator;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 
-public class Tutorial_akt extends FragmentActivity implements View.OnClickListener {
+public class Tutorial_akt extends FragmentActivity implements View.OnClickListener, Animation.AnimationListener {
     private Button back,skipAll, next;
     private TextView text;
     private int page = 1;
@@ -24,28 +28,41 @@ public class Tutorial_akt extends FragmentActivity implements View.OnClickListen
     private String map = "Here is your overview. It shows every truck spot in the world! It is possible to add your own truck spot at your location by pressing the icon in the upper right corner " +
             "or by pressing and holding on a selected area on the map if you want to add a spot somewhere else. ";
     private ImageView img;
+    private int images[] = {R.drawable.hovedskaerm1, R.drawable.destination, R.drawable.settings, R.drawable.settings, R.drawable.map};
+    private Animation fadeIn, fadeOut;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tutorial);
 
-        img = (ImageView) findViewById(R.id.tutorialImage);
+        if(savedInstanceState==null){
+            img = (ImageView) findViewById(R.id.tutorialImage);
+            next = (Button) findViewById(R.id.next);
+            next.setOnClickListener(this);
+            back = (Button) findViewById(R.id.back);
+            back.setOnClickListener(this);
+            skipAll = (Button) findViewById(R.id.skipAll);
+            skipAll.setOnClickListener(this);
+            text = (TextView) findViewById(R.id.desc);
+            img.setImageResource(R.drawable.hovedskaerm1);
+            text.setText(hovedskaerm);
+            back.setVisibility(View.GONE);
 
-        next = (Button) findViewById(R.id.next);
-        next.setOnClickListener(this);
-        back = (Button) findViewById(R.id.back);
-        back.setOnClickListener(this);
-        skipAll = (Button) findViewById(R.id.skipAll);
-        skipAll.setOnClickListener(this);
-        text = (TextView) findViewById(R.id.desc);
-
-        img.setImageResource(R.drawable.hovedskaerm1);
-        text.setText(hovedskaerm);
-        back.setVisibility(View.GONE);
+            int fadeDuration = 300;
+            fadeIn = new AlphaAnimation(0, 1);
+            fadeIn.setInterpolator(new DecelerateInterpolator());
+            fadeIn.setDuration(fadeDuration);
+            fadeOut = new AlphaAnimation(1, 0);
+            fadeOut.setInterpolator(new AccelerateInterpolator());
+            fadeOut.setDuration(fadeDuration);
+            fadeIn.setAnimationListener(this);
+            fadeOut.setAnimationListener(this);
+        }
     }
 
     @Override
     public void onClick(View v) {
+        img.startAnimation(fadeOut);
         if ( v == next) {
             if (page < 6)
                 page++;
@@ -56,23 +73,22 @@ public class Tutorial_akt extends FragmentActivity implements View.OnClickListen
             page = 6;
         }
         switch (page) {
-            case 1: img.setImageResource(R.drawable.hovedskaerm1);
+            case 1:
                 text.setText(hovedskaerm);
                 back.setVisibility(View.GONE);
                 break;
-            case 2: img.setImageResource(R.drawable.destination);
+            case 2:
                 text.setText(destination);
                 back.setVisibility(View.VISIBLE);
                 break;
-            case 3: img.setImageResource(R.drawable.settings);
+            case 3:
                 text.setText(settings1);
                 break;
-            case 4: img.setImageResource(R.drawable.settings);
+            case 4:
                 text.setText(settings2);
                 next.setText("Next hint");
                 break;
             case 5:
-                img.setImageResource(R.drawable.map);
                 next.setText("Finish");
                 text.setText(map);
                 break;
@@ -84,5 +100,23 @@ public class Tutorial_akt extends FragmentActivity implements View.OnClickListen
                 break;
             default: page = 1;
         }
+    }
+
+    @Override
+    public void onAnimationStart(Animation animation) {
+
+    }
+
+    @Override
+    public void onAnimationEnd(Animation animation) {
+        if(animation==fadeOut){
+            img.setImageResource(images[page-1]);
+            img.startAnimation(fadeIn);
+        }
+    }
+
+    @Override
+    public void onAnimationRepeat(Animation animation) {
+
     }
 }
