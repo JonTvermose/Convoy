@@ -61,6 +61,8 @@ public class SingleTon extends Application {
         Parse.initialize(this);
         Log.d("Data", "Parse initialiseret");
 
+        System.out.println("SingleTon onCreate");
+
         startBinding();
         Intent intent = new Intent(this, BoundService.class);
         bindService(intent, mConnection, Context.BIND_AUTO_CREATE);

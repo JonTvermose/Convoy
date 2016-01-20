@@ -119,6 +119,7 @@ public class MainFragment extends Fragment {
                             }
                             if (SingleTon.dataLoadDone) {
                                 //Opstartsproces er færdig - start sensorlytter og skift progressbar ud med Search-knap
+                                AutoCompleteFragment.autocompleteFragment.getView().setVisibility(View.VISIBLE);
                                 SingleTon.session = true;
                                 ProgressFragment.progressBar.setProgress(100);
                                 if (!SingleTon.powerSaving) {

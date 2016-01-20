@@ -27,14 +27,15 @@ import gruppe3.convoy.functionality.SingleTon;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class AdvancedFragment extends Fragment implements NumberPicker.OnValueChangeListener, View.OnClickListener, PlaceSelectionListener {
+public class AdvancedFragment extends Fragment implements NumberPicker.OnValueChangeListener, View.OnClickListener{
 
-    private NumberPicker timer,minutter;
+    private static NumberPicker timer;
+    private static NumberPicker minutter;
     private String[] hours,mins;
     private View rod;
-    private LinearLayout line;
+    private static LinearLayout line;
 
-    public static SupportPlaceAutocompleteFragment autocompleteFragment;
+//    public static SupportPlaceAutocompleteFragment autocompleteFragment;
     private Place place;
 
     public AdvancedFragment() {
@@ -117,7 +118,7 @@ public class AdvancedFragment extends Fragment implements NumberPicker.OnValueCh
             disableNumberPicker(); // Låser numberPicker indtil der er indtastet en gyldig destination
         } else {
             Log.d("Advanced", "Destination nulstilles ikke");
-            this.onPlaceSelected(place);
+//            this.onPlaceSelected(place);
             enableNumberPicker();
         }
 
@@ -164,7 +165,7 @@ public class AdvancedFragment extends Fragment implements NumberPicker.OnValueCh
     }
 
     // Aktiver scroll-hjulet med antal tid tilbage
-    private void enableNumberPicker(){
+    public static void enableNumberPicker(){
         line.setAlpha(1);
         timer.setEnabled(true);
         minutter.setEnabled(true);
@@ -177,7 +178,7 @@ public class AdvancedFragment extends Fragment implements NumberPicker.OnValueCh
     }
 
     // Deaktiver scroll-hjulet med antal tid tilbage
-    private void disableNumberPicker(){
+    public static void disableNumberPicker(){
         line.setAlpha(0.5f);
         timer.setValue(SingleTon.timer);
         minutter.setValue(SingleTon.minutter/5);
@@ -204,28 +205,28 @@ public class AdvancedFragment extends Fragment implements NumberPicker.OnValueCh
         }
     }
 
-    @Override
-    public void onPlaceSelected(Place place) {
-        AdvancedFragment.this.place = place;
-        // TODO: Get info about the selected place.
-        Log.i("Advanced", "Id: " + place.getId());
-        Log.i("Advanced", "Name: " + place.getName());
-        Log.i("Advanced", "Address: " + place.getAddress());
-        Log.i("Advanced", "Pos: " + place.getLatLng());
-        SingleTon.hasDest = true;
-        SingleTon.destPos = new LatLng(place.getLatLng().latitude, place.getLatLng().longitude);
-        SingleTon.destAdress = place.getName().toString();
-        SearchButtonFragment.search.setText("Find Truck Spot near destination"); // Ændrer tekst på search-knap
-
-        Log.i("Advanced", "var hasDest: " + SingleTon.hasDest);
-        Log.i("Advanced", "var destPos: " + SingleTon.destPos.toString());
-        ((TextView) rod.findViewById(R.id.destHead)).setText(place.getAddress());
-
-        enableNumberPicker(); // Aktiver numberpicker
-    }
-
-    @Override
-    public void onError(Status status) {
-
-    }
+//    @Override
+//    public void onPlaceSelected(Place place) {
+//        AdvancedFragment.this.place = place;
+//        // TODO: Get info about the selected place.
+//        Log.i("Advanced", "Id: " + place.getId());
+//        Log.i("Advanced", "Name: " + place.getName());
+//        Log.i("Advanced", "Address: " + place.getAddress());
+//        Log.i("Advanced", "Pos: " + place.getLatLng());
+//        SingleTon.hasDest = true;
+//        SingleTon.destPos = new LatLng(place.getLatLng().latitude, place.getLatLng().longitude);
+//        SingleTon.destAdress = place.getName().toString();
+//        SearchButtonFragment.search.setText("Find Truck Spot near destination"); // Ændrer tekst på search-knap
+//
+//        Log.i("Advanced", "var hasDest: " + SingleTon.hasDest);
+//        Log.i("Advanced", "var destPos: " + SingleTon.destPos.toString());
+//        ((TextView) rod.findViewById(R.id.destHead)).setText(place.getAddress());
+//
+//        enableNumberPicker(); // Aktiver numberpicker
+//    }
+//
+//    @Override
+//    public void onError(Status status) {
+//
+//    }
 }

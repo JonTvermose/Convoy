@@ -7,6 +7,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.google.android.gms.common.api.Status;
@@ -26,6 +30,9 @@ public class AutoCompleteFragment extends Fragment implements PlaceSelectionList
     private View rod;
     public static SupportPlaceAutocompleteFragment autocompleteFragment;
     private Place place;
+    private static TextView autotekst;
+    private static ImageView autoClose;
+    private static LinearLayout autoReplace;
 
 
     public AutoCompleteFragment() {
@@ -39,12 +46,37 @@ public class AutoCompleteFragment extends Fragment implements PlaceSelectionList
         // Inflate the layout for this fragment
         rod = inflater.inflate(R.layout.fragment_auto_complete, container, false);
 
+        autotekst = (TextView) rod.findViewById(R.id.autoText);
+        autoClose = (ImageView) rod.findViewById(R.id.autoClose);
+        autoReplace = (LinearLayout) rod.findViewById(R.id.autoReplace);
+        autoReplace.setVisibility(View.INVISIBLE);
+
         System.out.println("Auto onCreate");
         autocompleteFragment = (SupportPlaceAutocompleteFragment)
                 getChildFragmentManager().findFragmentById(R.id.autocomplete);
 //        System.out.println(autocompleteFragment);
 //            autocompleteFragment.getView().setVisibility(View.INVISIBLE); // Skal først være tilgængelig når startup er færdig
             autocompleteFragment.setOnPlaceSelectedListener(this);
+        if (SingleTon.dataLoadDone){
+            autocompleteFragment.getView().setVisibility(View.VISIBLE);
+        } else {
+            autocompleteFragment.getView().setVisibility(View.INVISIBLE);
+        }
+
+        autoClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SingleTon.hasDest=false;
+                AdvancedFragment.disableNumberPicker();
+                SearchButtonFragment.search.setText("Find Truck Stop");
+                getFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.autocompleteholder, new AutoCompleteFragment())
+                        .commit();
+            }
+        });
+
+
 
         return rod;
     }
@@ -58,17 +90,23 @@ public class AutoCompleteFragment extends Fragment implements PlaceSelectionList
         SingleTon.hasDest = true;
         SingleTon.destPos = new LatLng(place.getLatLng().latitude, place.getLatLng().longitude);
         SingleTon.destAdress = place.getName().toString();
-        SearchButtonFragment.search.setText("Find Truck Spot near destination"); // Ændrer tekst på search-knap
+        SearchButtonFragment.search.setText("Find Truck Stop near destination"); // Ændrer tekst på search-knap
+
+        autocompleteFragment.getView().setVisibility(View.INVISIBLE);
+        autoReplace.setVisibility(View.VISIBLE);
 
         Log.i("Advanced", "var hasDest: " + SingleTon.hasDest);
         Log.i("Advanced", "var destPos: " + SingleTon.destPos.toString());
-        if(SingleTon.nightMode){
-            System.out.println("NightMode "+getParentFragment().getView().findViewById(R.id.destHead));
-            ((TextView) getParentFragment().getView().findViewById(R.id.destHead)).setText(place.getAddress());
-        } else {
-            System.out.println("DayMode "+getParentFragment().getView().findViewById(R.id.destHead));
-            ((TextView) getParentFragment().getView().findViewById(R.id.destHead)).setText(place.getAddress());
-        }
+
+        autotekst.setText(place.getName());
+        AdvancedFragment.enableNumberPicker();
+//        if(SingleTon.nightMode){
+//            System.out.println("NightMode "+getParentFragment().getView().findViewById(R.id.destHead));
+//            ((TextView) getParentFragment().getView().findViewById(R.id.destHead)).setText(place.getAddress());
+//        } else {
+//            System.out.println("DayMode "+getParentFragment().getView().findViewById(R.id.destHead));
+//            ((TextView) getParentFragment().getView().findViewById(R.id.destHead)).setText(place.getAddress());
+//        }
 
 //        enableNumberPicker(); // Aktiver numberpicker
     }
@@ -77,4 +115,5 @@ public class AutoCompleteFragment extends Fragment implements PlaceSelectionList
     public void onError(Status status) {
 
     }
+
 }

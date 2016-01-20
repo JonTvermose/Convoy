@@ -11,4 +11,32 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginRight="8dp"
+        android:layout_marginLeft="8dp"
+        android:id="@+id/autoReplace">
+
+        <TextView
+            android:layout_width="0px"
+            android:layout_height="wrap_content"
+            android:text="New Text"
+            android:id="@+id/autoText"
+            android:textSize="18sp"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="9"/>
+
+        <ImageView
+            android:layout_width="0px"
+            android:layout_height="match_parent"
+            android:text="New Search"
+            android:textSize="12sp"
+            android:id="@+id/autoClose"
+            android:layout_weight="1"
+            android:src="@drawable/ic_clear_black_48dp"/>
+    </LinearLayout>
+
+
 </FrameLayout>
