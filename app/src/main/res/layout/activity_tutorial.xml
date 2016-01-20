@@ -63,13 +63,15 @@
             android:layout_gravity="center_horizontal|top" />
 
         <TextView
-            android:layout_width="351dp"
+            android:layout_width="match_parent"
             android:layout_height="139dp"
             android:text="In the settings menu you can choose whether or not you are driving with a road-train. Switch night mode on for a more pleasing color scheme during nighttime. If you become tired of setting your preferences in the main screen, you can save your preferences in this tab aswell."
             android:textSize="16dp"
             android:textColor="@color/orange_600"
             android:id="@+id/desc"
             android:layout_marginTop="16dp"
+            android:layout_marginLeft="12dp"
+            android:layout_marginRight="12dp"
             android:layout_alignBottom="@+id/tutorialImage"
             android:layout_alignLeft="@+id/tutorialImage"
             android:layout_alignStart="@+id/tutorialImage"

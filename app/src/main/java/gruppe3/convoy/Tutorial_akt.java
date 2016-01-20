@@ -18,15 +18,14 @@ public class Tutorial_akt extends FragmentActivity implements View.OnClickListen
     private Button back,skipAll, next;
     private TextView text, hints;
     private int page = 1;
-    private String hovedskaerm = "Welcome to Convoy! This is your home screen! Here you can select your truck stop preferences.";
-    private String destination = "If you need to go somewhere, this page will help you search for truck stops in the area near your destination. " +
+    private String hovedskaerm = "Welcome to the Convoy tutorial!\nThis is your home screen. Here you can select your truck stop preferences.";
+    private String destination = "If you are looking for truck stops near your destination, then this screen can help you do that. " +
             "When a destination has been selected, it is also possible to select a pause-timer for a truck spot near you, when you have to take your break.";
-    private String settings1 = "In the settings menu you can choose whether or not you are driving with a road-train. Switch night mode on for a more pleasing color scheme during nighttime." +
-            "If you become tired of setting your preferences in the main screen, you can save your preferences in this tab aswell.";
+    private String settings1 = "In the settings menu you can choose whether or not you are driving with a road-train. Switch night mode on for a more pleasing color scheme during nighttime or simply shake your phone.";
     private String settings2 = "If your phone is low on power you can switch on the power-saving mode. " +
             "You can also set your average speed to better suit your vehicle of choice for a more accurate time calculation on the map.";
-    private String map = "Here is your overview. It shows every truck spot in the world! It is possible to add your own truck spot at your location by pressing the icon in the upper right corner " +
-            "or by pressing and holding on a selected area on the map if you want to add a spot somewhere else. ";
+    private String map = "This is the map overview. It shows all truck stops in the database matching your search criteria. You can add a truck stop at your location by pressing the icon in the upper right corner " +
+            "or by pressing and holding on a selected area on the map.";
     private ImageView img;
     private int images[] = {R.drawable.hovedskaerm1, R.drawable.destination, R.drawable.settings, R.drawable.settings, R.drawable.map};
     private Animation fadeIn, fadeOut;
