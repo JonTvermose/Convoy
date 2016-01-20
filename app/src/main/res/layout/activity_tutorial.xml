@@ -22,8 +22,8 @@
         android:layout_height="210dp"
         android:layout_centerHorizontal="true"
         android:layout_alignBottom="@+id/tutorialImage"
-        android:background="@color/black"
-        android:alpha="0.9">
+        android:background="#B3000000"
+        >
 
 
         <Button
@@ -54,18 +54,27 @@
             android:layout_margin="16dp"/>
 
         <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Hint 1/6"
+            android:textColor="@color/orange_600"
+            android:id="@+id/hints"
+            android:layout_marginTop="8dp"
+            android:layout_gravity="center_horizontal|top" />
+
+        <TextView
             android:layout_width="351dp"
-            android:layout_height="112dp"
-            android:text="Welcome to Convoy! This is your home screen! Here you can select your truck stop preferences."
+            android:layout_height="139dp"
+            android:text="In the settings menu you can choose whether or not you are driving with a road-train. Switch night mode on for a more pleasing color scheme during nighttime. If you become tired of setting your preferences in the main screen, you can save your preferences in this tab aswell."
             android:textSize="16dp"
             android:textColor="@color/orange_600"
             android:id="@+id/desc"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="16dp"
             android:layout_alignBottom="@+id/tutorialImage"
             android:layout_alignLeft="@+id/tutorialImage"
             android:layout_alignStart="@+id/tutorialImage"
             android:layout_gravity="center_horizontal|top"
-            android:gravity="center"
+            android:gravity="center_vertical"
             android:alpha="1"/>
     </FrameLayout>
 
