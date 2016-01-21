@@ -1,8 +1,6 @@
 package gruppe3.convoy;
 
 import android.Manifest;
-import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.hardware.Sensor;
@@ -18,8 +16,6 @@ import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.widget.Toast;
 
-import gruppe3.convoy.functionality.BoundService;
-import gruppe3.convoy.functionality.Serialisering;
 import gruppe3.convoy.functionality.SingleTon;
 
 
@@ -33,7 +29,6 @@ public class Main extends FragmentActivity implements SensorEventListener {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         if (ContextCompat.checkSelfPermission(this,
                 Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
@@ -66,7 +61,6 @@ public class Main extends FragmentActivity implements SensorEventListener {
 
             startApp();
         }
-
     }
 
     private void startApp(){
@@ -75,7 +69,8 @@ public class Main extends FragmentActivity implements SensorEventListener {
                 .beginTransaction()
                 .add(R.id.MainFragment, new MainFragment())
                 .setTransitionStyle(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
-                .commit();
+                .commitAllowingStateLoss();
+//                .commit();
     }
 
     @Override
@@ -133,7 +128,10 @@ public class Main extends FragmentActivity implements SensorEventListener {
     protected void onResume(){
         Log.d("Debug", "Main.onResume() er kaldt. Appen er aktiv!");
         super.onResume();
-        SingleTon.myLocation.startLocationService(this);
+        if(SingleTon.myLocation != null){
+            SingleTon.myLocation.startLocationService(this);
+            Log.d("Stedbestemmelse", "Starter stedbestemmelse.");
+        }
         lastShaken = System.currentTimeMillis();
         // Start først sensorlytter hvis vi ikke er igang med at loade data
         if (SingleTon.accelerometer!= null && SingleTon.dataLoadDone && !SingleTon.powerSaving){
