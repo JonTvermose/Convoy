@@ -26,9 +26,9 @@ public class PathJSONParser {
 
     public PathJSONParser(boolean restMode){
         this.restMode = restMode;
-        seconds = SingleTon.timer * 60 * 60 + SingleTon.minutter * 60;
-        double newSec = seconds/SingleTon.speedSetting;
-        seconds = (int) newSec;
+        seconds = (SingleTon.timer * 60 * 60) + (SingleTon.minutter * 60);
+//        double newSec = seconds/SingleTon.speedSetting;
+//        seconds = (int) newSec;
         if(restMode){
             SingleTon.restPos = SingleTon.destPos;
         }
@@ -81,7 +81,7 @@ public class PathJSONParser {
                                 LatLng rest = new LatLng(lat, lng);
                                 SingleTon.restPos = rest;
                                 // Hvis den beregnede tid er større end hviletiden stopper vi ruten der.
-                                Log.d("Hviletid" , "Ruten er færdigberegnet!");
+                                Log.d("Hviletid" , "Ruten er færdigberegnet! " + k);
                                 Log.d("Hviletid" , "Hviletidspositionen er: " + SingleTon.restPos.latitude + ", " + SingleTon.restPos.longitude);
                                 found = true;
                             }
