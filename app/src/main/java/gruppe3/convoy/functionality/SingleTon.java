@@ -62,6 +62,8 @@ public class SingleTon extends Application {
         Log.d("Data", "Parse initialiseret");
 
         System.out.println("SingleTon onCreate");
+        SingleTon.sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
+        SingleTon.accelerometer = SingleTon.sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
 
         startBinding();
         Intent intent = new Intent(this, BoundService.class);

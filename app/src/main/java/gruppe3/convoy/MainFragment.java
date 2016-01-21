@@ -93,7 +93,6 @@ public class MainFragment extends Fragment {
                         .beginTransaction()
                         .add(R.id.mainBottomFragment, new ProgressFragment())
                         .commit();
-
                 SingleTon.myLocation = new MyLocation();
                 SingleTon.myLocation.startLocationService(getActivity()); // Starter stedbestemmelse
                 Log.d("Stedbestemmelse", "App starter");

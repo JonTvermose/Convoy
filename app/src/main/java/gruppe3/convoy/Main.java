@@ -56,8 +56,6 @@ public class Main extends FragmentActivity implements SensorEventListener {
         } else {
             // Hvis vi har tilladelse i orden startes maps bare
             Log.d("Access", "ACCESS_FINE_LOCATION er ok");
-            SingleTon.sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
-            SingleTon.accelerometer = SingleTon.sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
 
             startApp();
         }
