@@ -8,19 +8,14 @@ import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
-import android.net.ConnectivityManager;
 import android.os.Handler;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
 import com.google.android.gms.maps.model.LatLng;
-import com.parse.Parse;
 
-import java.io.File;
 import java.util.ArrayList;
-
-import gruppe3.convoy.Main;
 
 /**
  * Created by Jon on 06/01/2016.
@@ -42,24 +37,15 @@ public class SingleTon extends Application {
     public static BoundService mService;
     public static ServiceConnection mConnection;
     public static boolean mBound = false;
-    static ArrayList<Spot> spotsDb;
     public static double speedSetting;
-    private File spotsFile;
-    private static ArrayList<Spot> output = null;
     public static boolean hentetLokal=false;
     public static boolean hentetDb=false;
     public static boolean isConnected = true;
-
-    public static SingleTon getInstance() {
-        return ourInstance;
-    }
 
     @Override
     public void onCreate(){
         super.onCreate();
         Log.d("Data", "SingleTon OnCreate");
-        Parse.initialize(this);
-        Log.d("Data", "Parse initialiseret");
 
         System.out.println("SingleTon onCreate");
         SingleTon.sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
@@ -133,15 +119,12 @@ public class SingleTon extends Application {
     }
 
     public static void hentSpotsLocal(final String name){
-
         final Handler h = new Handler();
         h.postDelayed(new Runnable() {
             @Override
             public void run() {
                 if (SingleTon.mBound) {
-                    System.out.println("if sætning");
                     mService.hent(name);
-
                 } else {
                     h.postDelayed(this, 100);
                 }
@@ -155,7 +138,6 @@ public class SingleTon extends Application {
             @Override
             public void run() {
                 if (SingleTon.mBound) {
-//                    System.out.println("if sætning");
                     mService.gem(spotsListe, name);
                 } else {
                     h.postDelayed(this, 100);
@@ -164,24 +146,21 @@ public class SingleTon extends Application {
         }, 100);
     }
 
-
-    public static void hentSpotsDb(final String created){
+    /**
+     * Kaldes når brugeren tilføjer et spot. Spottet skal uploades til REST serveren.
+     * @param newSpot
+     */
+    public static void addSpot(final Spot newSpot) {
         final Handler h = new Handler();
         h.postDelayed(new Runnable() {
             @Override
             public void run() {
                 if (SingleTon.mBound) {
-//                    System.out.println("if sætning");
-//                    mService.hentFraDb(created);
+                    mService.uploadSpot(newSpot);
                 } else {
                     h.postDelayed(this, 100);
                 }
             }
         }, 100);
     }
-
-    public void gemSpotsDb(){
-
-    }
-
 }

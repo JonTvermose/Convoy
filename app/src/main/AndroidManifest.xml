@@ -35,12 +35,6 @@
         </activity>
 
         <meta-data
-            android:name="com.parse.APPLICATION_ID"
-            android:value="YYSElHDSVWLSystPdP0ghkc3ffmXQ1Kg2Md80OP8" />
-        <meta-data
-            android:name="com.parse.CLIENT_KEY"
-            android:value="CLWMKS8Aaidke7l2qiXvcjfULx7qWBUMwNqpDICc" />
-        <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyCZSGpLIQ6JUmEJsj8TexBJMdrVZ-mwu40" />
 

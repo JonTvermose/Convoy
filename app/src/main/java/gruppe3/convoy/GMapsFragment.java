@@ -35,9 +35,6 @@ import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.maps.android.clustering.Cluster;
 import com.google.maps.android.clustering.ClusterManager;
-import com.parse.ParseObject;
-
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 
@@ -685,19 +682,7 @@ public class GMapsFragment extends AppCompatActivity implements OnMapReadyCallba
                 Spot newSpot = new Spot(name, addSpot.adblue, addSpot.food, addSpot.bath, addSpot.bed, addSpot.wc, addSpot.fuel, addSpot.roadTrain, String.valueOf(latLng.latitude), String.valueOf(latLng.longitude));
                 SingleTon.searchedSpots.add(newSpot);
 
-                // Uploader data til Parse.com
-                ParseObject parseSpot = new ParseObject("Spots1");
-                parseSpot.put("adblue", newSpot.isAdblue());
-                parseSpot.put("bath", newSpot.isBath());
-                parseSpot.put("bed", newSpot.isBed());
-                parseSpot.put("food", newSpot.isFood());
-                parseSpot.put("fuel", newSpot.isFuel());
-                parseSpot.put("roadtrain", newSpot.isRoadtrain());
-                parseSpot.put("wc", newSpot.isWc());
-                parseSpot.put("desc", newSpot.getDesc());
-                parseSpot.put("posLat", newSpot.getLat());
-                parseSpot.put("posLng", newSpot.getLng());
-                parseSpot.saveEventually();
+                SingleTon.addSpot(newSpot); // TODO - upload det tilføjede spot til REST serveren
             }
         });
     }
