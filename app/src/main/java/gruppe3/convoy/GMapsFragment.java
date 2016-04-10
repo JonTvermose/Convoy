@@ -680,9 +680,10 @@ public class GMapsFragment extends AppCompatActivity implements OnMapReadyCallba
                 }
                 // Tilføjer spot til den hentede liste af spots, så det har samme funktionalitet som alle andre spots
                 Spot newSpot = new Spot(name, addSpot.adblue, addSpot.food, addSpot.bath, addSpot.bed, addSpot.wc, addSpot.fuel, addSpot.roadTrain, String.valueOf(latLng.latitude), String.valueOf(latLng.longitude));
+                newSpot.setDeleted(false);
                 SingleTon.searchedSpots.add(newSpot);
 
-                SingleTon.addSpot(newSpot); // TODO - upload det tilføjede spot til REST serveren
+                SingleTon.addSpot(newSpot); // TODO - upload det tilføjede spot til REST serveren (asynkront)
             }
         });
     }

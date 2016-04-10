@@ -1,14 +1,15 @@
 package gruppe3.convoy.functionality;
 
-import com.google.android.gms.maps.model.LatLng;
-import com.parse.ParseObject;
-
 import java.io.Serializable;
 
 /**
  * Created by Jon on 25/11/2015.
  */
 public class Spot implements Serializable {
+
+    private int id;
+    private long lastUpdated;
+    private boolean deleted;
 
     private String lat;
     private String lng;
@@ -20,25 +21,8 @@ public class Spot implements Serializable {
     private boolean fuel;
     private boolean roadtrain;
     private String desc;
-    private String createdAt;
-
-    public Spot(String desc, boolean adblue, boolean food, boolean bath, boolean bed, boolean wc, boolean fuel, boolean roadtrain, String createdAt, String lat, String lng) {
-
-        this.desc = desc;
-        this.setAdblue(adblue);
-        this.setFood(food);
-        this.setBath(bath);
-        this.setBed(bed);
-        this.setWc(wc);
-        this.setFuel(fuel);
-        this.setRoadtrain(roadtrain);
-        this.createdAt = createdAt;
-        this.setLat(lat);
-        this.setLng(lng);
-    }
 
     public Spot(String desc, boolean adblue, boolean food, boolean bath, boolean bed, boolean wc, boolean fuel, boolean roadtrain, String lat, String lng) {
-
         this.desc = desc;
         this.setAdblue(adblue);
         this.setFood(food);
@@ -47,14 +31,24 @@ public class Spot implements Serializable {
         this.setWc(wc);
         this.setFuel(fuel);
         this.setRoadtrain(roadtrain);
-        this.createdAt = createdAt;
         this.setLat(lat);
         this.setLng(lng);
     }
 
-    public String getCreatedAt() { return createdAt; }
-
-    public void setCreatedAt(String createdAt) { this.createdAt = createdAt; }
+    public Spot(int id, boolean addBlue, boolean food, boolean wc, boolean bed, boolean bath, boolean roadtrain, double longitude, double latitude, String desc, int lastUpdated, boolean deleted) {
+        this.id = id;
+        this.lastUpdated = lastUpdated;
+        this.deleted = deleted;
+        this.adblue = addBlue;
+        this.food = food;
+        this.wc = wc;
+        this.bed = bed;
+        this.bath = bath;
+        this.roadtrain = roadtrain;
+        this.lng = Double.toString(longitude);
+        this.lat = Double.toString(latitude);
+        this.desc = desc;
+    }
 
     public String getDesc(){
         return desc;
@@ -118,6 +112,30 @@ public class Spot implements Serializable {
         this.wc = wc;
     }
 
+    public long getLastUpdated() {
+        return lastUpdated;
+    }
+
+    public void setLastUpdated(long lastUpdated) {
+        this.lastUpdated = lastUpdated;
+    }
+
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
     public boolean isFuel() {
         return fuel;
     }
@@ -132,21 +150,5 @@ public class Spot implements Serializable {
 
     public void setRoadtrain(boolean roadtrain) {
         this.roadtrain = roadtrain;
-    }
-
-    public void pushToDB(){
-        ParseObject spotObject = new ParseObject("Spots");
-        spotObject.put("desc", desc);
-        spotObject.put("adblue", adblue);
-        spotObject.put("food", food);
-        spotObject.put("bath", bath);
-        spotObject.put("bed", bed);
-        spotObject.put("wc", wc);
-        spotObject.put("fuel", fuel);
-        spotObject.put("roadtrain", roadtrain);
-        spotObject.put("posLat", lat);
-        spotObject.put("posLng", lng);
-        spotObject.put("createdAt", createdAt);
-        spotObject.saveInBackground();
     }
 }

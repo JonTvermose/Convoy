@@ -7,6 +7,7 @@ import android.os.Binder;
 import android.os.IBinder;
 import android.util.Log;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -52,8 +53,18 @@ public class BoundService extends Service{
             public void run() {
                 HashMap<String, String> params = new HashMap<>();
                 params.put("adBlue", Boolean.toString(newSpot.isAdblue()));
+                params.put("roadTrain", Boolean.toString(newSpot.isRoadtrain()));
+                params.put("wc", Boolean.toString(newSpot.isWc()));
+                params.put("food", Boolean.toString(newSpot.isFood()));
+                params.put("bath", Boolean.toString(newSpot.isBath()));
+                params.put("bed", Boolean.toString(newSpot.isBed()));
+                params.put("fuel", Boolean.toString(newSpot.isFuel()));
+                params.put("deleted", Boolean.toString(newSpot.isDeleted()));
+                params.put("longitude", newSpot.getLng());
+                params.put("latitude", newSpot.getLat());
+                params.put("name", newSpot.getDesc());
                 // ... etc
-                // TODO - Tilføj alle nødvendige parametre
+                // TODO - Tilføj alle nødvendige parametre med korrekte keys
 
                 String postUrl = BoundService.this.CONVOYSPOTSURL + "/ADDSPOT";// TODO - hvad er den korrekte POST url?
                 BoundService.this.performPostCall(postUrl , params);
@@ -251,9 +262,9 @@ public class BoundService extends Service{
                     Log.d("Error closing url", e.toString());
                 }
 
-                JSONObject spotsListe = null;
+                JSONArray spotsListe = null;
                 try {
-                    spotsListe = new JSONObject(data);
+                    spotsListe = new JSONArray(data);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -264,7 +275,7 @@ public class BoundService extends Service{
                     for(Spot updSpot : updSpots) {
                         boolean updated = false;
                         for(int i=0; i<SingleTon.spots.size(); i++){
-                            if(SingleTon.spots.get(i).getId == updSpot.getId) { // Hvis updSpot allerede findes i klienten, opdateres klienten med det nye spot
+                            if(SingleTon.spots.get(i).getId() == updSpot.getId()) { // Hvis updSpot allerede findes i klienten, opdateres klienten med det nye spot
                                 SingleTon.spots.remove(i);
                                 SingleTon.spots.add(updSpot);
                                 updated = true;
