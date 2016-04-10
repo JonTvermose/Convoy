@@ -13,6 +13,7 @@ import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -93,12 +94,20 @@ public class BoundService extends Service{
         final String fileName = this.getFilesDir() + "/"+filnavn+".ser";
         new Thread(new Runnable() {
             public void run() {
+                // Først slettes den eksisterende fil (hvis den findes)
+                File fil = new File(fileName);
+                if (fil.delete()) {
+                    System.out.println("Slettet fil fra telefon.");
+                } else {
+                    System.out.println("Fil kunne ikke slettes fra telefon. Måske findes den ikke?");
+                }
                 try {
+                    // Dernæst skrives en ny kopi af filen der indeholder de opdaterede ændringer.
                     FileOutputStream datastream = new FileOutputStream(fileName);
                     ObjectOutputStream objektstream = new ObjectOutputStream(datastream);
                     objektstream.writeObject(obj);
                     objektstream.close();
-                    System.out.println("Skrevet til telefonen");
+                    System.out.println("Skrevet fil til telefonen");
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -200,15 +209,11 @@ public class BoundService extends Service{
                 if(SingleTon.isConnected){
                     if(spotsLokal==null){
                         System.out.println("Internet, men ingen lokal data");
-                        hentFraDb(0);
+                        hentFraDb(0); // Tiden 0 sendes idet alle spots ønskes hentet fra serveren
                     } else {
                         System.out.println("Internet og lokal data");
-                        if(spotsLokal != null){
-                            System.out.println("antal spots før: " + spotsLokal.size());
-                        } else {
-                            System.out.println("ingen spots på telefonen");
-                        }
-                        hentFraDb(spotsLokal.size()); // TODO - Her skal sendes hvornår spots sidst er blevet opdateret!
+                        System.out.println("antal spots før: " + spotsLokal.size());
+                        hentFraDb(123456789); // TODO - Her skal sendes hvornår spots sidst er blevet opdateret på klienten!
                     }
                 } else {
                     System.out.println("Hverken internet eller lokal data");
@@ -270,7 +275,7 @@ public class BoundService extends Service{
                 }
                 if(SingleTon.spots==null) { // Hvis klienten er tom, tilføjes alle spots
                     SingleTon.spots = new SpotsJSONParser().parse(spotsListe); // Parser JSON til en ArrayList<Spot>
-                } else {
+                } else { // Ellers opdateres klientens spots med de ændringer der er foretaget, og eventuelle nye spots tilføjes
                     ArrayList<Spot> updSpots = new SpotsJSONParser().parse(spotsListe);
                     for(Spot updSpot : updSpots) {
                         boolean updated = false;
