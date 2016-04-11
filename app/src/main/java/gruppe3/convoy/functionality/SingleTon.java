@@ -41,6 +41,7 @@ public class SingleTon extends Application {
     public static boolean hentetLokal=false;
     public static boolean hentetDb=false;
     public static boolean isConnected = true;
+    public static long lastUpdated;
 
     @Override
     public void onCreate(){
@@ -58,6 +59,7 @@ public class SingleTon extends Application {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         Log.d("Debug", "Preference Manager er startet");
         SingleTon.saveData = prefs.getBoolean("saveData", true);
+        SingleTon.lastUpdated = prefs.getLong("lastUpdated", -1);
         if(SingleTon.saveData){
             SingleTon.nightMode = prefs.getBoolean("nightMode", false);
             SingleTon.food = prefs.getBoolean("food", false);

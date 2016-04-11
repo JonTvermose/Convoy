@@ -193,6 +193,16 @@ public class BoundService extends Service{
     public void hent(String filename) {
         filnavn=filename;
         final String fileName = this.getFilesDir() + "/"+filnavn+".ser";
+
+        if(SingleTon.lastUpdated == -1){ // Hvis lastUpdated ikke findes i telefonen, slettes det lokale data
+            File fil = new File(fileName);
+            if (fil.delete()) {
+                System.out.println("Slettet fil fra telefon.");
+                SingleTon.lastUpdated = 0;
+            } else {
+                System.out.println("Fil kunne ikke slettes fra telefon. Måske findes den ikke?");
+            }
+        }
         System.out.println(fileName);
         new Thread(new Runnable() {
             public void run() {
@@ -213,7 +223,7 @@ public class BoundService extends Service{
                     } else {
                         System.out.println("Internet og lokal data");
                         System.out.println("antal spots før: " + spotsLokal.size());
-                        hentFraDb(123456789); // TODO - Her skal sendes hvornår spots sidst er blevet opdateret på klienten!
+                        hentFraDb(SingleTon.lastUpdated); // Her sendes hvornår spots sidst er blevet opdateret på klienten!
                     }
                 } else {
                     System.out.println("Hverken internet eller lokal data");
@@ -266,6 +276,9 @@ public class BoundService extends Service{
                 } catch (IOException e){
                     Log.d("Error closing url", e.toString());
                 }
+
+                // TODO - Opdater SingleTon.lastUpdated med server-værdi for hvornår svaret er sendt! Værdien skal findes i JSON-objektet
+
 
                 JSONArray spotsListe = null;
                 try {

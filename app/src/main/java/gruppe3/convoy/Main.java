@@ -118,6 +118,7 @@ public class Main extends FragmentActivity implements SensorEventListener {
             prefs.putBoolean("roadTrain", SingleTon.roadTrain).apply();
             prefs.putBoolean("powerSaving", SingleTon.powerSaving).apply();
             prefs.putString("speedSetting", Double.toString(SingleTon.speedSetting)).apply();
+            prefs.putLong("lastUpdated", SingleTon.lastUpdated).apply();
         }
         super.onStop();
     }
