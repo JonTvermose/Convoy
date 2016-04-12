@@ -47,9 +47,9 @@ public class BoundService extends Service{
     private final IBinder mBinder = new LocalBinder();
     private static Object obj;
     private static String filnavn;
-    private static Set<Spot> spotsLokal = new HashSet<>();
+    private static ArrayList<Spot> spotsLokal = new ArrayList<>();
 
-    private final String CONVOYSPOTSURL = "http://convoy.com/spots"; // TODO - hvor ligger REST serveren?
+    private final String CONVOYSPOTSURL = "http://192.168.1.45:8080/ConvoyServer/webresources/convoy"; // TODO - hvor ligger REST serveren?
 
     public void uploadSpot(final Spot newSpot) {
         new Thread(new Runnable() {
@@ -72,7 +72,7 @@ public class BoundService extends Service{
 
                 Gson gson = new Gson();
                 String json = gson.toJson(newSpot);
-                String postUrl = BoundService.this.CONVOYSPOTSURL + "/ADDSPOT";// TODO - hvad er den korrekte POST url?
+                String postUrl = BoundService.this.CONVOYSPOTSURL + "/create/";// TODO - hvad er den korrekte POST url?
                 BoundService.this.performPostCall(postUrl , json);
             }
         }).start();
@@ -127,6 +127,7 @@ public class BoundService extends Service{
         String response = "";
         try {
             url = new URL(requestURL);
+
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("POST");
             conn.setDoInput(true);
@@ -197,7 +198,7 @@ public class BoundService extends Service{
                 try{
                     FileInputStream datastream = new FileInputStream(fileName);
                     ObjectInputStream objektstream = new ObjectInputStream(datastream);
-                    spotsLokal = (Set<Spot>) objektstream.readObject();
+                    spotsLokal = (ArrayList<Spot>) objektstream.readObject();
                     objektstream.close();
                 } catch (IOException | ClassNotFoundException e){
                     System.out.println("File not found");
@@ -237,13 +238,14 @@ public class BoundService extends Service{
                 HttpURLConnection urlConnection = null;
                 try {
                     try {
-                        Uri.Builder uri = new Uri.Builder()
-                                .scheme("https")
-                                .authority(BoundService.this.CONVOYSPOTSURL)
-                                .appendPath("lastUpdated")
-                                .appendQueryParameter("lastUpdated", Long.toString(lastUpdated));
+                        URL url;
+                        if(lastUpdated == 0){
+                            url = new URL(BoundService.this.CONVOYSPOTSURL + "/get_all");
+                        } else {
+                            url = new URL(BoundService.this.CONVOYSPOTSURL + "/get_last/" + SingleTon.lastUpdated);
+                        }
 
-                        URL url = new URL(uri.build().toString());
+                        System.out.println("URL: " + url.toString()); // DEBUG
                         urlConnection = (HttpURLConnection) url.openConnection();
                         urlConnection.connect();
                         iStream = urlConnection.getInputStream();
@@ -268,8 +270,11 @@ public class BoundService extends Service{
 
                 // TODO - Opdater SingleTon.lastUpdated med server-værdi for hvornår svaret er sendt! Værdien skal findes i JSON-objektet
 
+                System.out.println("Data modtaget: " + data);
 
                 JSONArray spotsListe = null;
+//                Gson gson = new Gson();
+//                gson.fromJson(data, Spot.class);
                 try {
                     spotsListe = new JSONArray(data);
                 } catch (JSONException e) {
