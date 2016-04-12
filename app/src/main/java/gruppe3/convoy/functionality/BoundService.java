@@ -7,6 +7,8 @@ import android.os.Binder;
 import android.os.IBinder;
 import android.util.Log;
 
+import com.google.gson.Gson;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -27,6 +29,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -52,23 +55,25 @@ public class BoundService extends Service{
         new Thread(new Runnable() {
             @Override
             public void run() {
-                HashMap<String, String> params = new HashMap<>();
-                params.put("adBlue", Boolean.toString(newSpot.isAdblue()));
-                params.put("roadTrain", Boolean.toString(newSpot.isRoadtrain()));
-                params.put("wc", Boolean.toString(newSpot.isWc()));
-                params.put("food", Boolean.toString(newSpot.isFood()));
-                params.put("bath", Boolean.toString(newSpot.isBath()));
-                params.put("bed", Boolean.toString(newSpot.isBed()));
-                params.put("fuel", Boolean.toString(newSpot.isFuel()));
-                params.put("deleted", Boolean.toString(newSpot.isDeleted()));
-                params.put("longitude", newSpot.getLng());
-                params.put("latitude", newSpot.getLat());
-                params.put("name", newSpot.getDesc());
-                // ... etc
+//                HashMap<String, String> params = new HashMap<>();
+//                params.put("adBlue", Boolean.toString(newSpot.isAdblue()));
+//                params.put("roadTrain", Boolean.toString(newSpot.isRoadtrain()));
+//                params.put("wc", Boolean.toString(newSpot.isWc()));
+//                params.put("food", Boolean.toString(newSpot.isFood()));
+//                params.put("bath", Boolean.toString(newSpot.isBath()));
+//                params.put("bed", Boolean.toString(newSpot.isBed()));
+//                params.put("fuel", Boolean.toString(newSpot.isFuel()));
+//                params.put("deleted", Boolean.toString(newSpot.isDeleted()));
+//                params.put("longitude", newSpot.getLng());
+//                params.put("latitude", newSpot.getLat());
+//                params.put("name", newSpot.getDesc());
+//                // ... etc
                 // TODO - Tilføj alle nødvendige parametre med korrekte keys
 
+                Gson gson = new Gson();
+                String json = gson.toJson(newSpot);
                 String postUrl = BoundService.this.CONVOYSPOTSURL + "/ADDSPOT";// TODO - hvad er den korrekte POST url?
-                BoundService.this.performPostCall(postUrl , params);
+                BoundService.this.performPostCall(postUrl , json);
             }
         }).start();
     }
@@ -117,24 +122,7 @@ public class BoundService extends Service{
 
     // Sender POST (create) til REST server.
     // Fungerer muligvis også med PUT (create or update). "conn.setRequestMethod("POST");" skal således ændres til "PUT".
-    /*
-    Testet og tjekket. Fungerer med eksemplet:
-    HashMap<String, String> params = new HashMap<>();
-        params.put("id", "99");
-        params.put("userId", "1");
-        params.put("title", "This is the title");
-        params.put("body", "This is the body");
-        String url = "http://localhost:8080";
-        String url2 = "https://httpbin.org/post";
-        String response = performPostCall(url2, params);
-        String[] lines = response.split(",");
-        System.out.println("**** Udskriver svar: *****");
-        for (String line : lines) {
-            System.out.println(line + ",");
-        }
-        System.out.println("**** Svar slut ****");
-     */
-    private String performPostCall(String requestURL, HashMap<String, String> postDataParams) {
+    private String performPostCall(String requestURL, String json) {
         URL url;
         String response = "";
         try {
@@ -147,7 +135,7 @@ public class BoundService extends Service{
             OutputStream os = conn.getOutputStream();
             BufferedWriter writer = new BufferedWriter(
                     new OutputStreamWriter(os, "UTF-8"));
-            writer.write(getPostDataString(postDataParams));
+            writer.write(json);
 
             writer.flush();
             writer.close();
@@ -170,21 +158,21 @@ public class BoundService extends Service{
         return response;
     }
 
-    private String getPostDataString(HashMap<String, String> params) throws UnsupportedEncodingException {
-        StringBuilder result = new StringBuilder();
-        boolean first = true;
-        for(Map.Entry<String, String> entry : params.entrySet()){
-            if (first){
-                first = false;
-            } else {
-                result.append("&");
-            }
-            result.append(URLEncoder.encode(entry.getKey(), "UTF-8"));
-            result.append("=");
-            result.append(URLEncoder.encode(entry.getValue(), "UTF-8"));
-        }
-        return result.toString();
-    }
+//    private String getPostDataString(HashMap<String, String> params) throws UnsupportedEncodingException {
+//        StringBuilder result = new StringBuilder();
+//        boolean first = true;
+//        for(Map.Entry<String, String> entry : params.entrySet()){
+//            if (first){
+//                first = false;
+//            } else {
+//                result.append("&");
+//            }
+//            result.append(URLEncoder.encode(entry.getKey(), "UTF-8"));
+//            result.append("=");
+//            result.append(URLEncoder.encode(entry.getValue(), "UTF-8"));
+//        }
+//        return result.toString();
+//    }
 
     /**
      * Indlæs gemt data fra telefonen, samt hent opdaterede spots fra serveren.
@@ -273,8 +261,9 @@ public class BoundService extends Service{
                         iStream.close();
                         urlConnection.disconnect();
                     }
-                } catch (IOException e){
-                    Log.d("Error closing url", e.toString());
+                } catch (Exception e){
+                    Log.d("Error reading url", e.toString());
+                    e.printStackTrace();
                 }
 
                 // TODO - Opdater SingleTon.lastUpdated med server-værdi for hvornår svaret er sendt! Værdien skal findes i JSON-objektet
