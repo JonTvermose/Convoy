@@ -11,19 +11,19 @@ public class Spot implements Serializable {
     private long lastUpdated;
     private boolean deleted;
 
-    private String lat;
-    private String lng;
-    private boolean adblue;
+    private String latitude;
+    private String longitude;
+    private boolean addblue;
     private boolean food;
     private boolean bath;
     private boolean bed;
     private boolean wc;
     private boolean fuel;
     private boolean roadtrain;
-    private String desc;
+    private String name;
 
     public Spot(String desc, boolean adblue, boolean food, boolean bath, boolean bed, boolean wc, boolean fuel, boolean roadtrain, String lat, String lng) {
-        this.desc = desc;
+        this.name = desc;
         this.setAdblue(adblue);
         this.setFood(food);
         this.setBath(bath);
@@ -39,45 +39,45 @@ public class Spot implements Serializable {
         this.id = id;
         this.lastUpdated = lastUpdated;
         this.deleted = deleted;
-        this.adblue = addBlue;
+        this.addblue = addBlue;
         this.food = food;
         this.wc = wc;
         this.bed = bed;
         this.bath = bath;
         this.roadtrain = roadtrain;
-        this.lng = Double.toString(longitude);
-        this.lat = Double.toString(latitude);
-        this.desc = desc;
+        this.longitude = Double.toString(longitude);
+        this.latitude = Double.toString(latitude);
+        this.name = desc;
     }
 
     public String getDesc(){
-        return desc;
+        return name;
     }
 
     public void setDesc(String desc){
-        this.desc = desc;
+        this.name = desc;
     }
 
-    public String getLat() { return lat; }
+    public String getLat() { return latitude; }
 
     public void setLat(String lat) {
-        this.lat = lat;
+        this.latitude = lat;
     }
 
     public String getLng() {
-        return lng;
+        return longitude;
     }
 
     public void setLng(String lng) {
-        this.lng = lng;
+        this.longitude = lng;
     }
 
     public boolean isAdblue() {
-        return adblue;
+        return addblue;
     }
 
     public void setAdblue(boolean adblue) {
-        this.adblue = adblue;
+        this.addblue = adblue;
     }
 
     public boolean isFood() {

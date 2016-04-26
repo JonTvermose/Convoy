@@ -45,34 +45,19 @@ import javax.net.ssl.HttpsURLConnection;
 public class BoundService extends Service{
     // Binder given to clients
     private final IBinder mBinder = new LocalBinder();
-    private static Object obj;
     private static String filnavn;
     private static ArrayList<Spot> spotsLokal = new ArrayList<>();
 
-    private final String CONVOYSPOTSURL = "http://192.168.1.45:8080/ConvoyServer/webresources/convoy"; // TODO - hvor ligger REST serveren?
+    private final String CONVOYSPOTSURL = "http://10.16.227.23:8080/ConvoyServer/webresources/convoy"; // TODO - hvor ligger REST serveren?
 
     public void uploadSpot(final Spot newSpot) {
         new Thread(new Runnable() {
             @Override
             public void run() {
-//                HashMap<String, String> params = new HashMap<>();
-//                params.put("adBlue", Boolean.toString(newSpot.isAdblue()));
-//                params.put("roadTrain", Boolean.toString(newSpot.isRoadtrain()));
-//                params.put("wc", Boolean.toString(newSpot.isWc()));
-//                params.put("food", Boolean.toString(newSpot.isFood()));
-//                params.put("bath", Boolean.toString(newSpot.isBath()));
-//                params.put("bed", Boolean.toString(newSpot.isBed()));
-//                params.put("fuel", Boolean.toString(newSpot.isFuel()));
-//                params.put("deleted", Boolean.toString(newSpot.isDeleted()));
-//                params.put("longitude", newSpot.getLng());
-//                params.put("latitude", newSpot.getLat());
-//                params.put("name", newSpot.getDesc());
-//                // ... etc
-                // TODO - Tilføj alle nødvendige parametre med korrekte keys
-
                 Gson gson = new Gson();
                 String json = gson.toJson(newSpot);
-                String postUrl = BoundService.this.CONVOYSPOTSURL + "/create/";// TODO - hvad er den korrekte POST url?
+                String postUrl = BoundService.this.CONVOYSPOTSURL + "/create";
+                Log.d("DATA", "URL: " + postUrl + ", Opretter spot: " + json);
                 BoundService.this.performPostCall(postUrl , json);
             }
         }).start();
@@ -95,6 +80,11 @@ public class BoundService extends Service{
         return mBinder;
     }
 
+    /**
+     * Gemmer et objekt på telefonen som en binær fil. Hvis filnavnet eksisterer i forvejen forsøges denne slettet
+     * @param obj Objekt der skal gemmes på telefonen
+     * @param filnavn Filnavn der gemmes i.
+     */
     public void gem(final Object obj, final String filnavn) {
         final String fileName = this.getFilesDir() + "/"+filnavn+".ser";
         new Thread(new Runnable() {
@@ -132,6 +122,9 @@ public class BoundService extends Service{
             conn.setRequestMethod("POST");
             conn.setDoInput(true);
             conn.setDoOutput(true);
+            conn.setRequestProperty("Content-Type", "application/json");
+            conn.setRequestProperty("Accept", "application/json");
+            conn.connect();
 
             OutputStream os = conn.getOutputStream();
             BufferedWriter writer = new BufferedWriter(
@@ -152,28 +145,13 @@ public class BoundService extends Service{
             }
             else {
                 response="";
+                Log.d("DATA", "Fejlkode: " + responseCode);
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
         return response;
     }
-
-//    private String getPostDataString(HashMap<String, String> params) throws UnsupportedEncodingException {
-//        StringBuilder result = new StringBuilder();
-//        boolean first = true;
-//        for(Map.Entry<String, String> entry : params.entrySet()){
-//            if (first){
-//                first = false;
-//            } else {
-//                result.append("&");
-//            }
-//            result.append(URLEncoder.encode(entry.getKey(), "UTF-8"));
-//            result.append("=");
-//            result.append(URLEncoder.encode(entry.getValue(), "UTF-8"));
-//        }
-//        return result.toString();
-//    }
 
     /**
      * Indlæs gemt data fra telefonen, samt hent opdaterede spots fra serveren.
@@ -183,6 +161,7 @@ public class BoundService extends Service{
         filnavn=filename;
         final String fileName = this.getFilesDir() + "/"+filnavn+".ser";
 
+        // Kode til at fjerne legacy-fil fra tidligere versioner
         if(SingleTon.lastUpdated == -1){ // Hvis lastUpdated ikke findes i telefonen, slettes det lokale data
             File fil = new File(fileName);
             if (fil.delete()) {
@@ -192,7 +171,7 @@ public class BoundService extends Service{
                 System.out.println("Fil kunne ikke slettes fra telefon. Måske findes den ikke?");
             }
         }
-        System.out.println(fileName);
+
         new Thread(new Runnable() {
             public void run() {
                 try{
@@ -238,13 +217,7 @@ public class BoundService extends Service{
                 HttpURLConnection urlConnection = null;
                 try {
                     try {
-                        URL url;
-                        if(lastUpdated == 0){
-                            url = new URL(BoundService.this.CONVOYSPOTSURL + "/get_all");
-                        } else {
-                            url = new URL(BoundService.this.CONVOYSPOTSURL + "/get_last/" + SingleTon.lastUpdated);
-                        }
-
+                        URL url = new URL(BoundService.this.CONVOYSPOTSURL + "/get_last/" + SingleTon.lastUpdated);
                         System.out.println("URL: " + url.toString()); // DEBUG
                         urlConnection = (HttpURLConnection) url.openConnection();
                         urlConnection.connect();
@@ -268,22 +241,19 @@ public class BoundService extends Service{
                     e.printStackTrace();
                 }
 
-                // TODO - Opdater SingleTon.lastUpdated med server-værdi for hvornår svaret er sendt! Værdien skal findes i JSON-objektet
+                Log.d("DATA" , data);
 
-                System.out.println("Data modtaget: " + data);
+                Gson gson = new Gson();
+                SpotsContainer spotsContainer = gson.fromJson(data, SpotsContainer.class);
+                Log.d("DATA", spotsContainer.toString());
 
-                JSONArray spotsListe = null;
-//                Gson gson = new Gson();
-//                gson.fromJson(data, Spot.class);
-                try {
-                    spotsListe = new JSONArray(data);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
+                // Opdater SingleTon.lastUpdated med server-værdi for hvornår svaret er sendt! Værdien skal findes i JSON-objektet
+                SingleTon.lastUpdated = spotsContainer.getLastUpdated();
+
                 if(SingleTon.spots==null) { // Hvis klienten er tom, tilføjes alle spots
-                    SingleTon.spots = new SpotsJSONParser().parse(spotsListe); // Parser JSON til en ArrayList<Spot>
+                    SingleTon.spots = spotsContainer.getSpots();
                 } else { // Ellers opdateres klientens spots med de ændringer der er foretaget, og eventuelle nye spots tilføjes
-                    ArrayList<Spot> updSpots = new SpotsJSONParser().parse(spotsListe);
+                    ArrayList<Spot> updSpots = spotsContainer.getSpots();
                     for(Spot updSpot : updSpots) {
                         boolean updated = false;
                         for(int i=0; i<SingleTon.spots.size(); i++){
@@ -291,7 +261,7 @@ public class BoundService extends Service{
                                 SingleTon.spots.remove(i);
                                 SingleTon.spots.add(updSpot);
                                 updated = true;
-                                i = SingleTon.spots.size();
+                                i = SingleTon.spots.size(); // Vi stopper med at lede efter det spot vi lige har opdateret
                             }
                         }
                         if(!updated) {
