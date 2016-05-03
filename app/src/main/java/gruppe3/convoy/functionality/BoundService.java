@@ -46,7 +46,7 @@ public class BoundService extends Service{
     // Binder given to clients
     private final IBinder mBinder = new LocalBinder();
     private static String filnavn;
-    private static ArrayList<Spot> spotsLokal = new ArrayList<>();
+   // private static ArrayList<Spot> spotsLokal = new ArrayList<>();
 
     private final String CONVOYSPOTSURL = "http://default-environment.m2ypbqk78s.us-west-2.elasticbeanstalk.com/webresources/convoy"; // TODO - hvor ligger REST serveren?
 
@@ -177,20 +177,20 @@ public class BoundService extends Service{
                 try{
                     FileInputStream datastream = new FileInputStream(fileName);
                     ObjectInputStream objektstream = new ObjectInputStream(datastream);
-                    spotsLokal = (ArrayList<Spot>) objektstream.readObject();
+                    SingleTon.spots = (ArrayList<Spot>) objektstream.readObject();
                     objektstream.close();
                 } catch (IOException | ClassNotFoundException e){
                     System.out.println("File not found");
-                    spotsLokal = null;
+                    SingleTon.spots = null;
                 }
                 SingleTon.hentetLokal=true;
                 if(SingleTon.isConnected){
-                    if(spotsLokal==null){
+                    if(SingleTon.spots==null){
                         System.out.println("Internet, men ingen lokal data");
                         hentFraDb(0); // Tiden 0 sendes idet alle spots ønskes hentet fra serveren
                     } else {
                         System.out.println("Internet og lokal data");
-                        System.out.println("antal spots før: " + spotsLokal.size());
+                        System.out.println("antal spots før: " + SingleTon.spots.size());
                         hentFraDb(SingleTon.lastUpdated); // Her sendes hvornår spots sidst er blevet opdateret på klienten!
                     }
                 } else {
@@ -250,22 +250,24 @@ public class BoundService extends Service{
                 // Opdater SingleTon.lastUpdated med server-værdi for hvornår svaret er sendt! Værdien skal findes i JSON-objektet
                 SingleTon.lastUpdated = spotsContainer.getLastUpdated();
 
-                if(SingleTon.spots==null) { // Hvis klienten er tom, tilføjes alle spots
-                    SingleTon.spots = spotsContainer.getSpots();
-                } else { // Ellers opdateres klientens spots med de ændringer der er foretaget, og eventuelle nye spots tilføjes
-                    ArrayList<Spot> updSpots = spotsContainer.getSpots();
-                    for(Spot updSpot : updSpots) {
-                        boolean updated = false;
-                        for(int i=0; i<SingleTon.spots.size(); i++){
-                            if(SingleTon.spots.get(i).getId() == updSpot.getId()) { // Hvis updSpot allerede findes i klienten, opdateres klienten med det nye spot
-                                SingleTon.spots.remove(i);
-                                SingleTon.spots.add(updSpot);
-                                updated = true;
-                                i = SingleTon.spots.size(); // Vi stopper med at lede efter det spot vi lige har opdateret
+                if(spotsContainer.getSpots() != null || spotsContainer.getSpots().size() != 0){
+                    if(SingleTon.spots==null) { // Hvis klienten er tom, tilføjes alle spots
+                        SingleTon.spots = spotsContainer.getSpots();
+                    } else { // Ellers opdateres klientens spots med de ændringer der er foretaget, og eventuelle nye spots tilføjes
+                        ArrayList<Spot> updSpots = spotsContainer.getSpots();
+                        for(Spot updSpot : updSpots) {
+                            boolean updated = false;
+                            for(int i=0; i<SingleTon.spots.size(); i++){
+                                if(SingleTon.spots.get(i).getId() == updSpot.getId()) { // Hvis updSpot allerede findes i klienten, opdateres klienten med det nye spot
+                                    SingleTon.spots.remove(i);
+                                    SingleTon.spots.add(updSpot);
+                                    updated = true;
+                                    i = SingleTon.spots.size(); // Vi stopper med at lede efter det spot vi lige har opdateret
+                                }
                             }
-                        }
-                        if(!updated) {
-                            SingleTon.spots.add(updSpot); // Hvis updSpot ikke findes i klienten tilføjes det
+                            if(!updated) {
+                                SingleTon.spots.add(updSpot); // Hvis updSpot ikke findes i klienten tilføjes det
+                            }
                         }
                     }
                 }
