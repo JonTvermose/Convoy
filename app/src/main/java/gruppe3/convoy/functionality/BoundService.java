@@ -48,7 +48,7 @@ public class BoundService extends Service{
     private static String filnavn;
     private static ArrayList<Spot> spotsLokal = new ArrayList<>();
 
-    private final String CONVOYSPOTSURL = "http://10.16.227.23:8080/ConvoyServer/webresources/convoy"; // TODO - hvor ligger REST serveren?
+    private final String CONVOYSPOTSURL = "http://default-environment.m2ypbqk78s.us-west-2.elasticbeanstalk.com/webresources/convoy"; // TODO - hvor ligger REST serveren?
 
     public void uploadSpot(final Spot newSpot) {
         new Thread(new Runnable() {
@@ -56,7 +56,7 @@ public class BoundService extends Service{
             public void run() {
                 Gson gson = new Gson();
                 String json = gson.toJson(newSpot);
-                String postUrl = BoundService.this.CONVOYSPOTSURL + "/create";
+                String postUrl = BoundService.this.CONVOYSPOTSURL + "/create/spot";
                 Log.d("DATA", "URL: " + postUrl + ", Opretter spot: " + json);
                 BoundService.this.performPostCall(postUrl , json);
             }
@@ -273,7 +273,7 @@ public class BoundService extends Service{
                 SingleTon.dataLoadDone = true;
                 // Gem spots lokalt på telefonen
                 gem(SingleTon.spots, filnavn);
-                System.out.println("antal spots efter: " + SingleTon.spots.size());
+                Log.d("DATA", "antal spots efter: " + SingleTon.spots.size());
             }
         }).start();
     }
