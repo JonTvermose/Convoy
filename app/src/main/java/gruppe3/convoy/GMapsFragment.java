@@ -16,10 +16,8 @@ import android.view.View;
 import android.view.Window;
 import android.view.animation.BounceInterpolator;
 import android.widget.Button;
-import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -379,7 +377,7 @@ public class GMapsFragment extends AppCompatActivity implements OnMapReadyCallba
             } else {
                 roadTrain.setVisibility(View.GONE); // Vi viser intet billede hvis der ikke er roadtrain
             }
-            if (spot.isAdblue()) {
+            if (spot.isAddblue()) {
                 adblue.setImageResource(R.drawable.adblue_t_check);
                 adblue.setSelected(false);
             } else {

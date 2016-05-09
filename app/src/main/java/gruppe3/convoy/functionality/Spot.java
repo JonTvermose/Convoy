@@ -22,9 +22,9 @@ public class Spot implements Serializable {
     private boolean roadtrain;
     private String name;
 
-    public Spot(String desc, boolean adblue, boolean food, boolean bath, boolean bed, boolean wc, boolean fuel, boolean roadtrain, String lat, String lng) {
+    public Spot(String desc, boolean addblue, boolean food, boolean bath, boolean bed, boolean wc, boolean fuel, boolean roadtrain, String lat, String lng) {
         this.name = desc;
-        this.setAdblue(adblue);
+        this.setAddblue(addblue);
         this.setFood(food);
         this.setBath(bath);
         this.setBed(bed);
@@ -72,11 +72,11 @@ public class Spot implements Serializable {
         this.longitude = lng;
     }
 
-    public boolean isAdblue() {
+    public boolean isAddblue() {
         return addblue;
     }
 
-    public void setAdblue(boolean adblue) {
+    public void setAddblue(boolean adblue) {
         this.addblue = adblue;
     }
 

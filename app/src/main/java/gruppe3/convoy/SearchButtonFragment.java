@@ -68,8 +68,11 @@ public class SearchButtonFragment extends Fragment {
                             SingleTon.searchedSpots = new ArrayList<Spot>();
                             for (Spot searchedSpot : SingleTon.spots) {
                                 boolean mark = true;
+                                if(searchedSpot.isDeleted()){
+                                    mark = false;
+                                }
                                 if (SingleTon.adblue) {
-                                    if (!searchedSpot.isAdblue()) {
+                                    if (!searchedSpot.isAddblue()) {
                                         mark = false;
                                     }
                                 }
