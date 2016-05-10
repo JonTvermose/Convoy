@@ -2,16 +2,11 @@ package gruppe3.convoy.functionality;
 
 import android.app.Service;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Binder;
 import android.os.IBinder;
 import android.util.Log;
 
 import com.google.gson.Gson;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -25,16 +20,9 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.net.URLEncoder;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
 
 import javax.net.ssl.HttpsURLConnection;
 
@@ -48,7 +36,7 @@ public class BoundService extends Service{
     private static String filnavn;
    // private static ArrayList<Spot> spotsLokal = new ArrayList<>();
 
-    private final String CONVOYSPOTSURL = "http://default-environment.m2ypbqk78s.us-west-2.elasticbeanstalk.com/webresources/convoy"; // TODO - hvor ligger REST serveren?
+    private final String CONVOYSPOTSURL = "http://default-environment.xyik5z2rn3.eu-central-1.elasticbeanstalk.com/webresources/convoy"; // REST serveren
 
     public void uploadSpot(final Spot newSpot) {
         new Thread(new Runnable() {
