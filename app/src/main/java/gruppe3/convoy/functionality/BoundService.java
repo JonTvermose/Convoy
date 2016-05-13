@@ -36,7 +36,7 @@ public class BoundService extends Service{
     private static String filnavn;
    // private static ArrayList<Spot> spotsLokal = new ArrayList<>();
 
-    private final String CONVOYSPOTSURL = "http://default-environment.xyik5z2rn3.eu-central-1.elasticbeanstalk.com/webresources/convoy"; // REST serveren
+    private final String CONVOYSPOTSURL = "http://convoy.eu-central-1.elasticbeanstalk.com/webresources/convoy"; // REST serveren
 
     public void uploadSpot(final Spot newSpot) {
         new Thread(new Runnable() {
